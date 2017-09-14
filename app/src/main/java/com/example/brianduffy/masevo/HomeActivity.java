@@ -74,9 +74,10 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.account) {
-            // Handle the camera action
+           // setContentView(UserView);
         } else if (id == R.id.map) {
-
+            //TODO check to make sure thier location services are available
+            setContentView(R.layout.activity_maps);
         } else if (id == R.id.chat) {
 
         } else if (id == R.id.setting) {
