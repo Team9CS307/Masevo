@@ -1,9 +1,6 @@
 package com.example.brianduffy.masevo;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,13 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class HomeActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,7 +45,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -73,15 +70,34 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.account) {
-           // setContentView(UserView);
-        } else if (id == R.id.map) {
-            //TODO check to make sure thier location services are available
-            setContentView(R.layout.activity_maps);
-        } else if (id == R.id.chat) {
+        if (id == R.id.home) {
+            MainActivityFragment mainActivityFragment = new MainActivityFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame,mainActivityFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (id == R.id.mapofevents) {
+            MapofEventsFragment mapofEventsFragment = new MapofEventsFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame,mapofEventsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.setting) {
+        } else if (id == R.id.nav_manage) {
 
+        } else if (id == R.id.myevents) {
+            MyEventsFragment myEventsFragment = new MyEventsFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame,myEventsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (id == R.id.nearbyevents) {
+            NearbyEventsFragment nearbyEventsFragment = new NearbyEventsFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame,nearbyEventsFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
