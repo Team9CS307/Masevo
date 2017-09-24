@@ -71,7 +71,6 @@
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
 
 
-
     <string name="label_emailpassword">Email/Password Authentication</string>
     <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
 

@@ -20,16 +20,16 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "MainActivity";
     GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -40,7 +40,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
+
 
     @Override
     protected void onPostResume() {
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
 
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -80,7 +83,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -97,20 +99,22 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
     private void signOut() {
-        final Intent login = new Intent(this,LoginActivity.class);
+        final Intent login = new Intent(this, LoginActivity.class);
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
 
-                       startActivity(login);
+                        startActivity(login);
                         // [END_EXCLUDE]
                         finish();
                     }
                 });
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -120,15 +124,18 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.home) {
             MainActivityFragment mainActivityFragment = new MainActivityFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame,mainActivityFragment)
+                    .replace(R.id.content_frame, mainActivityFragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.mapofevents) {
-            MapofEventsFragment mapofEventsFragment = new MapofEventsFragment();
+
+
+            MapofEventsFragment  mapofEventsFragment = new MapofEventsFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame,mapofEventsFragment)
+                    .replace(R.id.content_frame, mapofEventsFragment)
                     .addToBackStack(null)
                     .commit();
+
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -136,13 +143,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.myevents) {
             MyEventsFragment myEventsFragment = new MyEventsFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame,myEventsFragment)
+                    .replace(R.id.content_frame, myEventsFragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nearbyevents) {
             NearbyEventsFragment nearbyEventsFragment = new NearbyEventsFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame,nearbyEventsFragment)
+                    .replace(R.id.content_frame, nearbyEventsFragment)
                     .addToBackStack(null)
                     .commit();
         }
@@ -150,11 +157,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }  @Override
+    }
+
+    @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
+
 }
+
+
