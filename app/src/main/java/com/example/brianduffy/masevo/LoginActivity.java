@@ -205,6 +205,7 @@ public class LoginActivity extends AppCompatActivity implements
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
             Intent main = new Intent(this,MainActivity.class);
             startActivity(main);
+            finish();
         } else {
             mStatusTextView.setText(R.string.signed_out);
 
