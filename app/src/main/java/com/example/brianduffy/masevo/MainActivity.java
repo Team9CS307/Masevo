@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else if (id == R.id.mapofevents) {
 
-
             MapofEventsFragment  mapofEventsFragment = new MapofEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, mapofEventsFragment)
