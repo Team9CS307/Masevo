@@ -23,6 +23,7 @@ public class Server {
                 "user=%s;" +
                 "password=%s;" +
                 "encrypt=true;" +
+                "trustServerCertificate=false;" +
                 "hostNameInCertificate=*.database.windows.net;" +
                 "loginTimeout=30;", hostName, dbName, user, password);
         Connection connection;
