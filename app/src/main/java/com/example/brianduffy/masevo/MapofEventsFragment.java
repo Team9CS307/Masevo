@@ -1,5 +1,9 @@
 package com.example.brianduffy.masevo;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -7,10 +11,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +41,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 public class MapofEventsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener {
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
@@ -73,11 +81,17 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (!isLocationServiceEnabled(this.getContext())) {
+            onResume();
+        }
+
+
         View view = inflater.inflate(R.layout.fragment_map_of_events, null, false);
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        // Get Location Manager and check for GPS & Network location services
 
         return view;
     }
@@ -103,6 +117,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 //                }
 //            }
 //        };
+
         mSettingsClient = LocationServices.getSettingsClient(this.getActivity());
         createLocationRequest();
 
@@ -110,7 +125,28 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
         buildLocationSettingsRequest();
 
     }
-
+    public boolean isLocationServiceEnabled(Context context){
+        LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            // Build the alert dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+            builder.setTitle("Location Services Not Active");
+            builder.setMessage("Please enable Location Services and GPS");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Show location settings when the user acknowledges the alert dialog
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                }
+            });
+            Dialog alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+            return false;
+        }
+        return true;
+    }
     private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
 
