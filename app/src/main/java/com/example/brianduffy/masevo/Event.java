@@ -1,25 +1,62 @@
 package com.example.brianduffy.masevo;
 
 import android.icu.text.SimpleDateFormat;
+import android.icu.text.StringPrepParseException;
+
+import java.util.HashSet;
 
 /**
  * Created by Brian Duffy on 9/14/2017.
  */
 
-public interface Event {
-    public Location getLocation();
-        // Returns the Location of a given event
-    public SimpleDateFormat getStartTime();
-        // Returns the start time of a given event in the form of SimpleDateFormat
-    public SimpleDateFormat getEndTime();
-        // Returns the end time of a given event in the form of SimpleDateFormat
-    public void setStartTime(SimpleDateFormat startTime);
-        // Receives a given SimpleDateFormat to use as the start time of an event
-        // May want to add option of return 1 upon valid start time, 0 upon invalid start time
-    public void setEndTime(SimpleDateFormat endTime);
-        // Receives a given SimpleDateFormat to use as the end time of an event
-        // May want to add option of return 1 upon a valid end time, 0 upon invalid end time
-    public void setLocation(Location location);
-        // Receives a given Location to use as the Location of an event;
-        // May want to add option of return 1 upon success, 0 upon failure/invalid input
+public abstract class Event {
+    //ChatRoom chatRoom = new ChatRoom();
+    // Need to implement ChatRoom
+    public SimpleDateFormat startTime;
+        // Start time of the event
+    public SimpleDateFormat endTime;
+        // End time of the event
+    public Location location;
+        // Location of the event
+    public HashSet<String> hostList = new HashSet<>();
+        // HashSet of hosts for the event
+    public HashSet<String> attendeeList = new HashSet<>();
+        // HashSet of attendees for the event
+    public HashSet<String> activeList = new HashSet<>();
+        // HashSet of all active members of the event
+    public String eventDesc;
+        // Description of the event
+    //public MapView curEventMapView
+        // Reference to the map for this event
+    public String eventName;
+        // String storing the display name of this event
+    public String eventID;
+        // String storing the ID of the event.
+    public double radius;
+        // Radius of the event as set by a host
+
+    public Location getLocation()
+    {
+        return this.location;
+    }
+    public SimpleDateFormat getStartTime()
+    {
+        return this.startTime;
+    }
+    public SimpleDateFormat getEndTime()
+    {
+        return this.endTime;
+    }
+    public void setStartTime(SimpleDateFormat startTime)
+    {
+        this.startTime = startTime;
+    }
+    public void setEndTime(SimpleDateFormat endTime)
+    {
+        this.endTime = endTime;
+    }
+    public void setLocation(Location location)
+    {
+        this.location = location;
+    }
 }
