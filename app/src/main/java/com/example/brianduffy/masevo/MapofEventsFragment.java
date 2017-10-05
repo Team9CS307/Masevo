@@ -1,8 +1,6 @@
 package com.example.brianduffy.masevo;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -11,12 +9,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,10 +39,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import static android.content.Context.LOCATION_SERVICE;
-
 public class MapofEventsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener {
-    private static final int REQUEST_CHECK_SETTINGS = 0x1;
+    private static final int REQUEST_CHECK_SETTINGS = 2;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 45;
 
     private FusedLocationProviderClient mFusedLocationClient;
 
@@ -73,6 +69,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     private SettingsClient mSettingsClient;
 
 
+
     public static MapofEventsFragment newInstance() {
         MapofEventsFragment fragment = new MapofEventsFragment();
         return fragment;
@@ -81,9 +78,8 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (!isLocationServiceEnabled(this.getContext())) {
-            onResume();
-        }
+
+
 
 
         View view = inflater.inflate(R.layout.fragment_map_of_events, null, false);
@@ -96,57 +92,64 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
         return view;
     }
 
-// ..
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // ...
-//        mLocationRequest = LocationRequest.create();
-//        mLocationRequest.setInterval(20000); // 20 seconds
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity()); // NULL pointer here maybe
-//        mLocationCallback = new LocationCallback() {
-//            @Override
-//            public void onLocationResult(LocationResult locationResult) {
-//                for (Location location : locationResult.getLocations()) {
-//                    // Update UI with location data
-//                    // ...
-//                    onLocationChanged(location);
-//                }
-//            }
-//        };
 
         mSettingsClient = LocationServices.getSettingsClient(this.getActivity());
+
         createLocationRequest();
 
         createLocationCallback();
         buildLocationSettingsRequest();
 
+            startLocationUpdates();
+
     }
-    public boolean isLocationServiceEnabled(Context context){
-        LocationManager lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            // Build the alert dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-            builder.setTitle("Location Services Not Active");
-            builder.setMessage("Please enable Location Services and GPS");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    // Show location settings when the user acknowledges the alert dialog
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode,resultCode,data);
+        Log.d("onActivityResult()", Integer.toString(resultCode));
+
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode)
+        {
+            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                switch (resultCode)
+                {
+                    case Activity.RESULT_OK:
+                    {
+                        // All required changes were successfully made
+                        Toast.makeText(getActivity(), "Location enabled by user!", Toast.LENGTH_LONG).show();
+                        startLocationUpdates();
+                        break;
+                    }
+                    case Activity.RESULT_CANCELED:
+                    {
+                        // The user was asked to change settings, but chose not to
+                        Toast.makeText(getActivity(), "Location not enabled, user cancelled.", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
                 }
-            });
-            Dialog alertDialog = builder.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.show();
-            return false;
+                break;
         }
-        return true;
     }
+
+//
     private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
 
@@ -166,11 +169,8 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onResume() {
         super.onResume();
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-    }
 
+    }
 
 
     private void startLocationUpdates() {
@@ -184,7 +184,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                                 mLocationCallback, Looper.myLooper());
 
-                        updateUI();
+                       // updateUI();
                     }
                 })
                 .addOnFailureListener(this.getActivity(), new OnFailureListener() {
@@ -213,11 +213,39 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
                                 mRequestingLocationUpdates = false;
                         }
 
-                        updateUI();
+                       // updateUI();
+                       // startUI();
                     }
                 });
-        System.out.println("ehhlloe");
     }
+    private void startUI() {
+        if (ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this.getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+
+                            onLocationChanged(location);
+                            startLocationUpdates();
+
+                            // mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
+                        }
+
+                    }
+                });
+    }
+
 
     private void updateUI() {
 
@@ -266,11 +294,13 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
             }
         };
     }
+
     private void buildLocationSettingsRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
     }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -279,12 +309,13 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         //mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
+
         if (ActivityCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling  **************************** NEED TO ACCOUNT FOR THIS ***************************
             //    ActivityCompat#requestPermissions
@@ -308,16 +339,17 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
                             // mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
                         }
+                        if (location == null) {
+                            onMapReady(googleMap);
+                        }
                     }
                 });
 
 
-
-       // mMap.setOnCameraMoveListener(this);
-      //  onLocationChanged(mFusedLocationClient.getLastLocation().getResult());
+        // mMap.setOnCameraMoveListener(this);
+        //  onLocationChanged(mFusedLocationClient.getLastLocation().getResult());
 
     }
-
 
 
     @Override
@@ -325,7 +357,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
-       // locationManager.removeUpdates(this);
+        // locationManager.removeUpdates(this);
     }
 
     @Override

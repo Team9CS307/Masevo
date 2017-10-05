@@ -23,13 +23,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "MainActivity";
     GoogleApiClient mGoogleApiClient;
-
+     static final int REQUEST_LOCATION= 45;
+    MapofEventsFragment mapevents;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mapevents = MapofEventsFragment.newInstance();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -43,7 +45,15 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_LOCATION){
+            mapevents.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
     @Override
     protected void onPostResume() {
         super.onPostResume();
@@ -114,6 +124,8 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
     }
+// Here, thisActivity is the current activity
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -129,11 +141,11 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else if (id == R.id.mapofevents) {
 
-            MapofEventsFragment  mapofEventsFragment = new MapofEventsFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, mapofEventsFragment)
-                    .addToBackStack(null)
-                    .commit();
+                    MapofEventsFragment mapofEventsFragment = new MapofEventsFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, mapofEventsFragment)
+                            .addToBackStack(null)
+                            .commit();
 
         } else if (id == R.id.nav_slideshow) {
 
