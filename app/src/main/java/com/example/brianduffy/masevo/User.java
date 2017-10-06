@@ -9,7 +9,7 @@ import java.util.HashSet;
 public class User {
     String username;
     String emailAddress;
-    HashSet<String> myEventList;
+    HashSet<Integer> myEventList;
     Region myRegion;
     Location myLocation;
     HashSet<String> nearbyRegions;
@@ -45,12 +45,9 @@ public class User {
         return false;
     }
 
-    /*
-    // Gets the Regions surrounding a given user
-    public void getNearRegions()
-    //public List<Region> getNearRegions()
+    // Allows a user to create a Public Event
+    public void createEvent()
     {
 
     }
-    */
 }

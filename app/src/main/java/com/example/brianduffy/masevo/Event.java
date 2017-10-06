@@ -30,33 +30,8 @@ public abstract class Event {
         // Reference to the map for this event
     public String eventName;
         // String storing the display name of this event
-    public String eventID;
-        // String storing the ID of the event.
+    public int eventID;
+        // int storing the ID of the event.
     public double radius;
         // Radius of the event as set by a host
-
-    public Location getLocation()
-    {
-        return this.location;
-    }
-    public SimpleDateFormat getStartTime()
-    {
-        return this.startTime;
-    }
-    public SimpleDateFormat getEndTime()
-    {
-        return this.endTime;
-    }
-    public void setStartTime(SimpleDateFormat startTime)
-    {
-        this.startTime = startTime;
-    }
-    public void setEndTime(SimpleDateFormat endTime)
-    {
-        this.endTime = endTime;
-    }
-    public void setLocation(Location location)
-    {
-        this.location = location;
-    }
 }
