@@ -36,6 +36,6 @@ public abstract class Event {
         // String storing the display name of this event
     public int eventID;
         // int storing the ID of the event.
-    public double radius;
+    public int radius;
         // Radius of the event as set by a host
 }

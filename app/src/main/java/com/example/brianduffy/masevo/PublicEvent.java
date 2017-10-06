@@ -12,14 +12,16 @@ import java.util.HashSet;
 
 public class PublicEvent extends Event{
     // Use this to create a PublicEvent
+
     public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
-                       String eventDesc, String eventName, double radius, String creatorEmail)
+                       String eventName, String eventDesc, int radius, String creatorEmail,
+                       Server server)
     {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = new Location(latitude, longitude);
-        this.eventDesc = eventDesc;
         this.eventName = eventName;
+        this.eventDesc = eventDesc;
         this.radius = radius;
 
         this.hostList = new HashSet<>();
@@ -37,5 +39,7 @@ public class PublicEvent extends Event{
         //***DATABASE CALL***//
         //***DATABASE CALL***//
         ///////////////////////
+        server.createPublicEvent(eventID, eventName, eventDesc, startTime, endTime,
+                latitude, longitude, radius, new String[]{"10" + creatorEmail});
     }
 }

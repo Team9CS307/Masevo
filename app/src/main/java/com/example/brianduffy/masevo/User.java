@@ -271,7 +271,7 @@ public class User {
     }
 
     // Allows user to edit the radius of an event given they are on the host list
-    public void editEventRadius(PublicEvent event, double radius)
+    public void editEventRadius(PublicEvent event, int radius)
     {
         if (event.hostList.contains(this.emailAddress))
         {
@@ -284,7 +284,7 @@ public class User {
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
-    public void editEventRadius(PrivateEvent event, double radius)
+    public void editEventRadius(PrivateEvent event, int radius)
     {
         if (event.hostList.contains(this.emailAddress))
         {

@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -23,10 +22,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
-import org.w3c.dom.Text;
-
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity
@@ -55,7 +51,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        String hostName = "masevo.database.windows.net";
+        String dbName = "MasevoFields2";
+        String user = "MASEVO_ADMIN";
+        String password = "M4s3v0_4dm1n";
+        server = new Server(hostName, dbName, user, password);
     }
 
     @Override
@@ -194,48 +194,42 @@ public class MainActivity extends AppCompatActivity
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
-    float log = 0.0f;
-    float lat = 0.0f;
-    User user = new User("bduffy2019@gmail.com",log,lat,new HashSet<Integer>(),new HashSet<Integer>());
-    PrivateEvent privateEvent = new PrivateEvent(new Date(2),new Date(3),lat,log,"event description", "event name", 100.0,user.emailAddress);
-
-    PublicEvent publicEvent = new PublicEvent(new Date(2),new Date(3),lat,log,"event description", "event name", 100.0,user.emailAddress);
     @Override
-
     public void onClick(View view) {
-
-
         switch (view.getId()) {
             case R.id.join_public_event:
                 textView.setText("");
-                user.joinEvent(publicEvent); // join public event
-                textView.setText(user.emailAddress + "joined public event: ");
+                //user.joinEvent(publicEvent); // join public event
+                //textView.setText(user.emailAddress + "joined public event: ");
                 break;
             case R.id.join_private_event:
                 textView.setText("");
-                user.joinEvent(privateEvent,privateEvent.eventID);
-                textView.setText(user.emailAddress + "joined private event: ");
+                //user.joinEvent(privateEvent,privateEvent.eventID);
+                //textView.setText(user.emailAddress + "joined private event: ");
                 break;
             case R.id.create_public_event:
                 textView.setText("");
+                /*
                 PublicEvent pe = new PublicEvent(new Date(2), new Date(2),lat,log,
                         "Event Desc","Event name",100.0,"bduffy2019@gmail.com");
-                user.joinEvent(pe);
+                //user.joinEvent(pe);
                 textView.setText("Event Created: " + pe.eventName + " " + pe.eventDesc +
                         " lat: " + lat + " log:" + log + " created by: " + user.emailAddress);
 
-//                    user.myPublicEventIDs.add(pe.eventID);
-//                    user.myPublicEventList.add(pe);
+                user.myPublicEventIDs.add(pe.eventID);
+                user.myPublicEventList.add(pe);
+                */
                 break;
             case R.id.create_private_event:
                 textView.setText("");
+                /*
                 PrivateEvent pE = new PrivateEvent(new Date(500),new Date(200),lat,log,
                         "Private Event desc","private event1",4.0,user.emailAddress);
                 user.joinEvent(pE,pE.eventID);
                 textView.setText("Event Created: " + pE.eventName + " " + pE.eventDesc +
                         " lat: " + lat + " log:" + log + " created by: " + user.emailAddress);
 //                    user.myPrivateEventIDs.add(pE.eventID);
-//                    user.myPrivateEventList.add(pE);
+//                    user.myPrivateEventList.add(pE);*/
                 break;
             case R.id.button2:
                 list.add(one.getText().toString());

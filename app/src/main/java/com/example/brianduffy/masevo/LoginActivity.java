@@ -1,6 +1,5 @@
 package com.example.brianduffy.masevo;
 
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -175,6 +174,7 @@ public class LoginActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
 
+        /*
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -194,7 +194,7 @@ public class LoginActivity extends AppCompatActivity implements
                     handleSignInResult(googleSignInResult);
                 }
             });
-        }
+        }*/
     }
 
     @Override
@@ -226,7 +226,7 @@ public class LoginActivity extends AppCompatActivity implements
             updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
-            updateUI(false);
+            updateUI(true);
         }
     }
     // [END handleSignInResult]
