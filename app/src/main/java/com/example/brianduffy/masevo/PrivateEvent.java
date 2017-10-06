@@ -33,5 +33,10 @@ public class PrivateEvent extends Event {
         this.eventID = (eventName + creatorEmail + startTime + endTime + Double.toString(Math.random())).hashCode();
 
         // We now want to add this PrivateEvent to the database using the proper call
+        ///////////////////////
+        //***DATABASE CALL***//
+        //***DATABASE CALL***//
+        //***DATABASE CALL***//
+        ///////////////////////
     }
 }

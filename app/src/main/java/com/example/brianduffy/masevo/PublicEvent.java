@@ -32,5 +32,10 @@ public class PublicEvent extends Event{
         this.eventID = (eventName + creatorEmail + startTime + endTime + Double.toString(Math.random())).hashCode();
 
         // We now want to add this PublicEvent to the database using the proper call
+        ///////////////////////
+        //***DATABASE CALL***//
+        //***DATABASE CALL***//
+        //***DATABASE CALL***//
+        ///////////////////////
     }
 }
