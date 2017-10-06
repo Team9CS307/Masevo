@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -22,7 +23,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import org.w3c.dom.Text;
+
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity
@@ -32,6 +36,8 @@ public class MainActivity extends AppCompatActivity
     static final int REQUEST_LOCATION= 45;
     MapofEventsFragment mapevents;
     TextView textView;
+    EditText one;
+    ArrayList<String> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         mapevents = MapofEventsFragment.newInstance();
         textView = (TextView)findViewById(R.id.textView);
-
+        one = (EditText)findViewById(R.id.editText);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -231,6 +237,9 @@ public class MainActivity extends AppCompatActivity
 //                    user.myPrivateEventIDs.add(pE.eventID);
 //                    user.myPrivateEventList.add(pE);
                 break;
+            case R.id.button2:
+                list.add(one.getText().toString());
+
 
         }
     }
