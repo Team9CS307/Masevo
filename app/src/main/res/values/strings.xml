@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Masevo</string>
 
+    <!-- Button text -->
+    <string name="btn_logout_from_google">Logout from Google</string>
+    <string name="btn_revoke_access">Revoke Access</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -29,4 +32,79 @@
     <string name="title_activity_my_events">MyEventsActivity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_maps_of_events">MapsOfEventsActivity</string>
+    <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="auth_failed">Authentication Failed</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+    <string name="signed_in">Signed in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="signed_out">Signed out</string>
+    <string name="signed_in_err">"Error: please check logs."</string>
+    <string name="error_null_person">
+        Error: Plus.PeopleApi.getCurrentPerson returned null. Ensure that the Google+ API is
+        enabled for your project, you have a properly configured google-services.json file
+        and that your device has an internet connection.
+    </string>
+    <string name="loading">Loading…</string>
+    <string name="auth_code_fmt">Auth Code: %s</string>
+    <string name="id_token_fmt">ID Token: %s</string>
+
+    <!-- Google Play Services error for Toast -->
+    <string name="play_services_error_fmt">Google Play Services Error: %i</string>
+
+    <!-- Button labels -->
+    <string name="sign_out">Sign Out</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="refresh_token">Get Fresh Token</string>
+
+    <!-- Content Description for images -->
+    <string name="desc_google_icon">Google Logo</string>
+
+    <!-- Rationale for asking for Contacts -->
+    <string name="contacts_permission_rationale">Contacts access is needed in order to retrieve your email address.</string>
+
+    <!-- Activity Names and Descriptions -->
+    <string name="name_sign_in_activity">SignInActivity</string>
+    <string name="desc_sign_in_activity">Signing in, signing out, and revoking access.</string>
+    <string name="desc_sign_in_activity_scopes">Signing in, signing out, and revoking access with Google Drive permissions.</string>
+
+    <string name="label_google_sign_in">Firebase + Google Sign In</string>
+    <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
+
+
+    <string name="label_emailpassword">Email/Password Authentication</string>
+    <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
+
+    <string name="label_phone_auth">Phone Number Authentication</string>
+    <string name="desc_phone_auth">Use a phone number to authenticate with Firebase.</string>
+
+    <string name="label_anonymous_auth">Anonymous Authentication</string>
+    <string name="desc_anonymous_auth">Sign in anonymously and then later upgrade to a full Firebase Auth user.</string>
+
+    <string name="label_custom_auth">Custom Authentication</string>
+    <string name="desc_custom_auth">Use a custom token signed by your own server to authenticate with Firebase.</string>
+
+
+    <string name="hint_user_id">User ID</string>
+    <string name="get_custom_token">Get Token</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="custom_token">Custom Token</string>
+    <string name="token_null">Token: null</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+
+
+    <string name="google_status_fmt">Google User: %s</string>
+    <string name="google_title_text">Google Sign In</string>
+
+
+    <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
+    <string name="emailpassword_title_text">Email and Password</string>
+
+    <string name="phone_title_text">Phone Number</string>
+
+
+    <string name="id_fmt">User ID: %s</string>
+    <string name="email_fmt">Email: %s</string>
 </resources>

@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "68605354319",
+    "firebase_url": "https://masevo-c7001.firebaseio.com",
+    "project_id": "masevo-c7001",
+    "storage_bucket": "masevo-c7001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68605354319:android:444468a23d7bb043",
+        "android_client_info": {
+          "package_name": "com.example.brianduffy.masevo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68605354319-rgbqf2234nt91p5k1n5ubcha15dblmn4.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "68605354319-do34thhur588mfcfjg2rs80qh1pslec2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.brianduffy.masevo",
+            "certificate_hash": "67ae19cc29f5c535b14a9e128999f83a02033eb1"
+          }
+        },
+        {
+          "client_id": "68605354319-lvt7cke0nd8m0le1bdj0p3vhdraknbps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDOSmV7MwT4vCWMKGW7SKvcka4CE1r4mU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68605354319-rgbqf2234nt91p5k1n5ubcha15dblmn4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
