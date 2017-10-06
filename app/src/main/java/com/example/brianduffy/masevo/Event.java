@@ -4,6 +4,7 @@ import android.icu.text.SimpleDateFormat;
 import android.icu.text.StringPrepParseException;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -25,6 +26,8 @@ public abstract class Event {
         // HashSet of attendees for the event
     public HashSet<String> activeList = new HashSet<>();
         // HashSet of all active members of the event
+    public HashMap<String, String> emailToDisplay = new HashMap<>();
+        // HashMap relating a given email to a display name
     public String eventDesc;
         // Description of the event
     //public MapView curEventMapView

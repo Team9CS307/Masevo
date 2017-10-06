@@ -3,6 +3,7 @@ package com.example.brianduffy.masevo;
 import android.icu.text.SimpleDateFormat;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -10,6 +11,7 @@ import java.util.HashSet;
  */
 
 public class PublicEvent extends Event{
+    // Use this to create a PublicEvent
     public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
                        String eventDesc, String eventName, double radius, String creatorEmail)
     {
@@ -25,8 +27,10 @@ public class PublicEvent extends Event{
         this.attendeeList = new HashSet<>();
         this.attendeeList.add(creatorEmail);
         this.activeList = new HashSet<>();
+        this.emailToDisplay = new HashMap<>();
 
-        // Generate eventID?
-        this.eventID = hashCode();
+        this.eventID = (eventName + creatorEmail + startTime + endTime + Double.toString(Math.random())).hashCode();
+
+        // We now want to add this PublicEvent to the database using the proper call
     }
 }
