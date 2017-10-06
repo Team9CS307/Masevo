@@ -26,6 +26,11 @@ public class User {
         eventToJoin.attendeeList.add(emailAddress);
         // Add this event to the users list of Events
         myEventList.put(eventToJoin.eventID, eventToJoin.eventName);
+        ///////////////////////
+        //***DATABASE CALL***//
+        //***DATABASE CALL***//
+        //***DATABASE CALL***//
+        ///////////////////////
     }
 
     // Allows a user to attempt to join a given PrivateEvent
@@ -37,6 +42,11 @@ public class User {
             eventToJoin.attendeeList.add(emailAddress);
             // Add this event to the users list of Events
             myEventList.put(eventToJoin.eventID, eventToJoin.eventName);
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
             return true;
         }
         return false;
@@ -52,6 +62,11 @@ public class User {
             if (!event.attendeeList.contains(userToAddEmail))
             {
                 event.attendeeList.add(userToAddEmail);
+                ///////////////////////
+                //***DATABASE CALL***//
+                //***DATABASE CALL***//
+                //***DATABASE CALL***//
+                ///////////////////////
             }
         }
         // Otherwise we do nothing as the user does not have proper permission to add hosts
@@ -65,6 +80,11 @@ public class User {
             if (!event.attendeeList.contains(userToAddEmail))
             {
                 event.attendeeList.add(userToAddEmail);
+                ///////////////////////
+                //***DATABASE CALL***//
+                //***DATABASE CALL***//
+                //***DATABASE CALL***//
+                ///////////////////////
             }
         }
         // Otherwise we do nothing as the user does not have proper permission to add hosts
@@ -77,6 +97,11 @@ public class User {
         {
             event.startTime = startTime;
             event.endTime = endTime;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
@@ -87,6 +112,11 @@ public class User {
         {
             event.startTime = startTime;
             event.endTime = endTime;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
@@ -97,6 +127,11 @@ public class User {
         if (event.hostList.contains(this.emailAddress))
         {
             event.eventName = name;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
@@ -105,6 +140,11 @@ public class User {
         if (event.hostList.contains(this.emailAddress))
         {
             event.eventName = name;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
@@ -115,6 +155,11 @@ public class User {
         if (event.hostList.contains(this.emailAddress))
         {
             event.eventDesc = desc;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
@@ -123,16 +168,26 @@ public class User {
         if (event.hostList.contains(this.emailAddress))
         {
             event.eventDesc = desc;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
 
-    // Allows use to edit the radius of an event given they are on the host list
+    // Allows user to edit the radius of an event given they are on the host list
     public void editEventRadius(PublicEvent event, double radius)
     {
         if (event.hostList.contains(this.emailAddress))
         {
             event.radius = radius;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
@@ -141,6 +196,40 @@ public class User {
         if (event.hostList.contains(this.emailAddress))
         {
             event.radius = radius;
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
+        }
+        // Otherwise we do nothing as the user does not have proper permission to edit the event
+    }
+
+    // Allows user to edit the location of an event given they are on the host list
+    public void editEventLocation(PublicEvent event, float latitude, float longitude)
+    {
+        if (event.hostList.contains(this.emailAddress))
+        {
+            event.location = new Location(latitude, longitude);
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
+        }
+        // Otherwise we do nothing as the user does not have proper permission to edit the event
+    }
+
+    public void editEventLocation(PrivateEvent event, float latitude, float longitude)
+    {
+        if (event.hostList.contains(this.emailAddress))
+        {
+            event.location = new Location(latitude, longitude);
+            ///////////////////////
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            //***DATABASE CALL***//
+            ///////////////////////
         }
         // Otherwise we do nothing as the user does not have proper permission to edit the event
     }
