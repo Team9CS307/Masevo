@@ -39,8 +39,8 @@ public class Server {
         this.dbName = dbName;
         this.admimName = admimName;
         this.adminPass = adminPass;
-        this.url = String.format("jdbc:sqlserver://%s:1433;" +
-                "database=%s;" +
+        this.url = String.format("jdbc:jtds:sqlserver://%s:1433/" +
+                "%s;" +
                 "user=%s@masevo;" +
                 "password=%s;" +
                 "encrypt=true;" +
