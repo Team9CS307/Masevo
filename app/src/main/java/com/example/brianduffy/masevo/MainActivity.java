@@ -1,5 +1,6 @@
 package com.example.brianduffy.masevo;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -11,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -19,12 +22,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import java.sql.Date;
+import java.util.HashSet;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener,View.OnClickListener {
     private static final String TAG = "MainActivity";
     GoogleApiClient mGoogleApiClient;
-     static final int REQUEST_LOCATION= 45;
+    static final int REQUEST_LOCATION= 45;
     MapofEventsFragment mapevents;
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mapevents = MapofEventsFragment.newInstance();
-
+        textView = (TextView)findViewById(R.id.textView);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,7 +132,12 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 // Here, thisActivity is the current activity
-
+//public void joinEvent(User user, PublicEvent event) {
+//
+//}
+//public void joinEvent(User user, PrivateEvent event) {
+    //   user.joinEvent(event,event.eventID);
+//}
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -141,11 +153,11 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else if (id == R.id.mapofevents) {
 
-                    MapofEventsFragment mapofEventsFragment = new MapofEventsFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, mapofEventsFragment)
-                            .addToBackStack(null)
-                            .commit();
+            MapofEventsFragment mapofEventsFragment = new MapofEventsFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, mapofEventsFragment)
+                    .addToBackStack(null)
+                    .commit();
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -176,8 +188,51 @@ public class MainActivity extends AppCompatActivity
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
+    float log = 0.0f;
+    float lat = 0.0f;
+    User user = new User("bduffy2019@gmail.com",log,lat,new HashSet<Integer>(),new HashSet<Integer>());
+    PrivateEvent privateEvent = new PrivateEvent(new Date(2),new Date(3),lat,log,"event description", "event name", 100.0,user.emailAddress);
 
+    PublicEvent publicEvent = new PublicEvent(new Date(2),new Date(3),lat,log,"event description", "event name", 100.0,user.emailAddress);
+    @Override
+
+    public void onClick(View view) {
+
+
+        switch (view.getId()) {
+            case R.id.join_public_event:
+                textView.setText("");
+                user.joinEvent(publicEvent); // join public event
+                textView.setText(user.emailAddress + "joined public event: ");
+                break;
+            case R.id.join_private_event:
+                textView.setText("");
+                user.joinEvent(privateEvent,privateEvent.eventID);
+                textView.setText(user.emailAddress + "joined private event: ");
+                break;
+            case R.id.create_public_event:
+                textView.setText("");
+                PublicEvent pe = new PublicEvent(new Date(2), new Date(2),lat,log,
+                        "Event Desc","Event name",100.0,"bduffy2019@gmail.com");
+                user.joinEvent(pe);
+                textView.setText("Event Created: " + pe.eventName + " " + pe.eventDesc +
+                        " lat: " + lat + " log:" + log + " created by: " + user.emailAddress);
+
+//                    user.myPublicEventIDs.add(pe.eventID);
+//                    user.myPublicEventList.add(pe);
+                break;
+            case R.id.create_private_event:
+                textView.setText("");
+                PrivateEvent pE = new PrivateEvent(new Date(500),new Date(200),lat,log,
+                        "Private Event desc","private event1",4.0,user.emailAddress);
+                user.joinEvent(pE,pE.eventID);
+                textView.setText("Event Created: " + pE.eventName + " " + pE.eventDesc +
+                        " lat: " + lat + " log:" + log + " created by: " + user.emailAddress);
+//                    user.myPrivateEventIDs.add(pE.eventID);
+//                    user.myPrivateEventList.add(pE);
+                break;
+
+        }
+    }
 
 }
-
-
