@@ -67,6 +67,9 @@ public class User {
     }
 
     // Allows a user to join a given PublicEvent
+    public void joinEvent(int id) {
+
+    }
     public void joinEvent(PublicEvent eventToJoin) {
 
         // Add user to the events list of attendees

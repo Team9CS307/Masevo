@@ -12,6 +12,26 @@ import java.util.HashSet;
 
 public class PublicEvent extends Event{
     // Use this to create a PublicEvent
+    public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
+                       String eventName, String eventDesc, int radius, String creatorEmail) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = new Location(latitude, longitude);
+        this.eventName = eventName;
+        this.eventDesc = eventDesc;
+        this.radius = radius;
+
+        this.hostList = new HashSet<>();
+        this.hostList.add(creatorEmail);
+        this.attendeeList = new HashSet<>();
+        this.attendeeList.add(creatorEmail);
+        this.activeList = new HashSet<>();
+        this.emailToDisplay = new HashMap<>();
+
+        this.eventID = (eventName + creatorEmail + startTime + endTime + Double.toString(Math.random())).hashCode();
+
+    }
+
 
     public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
                        String eventName, String eventDesc, int radius, String creatorEmail,
