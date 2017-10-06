@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -23,6 +25,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity
@@ -33,7 +38,11 @@ public class MainActivity extends AppCompatActivity
     MapofEventsFragment mapevents;
     TextView textView;
     EditText one;
+
+    //Buttons
+
     ArrayList<String> list = new ArrayList<>();
+    Server server;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +58,12 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //Buttons
+        findViewById(R.id.button2).setOnClickListener(this);
+        findViewById(R.id.create_public_event).setOnClickListener(this);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        String hostName = "masevo.database.windows.net";
-        String dbName = "MasevoFields2";
-        String user = "MASEVO_ADMIN";
-        String password = "M4s3v0_4dm1n";
-        server = new Server(hostName, dbName, user, password);
     }
 
     @Override
@@ -209,12 +217,36 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.create_public_event:
                 textView.setText("");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
+                float latitude = 40.4302296f;
+                float longitude = -86.9107470f;
+                String d1 = "2017-10-05 16:00";
+                String d2 = "2017-10-05 17:00";
+                Date startDate = null;
+                Date endDate = null;
+                try {
+                    java.util.Date jud1 = sdf.parse(d1);
+                    java.util.Date jud2 = sdf.parse(d2);
+                    startDate = new Date(jud1.getTime());
+                    endDate = new Date(jud2.getTime());
+                } catch (ParseException pe) {
+                    pe.printStackTrace();
+                }
+                String hostName = "masevo.database.windows.net";
+                String dbName = "MasevoFields2";
+                String user = "MASEVO_ADMIN";
+                String password = "M4s3v0_4dm1n";
+                server = new Server(hostName, dbName, user, password);
+                PublicEvent pe = new PublicEvent(startDate, endDate, latitude,
+                        longitude, list.get(0), list.get(1), Integer.parseInt(list.get(2)),
+                        list.get(3), server);
+                textView.setText("Event Created: " + pe.eventName + " " + pe.eventDesc +
+                        " lat: " + latitude + " log:" +
+                        longitude + " created by: " + list.get(3));
                 /*
                 PublicEvent pe = new PublicEvent(new Date(2), new Date(2),lat,log,
                         "Event Desc","Event name",100.0,"bduffy2019@gmail.com");
                 //user.joinEvent(pe);
-                textView.setText("Event Created: " + pe.eventName + " " + pe.eventDesc +
-                        " lat: " + lat + " log:" + log + " created by: " + user.emailAddress);
 
                 user.myPublicEventIDs.add(pe.eventID);
                 user.myPublicEventList.add(pe);
@@ -233,8 +265,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.button2:
                 list.add(one.getText().toString());
-
-
+                one.setText("");
         }
     }
 

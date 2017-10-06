@@ -1,5 +1,7 @@
 package com.example.brianduffy.masevo;
 
+import android.os.StrictMode;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -108,6 +110,8 @@ public class Server {
         }
         int eventId = hash;
         System.out.println(eventId);*/
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         Connection connection;
         try {
             System.out.println("Connecting to SQL Server ... ");
