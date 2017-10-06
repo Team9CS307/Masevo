@@ -7,19 +7,17 @@ import java.util.HashSet;
  */
 
 public class User {
-    String username;
     String emailAddress;
     HashSet<Integer> myEventList;
-    Region myRegion;
     Location myLocation;
-    HashSet<String> nearbyRegions;
 
-    // Gets and sets a users Location
-    public void getMyLocation()
-    //public Location getMyLocation()
+    public User(String emailAddress, float longitude, float latitude)
     {
-
+        this.emailAddress = emailAddress;
+        this.myLocation = new Location(longitude, latitude);
+        this.myEventList = new HashSet<>();
     }
+
 
     // Allows a user to attempt to join a given Event
     public void joinEvent(PublicEvent eventToJoin)
@@ -31,23 +29,17 @@ public class User {
         myEventList.add(eventToJoin.eventID);
     }
     // We will return true if the user has the correct uniqueID, false otherwise
-    public Boolean joinEvent(PrivateEvent eventToJoin, String uniqueID)
+    public Boolean joinEvent(PrivateEvent eventToJoin, int eventID)
     {
         // Check to see if the given uniqueID matches the events uniqueID
-        if (uniqueID.equals(eventToJoin.uniqueID))
+        if (eventID == eventToJoin.eventID)
         {
             // Add user to the events list of attendees
-            eventToJoin.attendeeList.add(username);
+            eventToJoin.attendeeList.add(emailAddress);
             // Add this event to the users list of Events
             myEventList.add(eventToJoin.eventID);
             return true;
         }
         return false;
-    }
-
-    // Allows a user to create a Public Event
-    public void createEvent()
-    {
-
     }
 }

@@ -2,6 +2,7 @@ package com.example.brianduffy.masevo;
 
 import android.icu.text.SimpleDateFormat;
 
+import java.sql.Date;
 import java.util.HashSet;
 
 /**
@@ -9,12 +10,12 @@ import java.util.HashSet;
  */
 
 public class PublicEvent extends Event{
-    public PublicEvent(SimpleDateFormat startTime, SimpleDateFormat endTime, Location location,
+    public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
                        String eventDesc, String eventName, double radius, String creatorEmail)
     {
         this.startTime = startTime;
         this.endTime = endTime;
-        this.location = location;
+        this.location = new Location(latitude, longitude);
         this.eventDesc = eventDesc;
         this.eventName = eventName;
         this.radius = radius;
@@ -26,6 +27,6 @@ public class PublicEvent extends Event{
         this.activeList = new HashSet<>();
 
         // Generate eventID?
-        //this.eventID = hashCode(location.);
+        this.eventID = hashCode();
     }
 }

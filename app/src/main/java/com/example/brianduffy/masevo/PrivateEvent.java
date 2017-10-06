@@ -9,5 +9,4 @@ import java.util.HashSet;
  */
 
 public class PrivateEvent extends Event {
-    public String uniqueID;
 }

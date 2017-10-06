@@ -3,6 +3,7 @@ package com.example.brianduffy.masevo;
 import android.icu.text.SimpleDateFormat;
 import android.icu.text.StringPrepParseException;
 
+import java.sql.Date;
 import java.util.HashSet;
 
 /**
@@ -12,9 +13,9 @@ import java.util.HashSet;
 public abstract class Event {
     //ChatRoom chatRoom = new ChatRoom();
     // Need to implement ChatRoom
-    public SimpleDateFormat startTime;
+    public Date startTime;
         // Start time of the event
-    public SimpleDateFormat endTime;
+    public Date endTime;
         // End time of the event
     public Location location;
         // Location of the event
