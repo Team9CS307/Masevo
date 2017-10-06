@@ -5,4 +5,11 @@ package com.example.brianduffy.masevo;
  */
 
 public class Location {
+    float latitude;
+    float longitude;
+
+    public Location(float latitude)
+    {
+
+    }
 }
