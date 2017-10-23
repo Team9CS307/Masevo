@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,23 +23,26 @@ import java.util.HashSet;
 
 public class MyEventsFragment extends Fragment implements View.OnClickListener {
   //  User user = new User("brian",0f,0f,new HashSet<Integer>(),new HashSet<Integer>());
-    ArrayList<String> mockeventlist = new ArrayList<>();
+    ArrayList<Event> mockeventlist = new ArrayList<>();
     ListView listview;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mockeventlist.add("event1");
-        mockeventlist.add("event2");
-        String[] strings = new String[2];
-            strings[0] = "event1";
-            strings[1] = "event2";
+        //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
+        float lat = 0f;
+        float lon = 1f;
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 1","event description",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 2","event description 2",500,"String email"));
+
         //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
         ListView lv = (ListView) v.findViewById(R.id.listview);
 
-        System.out.println(Arrays.toString(mockeventlist.toArray()));
-        lv.setAdapter(new ArrayAdapter<String>(this.getContext(), R.layout.row,R.id.text,strings));
+        //System.out.println(Arrays.toString(mockeventlist.toArray()));
+        lv.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
         /* Define Your Functionality Here
            Find any view  => v.findViewById()
           Specifying Application Context in Fragment => getActivity() */

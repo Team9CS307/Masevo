@@ -4,20 +4,27 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Brian Duffy on 10/22/2017.
  */
 
-class ListAdapter extends BaseAdapter {
+class ListAdapter extends ArrayAdapter<Event> {
 
     Context context;
-    String[] data;
+    ArrayList<Event> data;
     private static LayoutInflater inflater = null;
 
-    public ListAdapter(Context context, String[] data) {
+    public ListAdapter(Context context, ArrayList<Event> data) {
+        super(context, R.layout.fragment_my_events,data );
+
+//        Event[] s = (Event[])data.toArray();
+//        String g = s[0].eventName;
         // TODO Auto-generated constructor stub
         this.context = context;
         this.data = data;
@@ -28,13 +35,13 @@ class ListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return data.length;
+        return data.size();
     }
 
     @Override
-    public Object getItem(int position) {
+    public Event getItem(int position) {
         // TODO Auto-generated method stub
-        return data[position];
+        return data.get(position);
     }
 
     @Override
@@ -46,11 +53,19 @@ class ListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        View vi = convertView;
-        if (vi == null)
-            vi = inflater.inflate(R.layout.row, null);
-        TextView text = (TextView) vi.findViewById(R.id.text);
-        text.setText(data[position]);
-        return vi;
+        //View vi = convertView;
+        Event e = getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.row, parent, false);
+        }
+        // Lookup view for data population
+        TextView tvName = (TextView) convertView.findViewById(R.id.header);
+        TextView tvHome = (TextView) convertView.findViewById(R.id.text);
+        // Populate the data into the template view using the data object
+        tvName.setText(e.eventName);
+        tvHome.setText(e.eventDesc);
+        // Return the completed view to render on screen
+        return convertView;
     }
 }
