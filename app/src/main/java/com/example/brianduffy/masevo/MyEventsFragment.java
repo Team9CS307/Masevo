@@ -1,30 +1,26 @@
 package com.example.brianduffy.masevo;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 /**
  * Created by Brian on 9/18/2017.
  */
 
-public class MyEventsFragment extends Fragment implements View.OnClickListener {
+public class MyEventsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener{
   //  User user = new User("brian",0f,0f,new HashSet<Integer>(),new HashSet<Integer>());
     ArrayList<Event> mockeventlist = new ArrayList<>();
     ListView listview;
+    SwipeRefreshLayout swipe;
 
     @Nullable
     @Override
@@ -57,14 +53,15 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener {
 
         //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
-        ListView lv = (ListView) v.findViewById(R.id.listview);
+         listview = (ListView) v.findViewById(R.id.listview);
 
         //System.out.println(Arrays.toString(mockeventlist.toArray()));
-        lv.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
+        listview.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
         /* Define Your Functionality Here
            Find any view  => v.findViewById()
           Specifying Application Context in Fragment => getActivity() */
-
+        swipe = v.findViewById(R.id.swiperef);
+        swipe.setOnRefreshListener(this);
         return v;
     }
 
@@ -78,5 +75,16 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         //TODO find way to generalize potentially infinite buttons that can be pressed
+    }
+    public void updateList() {
+        mockeventlist.remove(1);
+        listview.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
+        swipe.setRefreshing(false);
+
+
+    }
+    @Override
+    public void onRefresh() {
+        updateList();
     }
 }
