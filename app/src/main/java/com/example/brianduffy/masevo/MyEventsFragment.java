@@ -35,7 +35,25 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener {
         mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
                 "Public Event 1","event description",500,"String email"));
         mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 2","event description 2",500,"String email"));
+                "Public Event 2","event description",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 3","event description",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 4","event description",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 5","event description",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 6","event description",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 7","event description",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
 
         //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
