@@ -1,5 +1,6 @@
 package com.example.brianduffy.masevo;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -173,16 +174,16 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    private void startLocationUpdates() {
+    private void startLocationUpdates() throws SecurityException{
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(this.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                    @SuppressLint("MissingPermission")
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                         //Log.i(TAG, "All location settings are satisfied.");
 
                         //noinspection MissingPermission
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                                mLocationCallback, Looper.myLooper());
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,mLocationCallback, Looper.myLooper());
 
                        // updateUI();
                     }
@@ -309,7 +310,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(final GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) throws SecurityException {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);

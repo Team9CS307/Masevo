@@ -3,6 +3,7 @@ package com.example.brianduffy.masevo;
 import android.icu.text.SimpleDateFormat;
 import android.icu.text.StringPrepParseException;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +12,7 @@ import java.util.HashSet;
  * Created by Brian Duffy on 9/14/2017.
  */
 
-public abstract class Event {
+public abstract class Event implements Serializable{
     //ChatRoom chatRoom = new ChatRoom();
     // Need to implement ChatRoom
     public Date startTime;
