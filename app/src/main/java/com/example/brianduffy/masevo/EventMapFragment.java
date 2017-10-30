@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.*;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -88,16 +89,51 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode,resultCode,data);
+        Log.d("onActivityResult()", Integer.toString(resultCode));
+
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode)
+        {
+            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                switch (resultCode)
+                {
+                    case Activity.RESULT_OK:
+                    {
+                        // All required changes were successfully made
+                        Toast.makeText(getActivity(), "Location enabled by user!", Toast.LENGTH_LONG).show();
+
+                        break;
+                    }
+                    case Activity.RESULT_CANCELED:
+                    {
+                        // The user was asked to change settings, but chose not to
+                        Toast.makeText(getActivity(), "Location not enabled, user cancelled.", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+                break;
+        }
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+
         // Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.
-        LatLng eventloc = new LatLng(-33.852, 151.211);
+        LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
         googleMap.addMarker(new MarkerOptions().position(eventloc)
-                .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(eventloc));
+                .title(event.eventName));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(eventloc, 15);
+        googleMap.moveCamera(cameraUpdate);
     }
 }
 
