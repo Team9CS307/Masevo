@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,10 +36,11 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     GoogleApiClient mGoogleApiClient;
     static final int REQUEST_LOCATION= 45;
+    ArrayList<Event> events = new ArrayList<>();
     MapofEventsFragment mapevents;
 //    TextView textView;
 //    EditText one;
-    User user;
+    static User user;
     //Buttons
 
 //    ArrayList<String> list = new ArrayList<>();
@@ -46,6 +48,41 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
+
+        float lat = 0f;
+        float lon = 1f;
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 1","event description",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 2","event description",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 3","event description",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 4","event description",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 5","event description",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 6","event description",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 7","event description",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+
+        user.nearby.add(new PublicEvent(new Date(3),new Date(500),40.426829f, -86.911904f,
+                "Public Event 1","event description",500,"String email"));
+        user.nearby.add(new PublicEvent(new Date(3),new Date(500),40.426208f, -86.915455f,
+                "Public Event 2","event description",500,"String email"));
+        user.nearby.add(new PublicEvent(new Date(3),new Date(500),40.428782f,-86.913517f,
+                "Public Event 3","event description",500,"String email"));
+        //TODO get data from databse call to populate events variable
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,7 +97,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-         user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
         MainActivityFragment myEventsFragment = new MainActivityFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, myEventsFragment)
@@ -156,6 +192,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.home) {
+
             MainActivityFragment mainActivityFragment = new MainActivityFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, mainActivityFragment)
@@ -174,12 +211,14 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.myevents) {
+
             MyEventsFragment myEventsFragment = new MyEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, myEventsFragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nearbyevents) {
+
             NearbyEventsFragment nearbyEventsFragment = new NearbyEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, nearbyEventsFragment)

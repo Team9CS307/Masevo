@@ -28,11 +28,13 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
     ArrayList<String> list = new ArrayList<>();
     Server server;
     User user;
+    ArrayList<Event> testList = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_main_activity,container,false);
+
 
 
         /* Define Your Functionality Here
@@ -53,12 +55,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         getView().findViewById(R.id.join_public_event).setOnClickListener(this);
         user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());        // or  (ImageView) view.findViewById(R.id.foo);
     }
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-
-    }
 
     @Override
     public void onClick(View view) {

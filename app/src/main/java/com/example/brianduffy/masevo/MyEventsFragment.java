@@ -29,36 +29,39 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     ListView listview;
     SwipeRefreshLayout swipe;
     public static Event event;
-
+    ArrayList<Event> testList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
-        float lat = 0f;
-        float lon = 1f;
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 1","event description",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 2","event description",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 3","event description",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 4","event description",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 5","event description",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 6","event description",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 7","event description",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+
+        testList = MainActivity.user.events; //TODO TODO use this to populate stuff
+
+//        float lat = 0f;
+//        float lon = 1f;
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 1","event description",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 2","event description",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 3","event description",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 4","event description",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 5","event description",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 6","event description",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 7","event description",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
+//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
 
         //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
@@ -66,11 +69,11 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
 
         //System.out.println(Arrays.toString(mockeventlist.toArray()));
 
-        listview.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
+        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.events));
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
-                event = mockeventlist.get(itemPosition);
+                event = MainActivity.user.events.get(itemPosition);
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 EventMapFragment mapFragment = new EventMapFragment();
@@ -100,6 +103,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
         return v;
     }
 
+
 //    @Override
 //    public void onCreate(@Nullable Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -121,13 +125,16 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
         switch(item.getItemId()) {
 
             case R.id.leave:
-                mockeventlist.remove(((AdapterView.AdapterContextMenuInfo)info).position);
+                MainActivity.user.nearby.add(MainActivity.user.events.
+                        get(((AdapterView.AdapterContextMenuInfo)info).position));
+
+                MainActivity.user.events.remove(((AdapterView.AdapterContextMenuInfo)info).position);
                 updateList();
                 return true;
             case R.id.delete:
-                mockeventlist.remove(((AdapterView.AdapterContextMenuInfo)info).position);
+                MainActivity.user.events.remove(((AdapterView.AdapterContextMenuInfo)info).position);
                 updateList();
-                //TODO remove event from database
+                //TODO remove event from database **********************
 
 
                 return true;
@@ -151,26 +158,13 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
         ft.replace(android.R.id.content, mapFragment);
         ft.addToBackStack(null);
         ft.commit();
-//        ArticleFragment newFragment = new ArticleFragment();
-//        Bundle args = new Bundle();
-//        args.putInt(ArticleFragment.ARG_POSITION, position);
-//        newFragment.setArguments(args);
 //
-//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//
-//        // Replace whatever is in the fragment_container view with this fragment,
-//        // and add the transaction to the back stack so the user can navigate back
-//        transaction.replace(R.id.fragment_container, newFragment);
-//        transaction.addToBackStack(null);
-//
-//        // Commit the transaction
-//        transaction.commit();
         //TODO depending on what event is chosen, set static variable event to the chosen list item.
         // TODO then commit a new fragment transaction. Inside new fragment, get location and name of event
     }
     public void updateList() {
         //mockeventlist.remove(1);
-        listview.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
+        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.events));
         swipe.setRefreshing(false);
 
 

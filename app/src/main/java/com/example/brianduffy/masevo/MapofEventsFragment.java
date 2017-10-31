@@ -56,6 +56,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     private User user;
     private LocationRequest mLocationRequest;
     private boolean mRequestingLocationUpdates;
+    ArrayList<Event> testList = new ArrayList<>();
     /**
      * Stores the types of location services the client is interested in using. Used for checking
      * settings to determine if the device has optimal location settings.
@@ -122,17 +123,11 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
     public void markEvents(GoogleMap googleMap) {
         //TODO create a list of events from database and add markers to those locations
-        ArrayList<Event> eventsNearMe = new ArrayList<>();
-        eventsNearMe.add(new PublicEvent(new Date(3),new Date(500),40.426829f, -86.911904f,
-                "Public Event 1","event description",500,"String email"));
-        eventsNearMe.add(new PublicEvent(new Date(3),new Date(500),40.426208f, -86.915455f,
-                "Public Event 2","event description",500,"String email"));
-        eventsNearMe.add(new PublicEvent(new Date(3),new Date(500),40.428782f,-86.913517f,
-                "Public Event 3","event description",500,"String email"));
-        for (int i = 0; i < eventsNearMe.size(); i++) {
-            LatLng eventloc = new LatLng(eventsNearMe.get(i).location.latitude, eventsNearMe.get(i).location.longitude);
+        for (int i = 0; i < MainActivity.user.nearby.size(); i++) {
+            LatLng eventloc = new LatLng(MainActivity.user.nearby.get(i).location.latitude,
+                    MainActivity.user.nearby.get(i).location.longitude);
             googleMap.addMarker(new MarkerOptions().position(eventloc)
-                    .title(eventsNearMe.get(i).eventName));
+                    .title(MainActivity.user.nearby.get(i).eventName));
         }
     }
     @Override
@@ -240,7 +235,6 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     }
     private void startUI() {
         if (ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -270,7 +264,6 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     private void updateUI() {
 
         if (ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -318,7 +311,6 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     private void buildLocationSettingsRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
     }
 
     /**

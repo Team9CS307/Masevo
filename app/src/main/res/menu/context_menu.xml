@@ -5,10 +5,10 @@
 
     <item android:id="@+id/leave"
         android:icon="@android:drawable/ic_menu_edit"
-        android:title="leave" />
+        android:title="Leave" />
 
     <item android:id="@+id/delete"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="delete" />
+        android:title="Delete" />
 
 </menu>
