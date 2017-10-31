@@ -5,11 +5,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -60,6 +65,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
          listview = (ListView) v.findViewById(R.id.listview);
 
         //System.out.println(Arrays.toString(mockeventlist.toArray()));
+
         listview.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
@@ -84,6 +90,8 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
 
             }
         });
+        registerForContextMenu(listview);
+
         /* Define Your Functionality Here
            Find any view  => v.findViewById()
           Specifying Application Context in Fragment => getActivity() */
@@ -98,7 +106,35 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
 //
 //        //TODO
 //    }
+@Override
+public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+    if (v.getId()==R.id.listview) {
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+}
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+
+            case R.id.leave:
+                mockeventlist.remove(((AdapterView.AdapterContextMenuInfo)info).position);
+                updateList();
+                return true;
+            case R.id.delete:
+                mockeventlist.remove(((AdapterView.AdapterContextMenuInfo)info).position);
+                updateList();
+                //TODO remove event from database
+
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
     @Override
     public void onClick(View v) {
         //TODO find way to generalize potentially infinite buttons that can be pressed
@@ -133,7 +169,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
         // TODO then commit a new fragment transaction. Inside new fragment, get location and name of event
     }
     public void updateList() {
-        mockeventlist.remove(1);
+        //mockeventlist.remove(1);
         listview.setAdapter(new ListAdapter(this.getContext(), mockeventlist));
         swipe.setRefreshing(false);
 

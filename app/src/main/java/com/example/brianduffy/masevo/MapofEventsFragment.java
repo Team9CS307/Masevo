@@ -37,8 +37,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.sql.Date;
+import java.util.ArrayList;
 
 public class MapofEventsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener {
     private static final int REQUEST_CHECK_SETTINGS = 2;
@@ -112,10 +116,25 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
             startLocationUpdates();
 
+
     }
 
 
-
+    public void markEvents(GoogleMap googleMap) {
+        //TODO create a list of events from database and add markers to those locations
+        ArrayList<Event> eventsNearMe = new ArrayList<>();
+        eventsNearMe.add(new PublicEvent(new Date(3),new Date(500),40.426829f, -86.911904f,
+                "Public Event 1","event description",500,"String email"));
+        eventsNearMe.add(new PublicEvent(new Date(3),new Date(500),40.426208f, -86.915455f,
+                "Public Event 2","event description",500,"String email"));
+        eventsNearMe.add(new PublicEvent(new Date(3),new Date(500),40.428782f,-86.913517f,
+                "Public Event 3","event description",500,"String email"));
+        for (int i = 0; i < eventsNearMe.size(); i++) {
+            LatLng eventloc = new LatLng(eventsNearMe.get(i).location.latitude, eventsNearMe.get(i).location.longitude);
+            googleMap.addMarker(new MarkerOptions().position(eventloc)
+                    .title(eventsNearMe.get(i).eventName));
+        }
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -316,7 +335,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
         mMap.getUiSettings().setZoomControlsEnabled(true);
         //mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-
+        markEvents(mMap);
         if (ActivityCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling  **************************** NEED TO ACCOUNT FOR THIS ***************************
             //    ActivityCompat#requestPermissions
