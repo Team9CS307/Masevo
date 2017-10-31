@@ -67,9 +67,6 @@ public class User {
     }
 
     // Allows a user to join a given PublicEvent
-    public void joinEvent(int id) {
-
-    }
     public void joinEvent(PublicEvent eventToJoin) {
 
         // Add user to the events list of attendees
@@ -78,6 +75,7 @@ public class User {
         myPublicEventIDs.add(eventToJoin.eventID);
         // Add users name/displayname to Map, by default display name will be email
         eventToJoin.emailToDisplay.put(this.emailAddress, this.emailAddress);
+        myPublicEventList.add(eventToJoin);
         ///////////////////////
         //***DATABASE CALL***//
         //***DATABASE CALL***//
@@ -96,6 +94,7 @@ public class User {
             myPrivateEventIDs.add(eventToJoin.eventID);
             // Add users name/displayname to Map, by defualt display name will be email
             eventToJoin.emailToDisplay.put(this.emailAddress, this.emailAddress);
+            myPrivateEventList.add(eventToJoin);
             ///////////////////////
             //***DATABASE CALL***//
             //***DATABASE CALL***//
