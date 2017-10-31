@@ -19,6 +19,7 @@ public class User {
     Location myLocation;
     ArrayList<Event> events = new ArrayList<>();
     ArrayList<Event> nearby = new ArrayList<>();
+    ArrayList<Integer> myIDs = new ArrayList<>();
 
     // We decided that Brian would store the ID of events that users are subscribed to in a .txt
     // locally. So I am going to assume here that I will be passed 2 HashSest of ints containing IDs

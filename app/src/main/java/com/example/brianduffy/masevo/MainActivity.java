@@ -25,6 +25,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,14 +46,30 @@ public class MainActivity extends AppCompatActivity
 //    TextView textView;
 //    EditText one;
     static User user;
-    //Buttons
 
+    //Buttons
+    final String save_loc = "save.txt";
+    String text = "";
 //    ArrayList<String> list = new ArrayList<>();
 //    Server server;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
+
+        File file = new File(getFilesDir(), save_loc);
+        try {
+            BufferedReader fr = new BufferedReader(new FileReader(file));
+            text = fr.readLine();
+            String [] g = text.split(",");
+            for (int i = 0; i < g.length; i++) {
+                user.myIDs.add(Integer.parseInt(g[i]));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
 
         float lat = 0f;
         float lon = 1f;
@@ -242,4 +263,40 @@ public class MainActivity extends AppCompatActivity
 //
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        File f = new File(getFilesDir(), save_loc);
+        try {
+            PrintWriter pw = new PrintWriter(f);
+            for (int i = 0; i < user.events.size(); i++) {
+                pw.write(user.events.get(i).eventID + ",");
+            }
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        File f = new File(save_loc);
+        try {
+            PrintWriter pw = new PrintWriter(f);
+            for (int i = 0; i < user.events.size(); i++) {
+            pw.write(user.events.get(i).eventID + ",");
+            }
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 }
