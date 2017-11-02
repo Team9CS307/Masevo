@@ -386,7 +386,7 @@ public class ServerTest {
     //TEST 15 - Verify latitude, longitude, and radius are float
 
     @Test
-    public void test15_VerifyFloatValues() throws Exception {
+    public void test15_VerifyFloatValuesPost() throws Exception {
         ServerTest st15 = new ServerTest();
         double maxDouble = Double.MAX_VALUE;
         st15.testParams = "Longitude=" + maxDouble + "&Latitude=" + maxDouble +"&Radius=" + maxDouble;
@@ -398,6 +398,26 @@ public class ServerTest {
         int postResponse = st15.masevoWebsite.getResponseCode();
 
         String returnedHtml = getHtmlString(st15); //kept this for debugging
+        System.out.println(returnedHtml);
+
+        Assert.assertEquals(400,postResponse);
+    }
+
+    //TEST 16 - Verify correct input characters
+    //$-_.!*'(),"
+    @Test
+    public void test16_VerifyInputCharsPost() throws Exception {
+        ServerTest st16 = new ServerTest();
+        String invalidCharacters = "@#%^&=\\|[]<>?/`~:;{}";
+        st16.testParams = "Name="+invalidCharacters;
+        st16.masevoWebsite.setDoOutput(true);
+        DataOutputStream dos = new DataOutputStream(st16.masevoWebsite.getOutputStream());
+        dos.writeBytes(st16.testParams);
+        dos.flush();
+        dos.close();
+        int postResponse = st16.masevoWebsite.getResponseCode();
+
+        String returnedHtml = getHtmlString(st16); //kept this for debugging
         System.out.println(returnedHtml);
 
         Assert.assertEquals(400,postResponse);
