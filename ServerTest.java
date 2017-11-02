@@ -1,11 +1,13 @@
-import org.jsoup.Jsoup;
+//import org.jsoup.Jsoup;
 import org.junit.Assert;
 import org.junit.Test;
-import org.jsoup.nodes.Document;
+//import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.io.DataOutputStream;
 import java.net.URL;
@@ -14,7 +16,7 @@ import java.net.URL;
 * Masevo Server Test Cases
 *
 * @author Vikram Pasumarti, vpasuma@purdue.edu
-* @version 31 October 2017
+* @version 2 November 2017
 *
 */
 
@@ -65,7 +67,7 @@ public class ServerTest {
 
 
 
-//    -------------------------------------------------------------------------
+    //    -------------------------------------------------------------------------
 //    METHOD TO GET HTML TO BE PARSED, ORIGINALLY PLANNED TO BE USED WITH JSOUP
 //    NO LONGER NEEDED BECAUSE COMPARING HTML RESPONSES
 //    Currently being used for debugging
@@ -186,7 +188,7 @@ public class ServerTest {
     @Test
     public void test5_NameLengthPost() throws Exception {
         ServerTest st5 = new ServerTest();
-        st5.testParams = "Name=ThisNameisLonger Than24Characters";
+        st5.testParams = "Name=ThisNameisLonger+Than24Characters";
         st5.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st5.masevoWebsite.getOutputStream());
         dos.writeBytes(st5.testParams);
@@ -227,7 +229,7 @@ public class ServerTest {
     @Test
     public void test7_HostLengthPost() throws Exception {
         ServerTest st7 = new ServerTest();
-        st7.testParams = "Host=ThisHostisLonger Than64CharactersThisHostisLonger Than64Characters";
+        st7.testParams = "Host=ThisHostisLonger+Than64CharactersThisHostisLonger+Than64Characters";
         st7.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st7.masevoWebsite.getOutputStream());
         dos.writeBytes(st7.testParams);
@@ -246,7 +248,7 @@ public class ServerTest {
     @Test
     public void test8_CorrectNameLengthPost() throws Exception {
         ServerTest st8 = new ServerTest();
-        st8.testParams = "Name=This NameIs 24Characters";
+        st8.testParams = "Name=This+NameIs+24Characters";
         st8.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st8.masevoWebsite.getOutputStream());
         dos.writeBytes(st8.testParams);
@@ -287,7 +289,7 @@ public class ServerTest {
     @Test
     public void test10_CorrectHostLengthPost() throws Exception {
         ServerTest st10 = new ServerTest();
-        st10.testParams = "Host=ThisHostIs 64Characters ThisHostIs 64Characters ThisHostIs64Char";
+        st10.testParams = "Host=ThisHostIs+64Characters+ThisHostIs+64Characters+ThisHostIs64Char";
         st10.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st10.masevoWebsite.getOutputStream());
         dos.writeBytes(st10.testParams);
@@ -326,7 +328,7 @@ public class ServerTest {
     @Test
     public void test12_VerifyIDintTypeNotANumberPost() throws Exception {
         ServerTest st12 = new ServerTest();
-        String IDnum = "this is not a number";
+        String IDnum = "this+is+not+a+number";
         st12.testParams = "ID="+IDnum;
         st12.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st12.masevoWebsite.getOutputStream());
@@ -336,6 +338,66 @@ public class ServerTest {
         int postResponse = st12.masevoWebsite.getResponseCode();
 
         String returnedHtml = getHtmlString(st12); //kept this for debugging
+        System.out.println(returnedHtml);
+
+        Assert.assertEquals(400,postResponse);
+    }
+
+    //TEST 13 - Verify start time is a long
+
+    @Test
+    public void test13_VerifyLongStartTimePost() throws Exception {
+        ServerTest st13 = new ServerTest();
+        BigInteger notALong = new BigInteger("9223372036854775808");
+        st13.testParams = "StartTime=" + notALong;
+        st13.masevoWebsite.setDoOutput(true);
+        DataOutputStream dos = new DataOutputStream(st13.masevoWebsite.getOutputStream());
+        dos.writeBytes(st13.testParams);
+        dos.flush();
+        dos.close();
+        int postResponse = st13.masevoWebsite.getResponseCode();
+
+        String returnedHtml = getHtmlString(st13); //kept this for debugging
+        System.out.println(returnedHtml);
+
+        Assert.assertEquals(400,postResponse);
+    }
+
+    //TEST 14 - Verify end time is a long
+
+    @Test
+    public void test14_VerifyLongEndTimePost() throws Exception {
+        ServerTest st14 = new ServerTest();
+        BigInteger notALong = new BigInteger("9223372036854775808");
+        st14.testParams = "EndTime=" + notALong;
+        st14.masevoWebsite.setDoOutput(true);
+        DataOutputStream dos = new DataOutputStream(st14.masevoWebsite.getOutputStream());
+        dos.writeBytes(st14.testParams);
+        dos.flush();
+        dos.close();
+        int postResponse = st14.masevoWebsite.getResponseCode();
+
+        String returnedHtml = getHtmlString(st14); //kept this for debugging
+        System.out.println(returnedHtml);
+
+        Assert.assertEquals(400,postResponse);
+    }
+
+    //TEST 15 - Verify latitude, longitude, and radius are float
+
+    @Test
+    public void test15_VerifyFloatValues() throws Exception {
+        ServerTest st15 = new ServerTest();
+        double maxDouble = Double.MAX_VALUE;
+        st15.testParams = "Longitude=" + maxDouble + "&Latitude=" + maxDouble +"&Radius=" + maxDouble;
+        st15.masevoWebsite.setDoOutput(true);
+        DataOutputStream dos = new DataOutputStream(st15.masevoWebsite.getOutputStream());
+        dos.writeBytes(st15.testParams);
+        dos.flush();
+        dos.close();
+        int postResponse = st15.masevoWebsite.getResponseCode();
+
+        String returnedHtml = getHtmlString(st15); //kept this for debugging
         System.out.println(returnedHtml);
 
         Assert.assertEquals(400,postResponse);
