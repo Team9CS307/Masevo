@@ -1,1 +1,1 @@
-<img src="MasevoQA.png" />
+<img align="center" src="MasevoQA.png" />
