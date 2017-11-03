@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file("release.keystore")
+            storePassword "butts"
+            keyAlias "butts"
+            keyPassword "butts"
+        }
+    }
+
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
@@ -17,6 +26,8 @@ android {
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
