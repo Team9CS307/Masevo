@@ -2,6 +2,7 @@ package com.example.brianduffy.masevo;
 
 import android.icu.text.SimpleDateFormat;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +11,7 @@ import java.util.HashSet;
  * Created by Gabriel on 9/24/2017.
  */
 
-public class PublicEvent extends Event{
+public class PublicEvent extends Event implements Serializable{
     // Use this to create a PublicEvent
     public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
                        String eventName, String eventDesc, int radius, String creatorEmail) {

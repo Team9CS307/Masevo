@@ -47,6 +47,12 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         return fragment;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -311,6 +311,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     private void buildLocationSettingsRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
     }
 
     /**

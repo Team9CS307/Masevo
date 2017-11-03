@@ -1,34 +1,44 @@
 package com.example.brianduffy.masevo;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import java.sql.Date;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 
 import static android.R.id.list;
+import static com.example.brianduffy.masevo.R.id.icon;
 import static com.example.brianduffy.masevo.R.id.textView;
 
 /**
  * Created by Brian on 9/18/2017.
  */
 
-public class MainActivityFragment extends Fragment implements View.OnClickListener{
-    TextView textView;
+public class MainActivityFragment extends Fragment implements View.OnClickListener {
+    static TextView textView;
     EditText one;
     ArrayList<String> list = new ArrayList<>();
     Server server;
     User user;
-    ArrayList<Event> testList = new ArrayList<>();
+    ArrayList<String> input = new ArrayList<>();
+    int count = 0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,106 +55,117 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        textView = (TextView) getView().findViewById(R.id.textView);
+       textView = (TextView) getView().findViewById(R.id.textView);
         one = (EditText)getView().findViewById(R.id.editText);
 
-        getView().findViewById(R.id.button2).setOnClickListener(this);
         getView().findViewById(R.id.create_public_event).setOnClickListener(this);
         getView().findViewById(R.id.create_private_event).setOnClickListener(this);
-        getView().findViewById(R.id.join_private_event).setOnClickListener(this);
-        getView().findViewById(R.id.join_public_event).setOnClickListener(this);
-        user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());        // or  (ImageView) view.findViewById(R.id.foo);
+        getView().findViewById(R.id.enter).setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View view) {
-        float lat = 40.4302296f;
-        float lon = -86.9107470f;
+
+        SimpleDateFormat sdf;
         switch (view.getId()) {
-            case R.id.join_public_event:
-                textView.setText("");
-                int eventID = Integer.parseInt(list.get(0));
-                //user.joinEvent(eventID);
-                user.joinEvent(new PublicEvent(new Date(3), new Date(500), lat, lon,
-                        "Public Event test", "event description", 500, user.emailAddress));
 
-                textView.setText(user.emailAddress + "joined public event ");
-                list.clear();
-                break;
-            case R.id.join_private_event:
-                textView.setText("");
-                user.joinEvent(new PublicEvent(new Date(3), new Date(500), lat, lon,
-                        "Private Event test", "event description", 500, user.emailAddress));
-
-                textView.setText(user.emailAddress + "joined public event ");
-                list.clear();
-                break;
             case R.id.create_public_event:
                 textView.setText("");
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
-                float latitude = 40.4302296f;
-                float longitude = -86.9107470f;
-                String d1 = "2017-10-05 16:00";
-                String d2 = "2017-10-05 17:00";
-                Date startDate = null;
-                Date endDate = null;
-                try {
-                    java.util.Date jud1 = sdf.parse(d1);
-                    java.util.Date jud2 = sdf.parse(d2);
-                    startDate = new Date(jud1.getTime());
-                    endDate = new Date(jud2.getTime());
-                } catch (ParseException pe) {
-                    pe.printStackTrace();
-                }
-                String hostName = "masevo.database.windows.net";
-                String dbName = "MasevoFields2";
-                String user = "MASEVO_ADMIN";
-                String password = "M4s3v0_4dm1n";
-                server = new Server(hostName, dbName, user, password);
-                PublicEvent pe = new PublicEvent(startDate, endDate, latitude,
-                        longitude, list.get(0), list.get(1), Integer.parseInt(list.get(2)),
-                        list.get(3), server);
-                textView.setText("Event Created: " + pe.eventName + " " + pe.eventDesc +
-                        " lat: " + latitude + " log:" +
-                        longitude + " created by: " + list.get(3));
+                 sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 
-                list.clear();
                 break;
             case R.id.create_private_event:
                 textView.setText("");
                 sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
-                latitude = 40.4302296f;
-                longitude = -86.9107470f;
-                d1 = "2017-10-05 16:00";
-                d2 = "2017-10-05 17:00";
-                startDate = null;
-                endDate = null;
-                try {
-                    java.util.Date jud1 = sdf.parse(d1);
-                    java.util.Date jud2 = sdf.parse(d2);
-                    startDate = new Date(jud1.getTime());
-                    endDate = new Date(jud2.getTime());
-                } catch (ParseException pee) {
-                    pee.printStackTrace();
-                }
-                hostName = "masevo.database.windows.net";
-                dbName = "MasevoFields2";
-                user = "MASEVO_ADMIN";
-                password = "M4s3v0_4dm1n";
-                server = new Server(hostName, dbName, user, password);
-                PublicEvent pee = new PublicEvent(startDate, endDate, latitude,
-                        longitude, list.get(0), list.get(1), Integer.parseInt(list.get(2)),
-                        list.get(3), server);
-                textView.setText("Event Created: " + pee.eventName + " " + pee.eventDesc +
-                        " lat: " + latitude + " log:" +
-                        longitude + " created by: " + list.get(3));
 
                 list.clear();
                 break;
-            case R.id.button2:
-                list.add(one.getText().toString());
-                one.setText("");
+            case R.id.enter:
+                switch (count) {
+                    case 0:
+                        count++;
+                        input.add(one.getText().toString());
+                        textView.setText("Enter the description of the event.");
+                        one.setText("");
+
+                        break;
+                    case 1:
+                        count++;
+                        input.add(one.getText().toString());
+                        textView.setText("Enter the start time\nformat: yyyy-mm-dd hh:mm");
+                        one.setText("");
+                        one.setInputType(InputType.TYPE_CLASS_DATETIME);
+
+
+
+                        break;
+                    case 2:
+                        count++;
+                        input.add(one.getText().toString());
+                        textView.setText("Enter the end time\nformat: yyyy-mm-dd hh:mm");
+                        one.setText("");
+
+
+                        break;
+                    case 3:
+                        count++;
+                        input.add(one.getText().toString());
+                        textView.setText("Enter longitude and latitude separated by space");
+                        one.setText("");
+                        one.setInputType(InputType.TYPE_CLASS_TEXT);
+
+
+
+                        break;
+                    case 4:
+                        count++;
+                        input.add(one.getText().toString());
+                        textView.setText("Enter your email address");
+                        one.setText("");
+                        one.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                        break;
+                    case 5:
+                        input.add(one.getText().toString());
+                        textView.setText("Event Created");
+                        one.setText("");
+                        count = 0;
+                        sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                        java.util.Date jud1 = null;
+                        java.util.Date jud2 = null;
+
+                        try {
+                            jud1 = sdf.parse(input.get(2));
+                            jud2 = sdf.parse(input.get(3));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        String [] lonlat = input.get(4).split(" ");
+                        Date startDate = new Date(jud1.getTime());
+                        Date endDate = new Date(jud2.getTime());
+                        Event e = new PublicEvent(startDate,endDate,Float.parseFloat(lonlat[0]),
+                                Float.parseFloat(lonlat[1]),input.get(0),input.get(1),500,input.get(5));
+                         textView.setText(Arrays.toString(input.toArray()));
+                                input.clear();
+
+                       MainActivity.user.events.add(e);
+                        MyEventsFragment myEventsFragment = new MyEventsFragment();
+                        this.getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.content_frame, myEventsFragment)
+                                .addToBackStack(null)
+                                .commit();
+                        //TODO create event Date startTime, Date endTime, float latitude, float longitude,
+                    //String eventName, String eventDesc, int radius, String creatorEmail
+
+                        break;
+                }
+
+
         }
     }
+
+
+
+
+
 }

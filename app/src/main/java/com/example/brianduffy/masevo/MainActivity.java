@@ -73,35 +73,13 @@ public class MainActivity extends AppCompatActivity
 
         float lat = 0f;
         float lon = 1f;
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 1","event description",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 2","event description",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 3","event description",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 4","event description",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 5","event description",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 6","event description",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 7","event description",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-        user.events.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
 
-        user.nearby.add(new PublicEvent(new Date(3),new Date(500),40.426829f, -86.911904f,
-                "Public Event 1","event description",500,"String email"));
-        user.nearby.add(new PublicEvent(new Date(3),new Date(500),40.426208f, -86.915455f,
-                "Public Event 2","event description",500,"String email"));
-        user.nearby.add(new PublicEvent(new Date(3),new Date(500),40.428782f,-86.913517f,
-                "Public Event 3","event description",500,"String email"));
+        user.nearby.add(new PublicEvent(new Date(1509653894),new Date(1509826694),40.426829f, -86.911904f,
+                "Purdue Linux Club","Help Freshmen create Linux partions.",500,"bduffy2019@gmail.com"));
+        user.nearby.add(new PublicEvent(new Date(1509653894),new Date(1509826694),40.426208f, -86.915455f,
+                "CS307 Meeting","Work on Masevo",500,"bduffy2019@gmail.com"));
+        user.nearby.add(new PublicEvent(new Date(1509653894),new Date(1509826694),40.428782f,-86.913517f,
+                "Meeting thingy","we will meet for stuff",500,"bduffy2019@gmail.com"));
         //TODO get data from databse call to populate events variable
 
         setContentView(R.layout.activity_main);
@@ -278,21 +256,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        File f = new File(save_loc);
-        try {
-            PrintWriter pw = new PrintWriter(f);
-            for (int i = 0; i < user.events.size(); i++) {
-            pw.write(user.events.get(i).eventID + ",");
-            }
-            pw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
-    }
 
     @Override
     protected void onStop() {
