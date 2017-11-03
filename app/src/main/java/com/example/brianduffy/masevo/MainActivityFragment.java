@@ -82,11 +82,16 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
                 textView.setText("");
                 Server s = new Server();
                 s.getPublicEvents();
+                s = null;
                 //sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 
                 break;
             case R.id.create_private_event:
                 textView.setText("");
+                int ID = Integer.parseInt(one.getText().toString());
+                s = new Server();
+                s.deleteEvent(ID);
+                s = null;
                 //sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 
                 list.clear();

@@ -100,6 +100,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
           Specifying Application Context in Fragment => getActivity() */
         swipe = v.findViewById(R.id.swiperef);
         swipe.setOnRefreshListener(this);
+        updateList();
         return v;
     }
 

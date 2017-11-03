@@ -50,4 +50,9 @@ public class PublicEvent extends Event implements Serializable{
         s.createPublicEvent(eventID, eventName, eventDesc, startTime, endTime,
                 location.latitude, location.longitude, radius, host);
     }
+
+    public void deleteEvent(int ID) {
+        Server s = new Server();
+        s.deleteEvent(ID);
+    }
 }
