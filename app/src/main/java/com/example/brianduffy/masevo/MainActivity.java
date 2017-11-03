@@ -2,8 +2,11 @@ package com.example.brianduffy.masevo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.*;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -37,31 +40,32 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener,View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final String TAG = "MainActivity";
     GoogleApiClient mGoogleApiClient;
-    static final int REQUEST_LOCATION= 45;
+    static final int REQUEST_LOCATION = 45;
     ArrayList<Event> events = new ArrayList<>();
     MapofEventsFragment mapevents;
-//    TextView textView;
+    //    TextView textView;
 //    EditText one;
     static User user;
-
+    LocationManager lm;
     //Buttons
     final String save_loc = "save.txt";
     String text = "";
-//    ArrayList<String> list = new ArrayList<>();
+   static android.location.Location location;
+    //    ArrayList<String> list = new ArrayList<>();
 //    Server server;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = new User(LoginActivity.emailAddress,0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
+        user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new HashSet<Integer>(), new HashSet<Integer>());
 
         File file = new File(getFilesDir(), save_loc);
         try {
             BufferedReader fr = new BufferedReader(new FileReader(file));
             text = fr.readLine();
-            String [] g = text.split(",");
+            String[] g = text.split(",");
             for (int i = 0; i < g.length; i++) {
                 user.myIDs.add(Integer.parseInt(g[i]));
             }
@@ -74,26 +78,37 @@ public class MainActivity extends AppCompatActivity
         float lat = 0f;
         float lon = 1f;
 
-        user.nearby.add(new PublicEvent(new Date(1509653894),new Date(1509826694),40.426829f, -86.911904f,
-                "Purdue Linux Club","Help Freshmen create Linux partions.",500,"bduffy2019@gmail.com"));
-        user.nearby.add(new PublicEvent(new Date(1509653894),new Date(1509826694),40.426208f, -86.915455f,
-                "CS307 Meeting","Work on Masevo",500,"bduffy2019@gmail.com"));
-        user.nearby.add(new PublicEvent(new Date(1509653894),new Date(1509826694),40.428782f,-86.913517f,
-                "Meeting thingy","we will meet for stuff",500,"bduffy2019@gmail.com"));
+        user.nearby.add(new PublicEvent(new Date(1509653894), new Date(1509826694), 40.426829f, -86.911904f,
+                "Purdue Linux Club", "Help Freshmen create Linux partions.", 500, "bduffy2019@gmail.com"));
+        user.nearby.add(new PublicEvent(new Date(1509653894), new Date(1509826694), 40.426208f, -86.915455f,
+                "CS307 Meeting", "Work on Masevo", 500, "bduffy2019@gmail.com"));
+        user.nearby.add(new PublicEvent(new Date(1509653894), new Date(1509826694), 40.428782f, -86.913517f,
+                "Meeting thingy", "we will meet for stuff", 500, "bduffy2019@gmail.com"));
         //TODO get data from databse call to populate events variable
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mapevents = MapofEventsFragment.newInstance();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+         location= lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         MainActivityFragment myEventsFragment = new MainActivityFragment();

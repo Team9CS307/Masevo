@@ -124,10 +124,12 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     public void markEvents(GoogleMap googleMap) {
         //TODO create a list of events from database and add markers to those locations
         for (int i = 0; i < MainActivity.user.nearby.size(); i++) {
-            LatLng eventloc = new LatLng(MainActivity.user.nearby.get(i).location.latitude,
-                    MainActivity.user.nearby.get(i).location.longitude);
-            googleMap.addMarker(new MarkerOptions().position(eventloc)
-                    .title(MainActivity.user.nearby.get(i).eventName));
+            if (MainActivity.user.nearby.get(i) instanceof PublicEvent) {
+                LatLng eventloc = new LatLng(MainActivity.user.nearby.get(i).location.latitude,
+                        MainActivity.user.nearby.get(i).location.longitude);
+                googleMap.addMarker(new MarkerOptions().position(eventloc)
+                        .title(MainActivity.user.nearby.get(i).eventName));
+            }
         }
     }
     @Override
