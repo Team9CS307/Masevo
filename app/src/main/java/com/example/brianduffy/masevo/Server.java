@@ -1,7 +1,18 @@
 package com.example.brianduffy.masevo;
 
-import android.os.StrictMode;
+import android.content.ContentValues;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -13,7 +24,10 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class Server {
     private String hostName;
@@ -33,7 +47,7 @@ public class Server {
         String query = "";
         return query;
     }
-
+    /*
     public Server(String hostName, String dbName, String admimName, String adminPass) {
         this.hostName = hostName;
         this.dbName = dbName;
@@ -47,7 +61,7 @@ public class Server {
                 "trustServerCertificate=false;" +
                 "hostNameInCertificate=*.database.windows.net;" +
                 "loginTimeout=30;", hostName, dbName, admimName, adminPass);
-    }
+    }*/
 
     public void getPublicEvent(int eventID) {
         String strEventID = Integer.toString(eventID);
@@ -92,61 +106,120 @@ public class Server {
         }
     }
 
-    public void createPublicEvent(int eventID, String eventName, String eventDescription,
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void createPublicEvent(int ID, String eventName, String eventDescription,
                                   Date startDate, Date endDate,
                                   float latitude, float longitude,
-                                  int radius, String [] compressedAttendeeList) {
+                                  float radius, String email) {
+        String methodName = "createPublicEvent";
+        String emailTrim = email.substring(0,email.indexOf("@"));
+        String postNoXML = String.format("method=%s&" +
+                        "ID=%s&" +
+                        "Name=%s&" +
+                        "Description=%s&" +
+                        "StartTime=%s&" +
+                        "EndTime=%s&" +
+                        "Latitude=%s&" +
+                        "Longitude=%s&" +
+                        "Radius=%s&" +
+                        "Host=%s&", methodName, ID, eventName, eventDescription, startDate.getTime(), endDate.getTime(),
+                latitude, longitude, radius, emailTrim);
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("method",methodName);
+            contentValues.put("ID",Integer.toString(ID));
+            contentValues.put("Name",eventName);
+            contentValues.put("Description",eventDescription);
+            contentValues.put("StartTime",Long.toString(startDate.getTime()));
+            contentValues.put("EndTime",Long.toString(endDate.getTime()));
+            contentValues.put("Latitude",Float.toString(latitude));
+            contentValues.put("Longitude",Float.toString(longitude));
+            contentValues.put("Radius",Float.toString(radius));
+            contentValues.put("Host",emailTrim);
+            String query = "";
+            for (Map.Entry e: contentValues.valueSet()) {
+                query += (e.getKey() + "=" + e.getValue() + "&");
+            }
+            query = query.substring(0, query.length() - 1);
+            final String fQuery = query;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
+                        int postDataLength = postData.length;
+                        URL url = new URL("http://webapp-171031005244.azurewebsites.net");
+                        HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                        httpURLConnection.setDoOutput(true);
+                        httpURLConnection.setInstanceFollowRedirects(false);
+                        httpURLConnection.setRequestMethod("POST");
+                        httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        httpURLConnection.setRequestProperty("charset", "utf-8");
+                        httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                        httpURLConnection.setUseCaches(false);
+                        try (DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream())) {
+                            dataOutputStream.write(postData);
+                        }
+                    } catch (MalformedURLException murle) {
+                        murle.printStackTrace();
+                        return;
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                        return;
+                    }
+                }
+            }).start();
         /*
-        int hash = 1;
-        hash = hash * 13 + eventName.hashCode();
-        hash = hash * 17 + eventDescription.hashCode();
-        hash = hash * 19 + startDate.hashCode();
-        hash = hash * 23 + endDate.hashCode();
-        hash = hash * 29 + (new Float(latitude)).hashCode();
-        hash = hash * 31 + (new Float(longitude)).hashCode();
-        hash = hash * 37 + radius;
-        if (compressedAttendeeList != null) {
-            hash = hash * 41 + compressedAttendeeList.hashCode();
-        }
-        int eventId = hash;
-        System.out.println(eventId);*/
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpPost httpPost = new HttpPost("http://webapp-171031005244.azurewebsites.net");
+        List<NameValuePair> arguments = new ArrayList<>();
+        arguments.add(new BasicNameValuePair("method",methodName));
+        arguments.add(new BasicNameValuePair("ID",Integer.toString(ID)));
+        arguments.add(new BasicNameValuePair("Name",eventName));
+        arguments.add(new BasicNameValuePair("Description",eventDescription));
+        arguments.add(new BasicNameValuePair("StartTime",Long.toString(startDate.getTime())));
+        arguments.add(new BasicNameValuePair("EndTime",Long.toString(endDate.getTime())));
+        arguments.add(new BasicNameValuePair("Latitude",Float.toString(latitude)));
+        arguments.add(new BasicNameValuePair("Longitude",Float.toString(longitude)));
+        arguments.add(new BasicNameValuePair("Radius",Float.toString(radius)));
+        arguments.add(new BasicNameValuePair("Host",emailTrim));
+
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(arguments));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            System.out.println(httpResponse.getStatusLine().getStatusCode());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }*/
+    }
+
+    public void joinEvent(int eventID) {
+        String strEventID = Integer.toString(eventID);
+        String query = "SELECT " + properties +
+                " FROM EventsTable" +
+                " where eventID = '" + strEventID + "';";
         Connection connection;
+        Statement statement = null;
         try {
             System.out.println("Connecting to SQL Server ... ");
             connection = DriverManager.getConnection(url);
             System.out.println("Done.");
-            System.out.println("Query data example:");
-            System.out.println("=========================================");
-            // Create and execute a SELECT SQL statement.
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO EventsTable " +
-                    "(" + properties + ") " +
-                    "VALUES" +
-                    "(?,?,?,?,?,?,?,?,?)");
-
-            Timestamp timestamp0 = new Timestamp(startDate.getTime());
-            Timestamp timestamp1 = new Timestamp(endDate.getTime());
-
-            statement.setInt(1, eventID);
-            statement.setString(2, eventName);
-            statement.setString(3, eventDescription);
-            statement.setTimestamp(4, timestamp0);
-            statement.setTimestamp(5, timestamp1);
-            statement.setFloat(6, latitude);
-            statement.setFloat(7, longitude);
-            statement.setInt(8, radius);
-            if (compressedAttendeeList != null) {
-                statement.setString(9, Arrays.asList(compressedAttendeeList).toString());
-            } else {
-                statement.setString(9, "");
-            }
-            statement.executeUpdate();
-            /*
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                System.out.println(resultSet.getString(1) + " " +
-                        resultSet.getString(2));
-            }*/
+                String output = String.format("%s\n%s\n%s\n%s\n" +
+                                "%s\n%s\n%s\n%s",
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getString(8),
+                        resultSet.getString(9));
+                System.out.println(output);
+            }
             connection.close();
         } catch (SQLTimeoutException sqlte) {
             System.out.println("Could not execute the query within the timeout value specified" +

@@ -13,30 +13,9 @@ import java.util.HashSet;
 
 public class PublicEvent extends Event implements Serializable{
     // Use this to create a PublicEvent
-    public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
-                       String eventName, String eventDesc, int radius, String creatorEmail) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.location = new Location(latitude, longitude);
-        this.eventName = eventName;
-        this.eventDesc = eventDesc;
-        this.radius = radius;
 
-        this.hostList = new HashSet<>();
-        this.hostList.add(creatorEmail);
-        this.attendeeList = new HashSet<>();
-        this.attendeeList.add(creatorEmail);
-        this.activeList = new HashSet<>();
-        this.emailToDisplay = new HashMap<>();
-
-        this.eventID = (eventName + creatorEmail + startTime + endTime + Double.toString(Math.random())).hashCode();
-
-    }
-
-
-    public PublicEvent(Date startTime, Date endTime, float latitude, float longitude,
-                       String eventName, String eventDesc, int radius, String creatorEmail,
-                       Server server)
+    public PublicEvent(String eventName, String eventDesc, Date startTime, Date endTime,
+                       float latitude, float longitude, float radius, String creatorEmail)
     {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -52,7 +31,8 @@ public class PublicEvent extends Event implements Serializable{
         this.activeList = new HashSet<>();
         this.emailToDisplay = new HashMap<>();
 
-        this.eventID = (eventName + creatorEmail + startTime + endTime + Double.toString(Math.random())).hashCode();
+        this.eventID = (eventName + eventDesc + startTime + endTime + latitude + longitude +
+                radius + Double.toString(Math.random())).hashCode();
 
         // We now want to add this PublicEvent to the database using the proper call
         ///////////////////////
@@ -60,7 +40,8 @@ public class PublicEvent extends Event implements Serializable{
         //***DATABASE CALL***//
         //***DATABASE CALL***//
         ///////////////////////
-        server.createPublicEvent(eventID, eventName, eventDesc, startTime, endTime,
-                latitude, longitude, radius, new String[]{"10" + creatorEmail});
+        Server s = new Server();
+        s.createPublicEvent(eventID, eventName, eventDesc, startTime, endTime,
+                latitude, longitude, radius, creatorEmail);
     }
 }

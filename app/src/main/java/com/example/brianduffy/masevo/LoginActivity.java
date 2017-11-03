@@ -228,7 +228,7 @@ public class LoginActivity extends AppCompatActivity implements
             updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
-            updateUI(false);
+            updateUI(true);
         }
     }
     // [END handleSignInResult]
