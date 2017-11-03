@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener,GoogleApiClient.ConnectionCallbacks {
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
-
+    static String emailAddress;
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9004;
 
@@ -71,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
         // [END build_client]
 
         // [START customize_button]
@@ -210,6 +211,7 @@ public class LoginActivity extends AppCompatActivity implements
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
             handleSignInResult(result);
         }
     }
@@ -221,11 +223,12 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+            emailAddress = result.getSignInAccount().getEmail();
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
-            updateUI(true);
+            updateUI(false);
         }
     }
     // [END handleSignInResult]

@@ -61,6 +61,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         getView().findViewById(R.id.create_public_event).setOnClickListener(this);
         getView().findViewById(R.id.create_private_event).setOnClickListener(this);
         getView().findViewById(R.id.enter).setOnClickListener(this);
+        textView.setText(LoginActivity.emailAddress);
     }
 
 
@@ -82,6 +83,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
                 list.clear();
                 break;
             case R.id.enter:
+
                 switch (count) {
                     case 0:
                         count++;

@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
+        user = new User(LoginActivity.emailAddress,0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
 
         File file = new File(getFilesDir(), save_loc);
         try {
