@@ -29,7 +29,7 @@ import java.util.Date;
 * Masevo Server Test Cases
 *
 * @author Vikram Pasumarti, vpasuma@purdue.edu
-* @version 3 November 2017
+* @version 2 November 2017
 *
 */
 
@@ -115,7 +115,7 @@ public class ServerTest {
         String hostName = "masevo.database.windows.net";
         String dbName = "masevo";
         String user = "masevo_admin";
-        String password = "M4s3vo_4dm1n";
+        String password = "M4s3v0_4dm1n";
         String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s@masevo;password=%s;" +
                 "encrypt=true;trustServerCertificate=false;hostNameIn" +
                 "Certificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
@@ -127,7 +127,7 @@ public class ServerTest {
             System.out.println("Successful connection - Schema: " + schema);
 
             // Create and execute a SELECT SQL statement.
-            String selectSql = "SELECT * FROM masevo";
+            String selectSql = "SELECT * FROM PublicEvents";
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(selectSql)) {
@@ -147,6 +147,7 @@ public class ServerTest {
                             + resultSet.getString(9) + " "
                             + resultSet.getString(10) + " ";
                     System.out.println(dbOutput);
+                    
                 }
                 connection.close();
             }
