@@ -1,22 +1,35 @@
 //import org.jsoup.Jsoup;
+
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
 import org.junit.Assert;
 import org.junit.Test;
+import org.w3c.dom.Document;
 //import org.jsoup.nodes.Document;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigDecimal;
+
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.DriverManager;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
-import java.io.DataOutputStream;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /*
 * Masevo Server Test Cases
 *
 * @author Vikram Pasumarti, vpasuma@purdue.edu
-* @version 2 November 2017
+* @version 3 November 2017
 *
 */
 
@@ -87,6 +100,63 @@ public class ServerTest {
         return html;
     }
 
+// <Users>
+//        <User>
+//            <Name></Name>
+//            <Permission></Permission>
+//            <Active></Active>
+//         </User>
+// </Users>
+
+
+
+    private String backFromDatabase()  {
+        String dbOutput = "";
+        String hostName = "masevo.database.windows.net";
+        String dbName = "masevo";
+        String user = "masevo_admin";
+        String password = "M4s3vo_4dm1n";
+        String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s@masevo;password=%s;" +
+                "encrypt=true;trustServerCertificate=false;hostNameIn" +
+                "Certificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(url);
+            String schema = connection.getSchema();
+            System.out.println("Successful connection - Schema: " + schema);
+
+            // Create and execute a SELECT SQL statement.
+            String selectSql = "SELECT * FROM masevo";
+
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(selectSql)) {
+
+                // Print results from select statement
+
+                while (resultSet.next())
+                {
+                    dbOutput = resultSet.getString(1) + " "
+                            + resultSet.getString(2) + " "
+                            + resultSet.getString(3) + " "
+                            + resultSet.getString(4) + " "
+                            + resultSet.getString(5) + " "
+                            + resultSet.getString(6) + " "
+                            + resultSet.getString(7) + " "
+                            + resultSet.getString(8) + " "
+                            + resultSet.getString(9) + " "
+                            + resultSet.getString(10) + " ";
+                    System.out.println(dbOutput);
+                }
+                connection.close();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return dbOutput;
+    }
 
 
 
@@ -423,6 +493,58 @@ public class ServerTest {
         Assert.assertEquals(400,postResponse);
     }
 
+    //TEST 17 - Verify Database Server communication
+    //$-_.!*'(),"
+    @Test
+    public void test17_VerifyDatabaseServerCommunication() throws Exception {
+        ServerTest st17 = new ServerTest();
+        String xmlString = "<Users><User><Name>NameOfUser</Name><Permission>1</Permission><Active>1</Active></User></Users>";
+        int ID = 0;
+        String name = "NameofEvent";
+        String hostName = "NameofTheHost";
+        String description = "Thisisanevent";
+        long longStartTime;
+        long longEndTime;
+
+        String str_date1="2017-11-02 12:00:00.000";
+        String str_date2="2017-11-03 12:00:00.000";
+        DateFormat formatter ;
+        Date date1 ;
+        Date date2;
+        formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.mmm");
+        date1 = (Date)formatter.parse(str_date1);
+        date2 = (Date)formatter.parse(str_date2);
+
+        longStartTime = date1.getTime();
+        longEndTime = date2.getTime();
+
+        float longitude = 0;
+        float latitude = 0;
+        float radius = 0;
+
+
+
+        st17.testParams = "ID="+ ID + "&Name=" + name + "&Description=" + description + "&StartTime=" + longStartTime +
+                "&EndTime=" + longEndTime + "&Latitude=" + latitude + "&Longitude=" + longitude + "&Radius=" + radius +
+                "&Host=" + hostName + "&List=" + xmlString;
+
+
+        st17.masevoWebsite.setDoOutput(true);
+        DataOutputStream dos = new DataOutputStream(st17.masevoWebsite.getOutputStream());
+        dos.writeBytes(st17.testParams);
+        dos.flush();
+        dos.close();
+        int postResponse = st17.masevoWebsite.getResponseCode();
+
+        String returnedHtml = getHtmlString(st17); //kept this for debugging
+        System.out.println(returnedHtml);
+        System.out.println(postResponse);
+
+        String valuesSent = "0 NameofEvent Thisisanevent " + str_date1 + " " + str_date2 + " 0 0 0 NameofTheHost " +
+                "<Users><User><Name>NameOfUser</Name><Permission>1</Permission><Active>1</Active></User></Users>";
+        String valuesReturned = st17.backFromDatabase();
+        Assert.assertEquals(valuesSent,valuesReturned);
+    }
 
 
 
