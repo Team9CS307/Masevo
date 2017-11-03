@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity
         }
         //user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
 
+        Server s = new Server();
+        user.events = s.getPublicEvents();
+
         float lat = 0f;
         float lon = 1f;
         /*

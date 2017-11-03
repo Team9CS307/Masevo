@@ -27,15 +27,11 @@ import java.util.Map;
  * Created by Josh on 11/3/2017.
  */
 
-public class ThreadWithResult extends Thread {
-    private ResultSetter setter;
-    public void setResultSetter(ResultSetter setter) {
-        this.setter = setter;
-    }
+public class PublicCreateThread implements Runnable {
+    private ArrayList<PublicEvent> returnResult = new ArrayList<>();
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        ArrayList<PublicEvent> returnResult = new ArrayList<>();
         String methodName;
         methodName = "getPublicEvents";
         ContentValues contentValues = new ContentValues();
@@ -104,7 +100,6 @@ public class ThreadWithResult extends Thread {
                             Float.parseFloat(trtd[i][7]), trtd[i][8]);
                     returnResult.add(p);
                 }
-                setter.setResult(returnResult);
                 // trtd now contains the desired array for this table
             }
         } catch (MalformedURLException murle) {
@@ -117,5 +112,9 @@ public class ThreadWithResult extends Thread {
             nfe.printStackTrace();
             return;
         }
+    }
+
+    public ArrayList<PublicEvent> getReturnResult() {
+        return returnResult;
     }
 }

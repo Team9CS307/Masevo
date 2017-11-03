@@ -17,8 +17,8 @@ public class User {
     HashSet<PublicEvent> myPublicEventList;
     HashSet<PrivateEvent> myPrivateEventList;
     Location myLocation;
-    ArrayList<Event> events = new ArrayList<>();
-    ArrayList<Event> nearby = new ArrayList<>();
+    ArrayList<PublicEvent> events = new ArrayList<>();
+    ArrayList<PublicEvent> nearby = new ArrayList<>();
     ArrayList<Integer> myIDs = new ArrayList<>();
 
     // We decided that Brian would store the ID of events that users are subscribed to in a .txt

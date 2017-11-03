@@ -14,13 +14,13 @@ import java.util.ArrayList;
  * Created by Brian Duffy on 10/22/2017.
  */
 
-class ListAdapter extends ArrayAdapter<Event> {
+class ListAdapter extends ArrayAdapter<PublicEvent> {
 
     Context context;
-    ArrayList<Event> data;
+    ArrayList<PublicEvent> data;
     private static LayoutInflater inflater = null;
 
-    public ListAdapter(Context context, ArrayList<Event> data) {
+    public ListAdapter(Context context, ArrayList<PublicEvent> data) {
         super(context, R.layout.fragment_my_events,data );
 
 //        Event[] s = (Event[])data.toArray();
@@ -39,7 +39,7 @@ class ListAdapter extends ArrayAdapter<Event> {
     }
 
     @Override
-    public Event getItem(int position) {
+    public PublicEvent getItem(int position) {
         // TODO Auto-generated method stub
         return data.get(position);
     }

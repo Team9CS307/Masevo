@@ -48,46 +48,15 @@ public class Server {
     private String admimName;
     private String adminPass;
     private String url;
-    private PublicEvent [] threadResult;
+    private ArrayList<PublicEvent> threadResult;
 
     private final String properties = "eventID,eventName,eventDesc,startTime" +
             ",endTime,latitude,longitude,radius,hostActiveAttendUsers";
 
-    public String getUrl() {
-        return url;
-    }
-
-    public String insertToTable(String tableName, String [] columns, Object [] values) {
-        String query = "";
-        return query;
-    }
-    /*
-    public Server(String hostName, String dbName, String admimName, String adminPass) {
-        this.hostName = hostName;
-        this.dbName = dbName;
-        this.admimName = admimName;
-        this.adminPass = adminPass;
-        this.url = String.format("jdbc:jtds:sqlserver://%s:1433/" +
-                "%s;" +
-                "user=%s@masevo;" +
-                "password=%s;" +
-                "encrypt=true;" +
-                "trustServerCertificate=false;" +
-                "hostNameInCertificate=*.database.windows.net;" +
-                "loginTimeout=30;", hostName, dbName, admimName, adminPass);
-    }*/
-
-    public PublicEvent[] getPublicEvents () {
-        ResultSetter setter = new ResultSetter() {
-            @Override
-            public void setResult(PublicEvent[] result) {
-                threadResult = result;
-            }
-        };
-        ThreadWithResult thread = new ThreadWithResult();
-        thread.setResultSetter(setter);
-        thread.start();
-        return threadResult;
+    public ArrayList<PublicEvent> getPublicEvents () {
+        PublicCreateThread publicCreateThread = new PublicCreateThread();
+        new Thread(publicCreateThread).start();
+            return publicCreateThread.getReturnResult();
     }
 
     public void getPublicEvent(int eventID) {

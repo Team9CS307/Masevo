@@ -25,11 +25,11 @@ import java.util.ArrayList;
 
 public class MyEventsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener{
   //  User user = new User("brian",0f,0f,new HashSet<Integer>(),new HashSet<Integer>());
-    static ArrayList<Event> mockeventlist = new ArrayList<>();
+    static ArrayList<PublicEvent> mockeventlist = new ArrayList<>();
     ListView listview;
     SwipeRefreshLayout swipe;
     public static Event event;
-    ArrayList<Event> testList = new ArrayList<>();
+    ArrayList<PublicEvent> testList = new ArrayList<>();
 
     @Nullable
     @Override
