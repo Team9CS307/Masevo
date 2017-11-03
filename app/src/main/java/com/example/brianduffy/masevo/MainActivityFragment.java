@@ -1,9 +1,11 @@
 package com.example.brianduffy.masevo;
 
 import android.app.DatePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -70,6 +72,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View view) {
 
@@ -77,6 +80,8 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
             case R.id.create_public_event:
                 textView.setText("");
+                Server s = new Server();
+                s.getPublicEvents();
                 //sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 
                 break;
@@ -153,6 +158,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public boolean eventCreationVerify () {
         //Create variables
         String eventName;
@@ -209,8 +215,9 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
             return false;
         }
 
-        Event e = new PublicEvent(eventName, eventDesc, startDate, endDate,
+        PublicEvent e = new PublicEvent(eventName, eventDesc, startDate, endDate,
                 latitude, longitude, radius,email);
+        e.createPublicEvent();
         MainActivity.user.events.add(e);
         textView.setText(Arrays.toString(input.toArray()));
         input.clear();

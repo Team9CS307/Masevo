@@ -3,10 +3,19 @@ package com.example.brianduffy.masevo;
 import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.provider.DocumentsContract;
 import android.support.annotation.RequiresApi;
+import android.support.v4.provider.DocumentFile;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -28,6 +37,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Server {
     private String hostName;
@@ -35,6 +48,7 @@ public class Server {
     private String admimName;
     private String adminPass;
     private String url;
+    private PublicEvent [] threadResult;
 
     private final String properties = "eventID,eventName,eventDesc,startTime" +
             ",endTime,latitude,longitude,radius,hostActiveAttendUsers";
@@ -62,6 +76,19 @@ public class Server {
                 "hostNameInCertificate=*.database.windows.net;" +
                 "loginTimeout=30;", hostName, dbName, admimName, adminPass);
     }*/
+
+    public PublicEvent[] getPublicEvents () {
+        ResultSetter setter = new ResultSetter() {
+            @Override
+            public void setResult(PublicEvent[] result) {
+                threadResult = result;
+            }
+        };
+        ThreadWithResult thread = new ThreadWithResult();
+        thread.setResultSetter(setter);
+        thread.start();
+        return threadResult;
+    }
 
     public void getPublicEvent(int eventID) {
         String strEventID = Integer.toString(eventID);
@@ -159,6 +186,19 @@ public class Server {
                         httpURLConnection.setUseCaches(false);
                         try (DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream())) {
                             dataOutputStream.write(postData);
+                            dataOutputStream.flush();
+                        }
+                        int responseCode = httpURLConnection.getResponseCode();
+                        if (responseCode == 200) {
+                            String result = "";
+                            BufferedReader br = new BufferedReader(
+                                    new InputStreamReader(httpURLConnection.getInputStream()));
+                            String output;
+                            while((output = br.readLine()) != null)
+                            {
+                                result += output;
+                            }
+                            System.out.println("Response message: " + result);
                         }
                     } catch (MalformedURLException murle) {
                         murle.printStackTrace();
@@ -169,28 +209,6 @@ public class Server {
                     }
                 }
             }).start();
-        /*
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("http://webapp-171031005244.azurewebsites.net");
-        List<NameValuePair> arguments = new ArrayList<>();
-        arguments.add(new BasicNameValuePair("method",methodName));
-        arguments.add(new BasicNameValuePair("ID",Integer.toString(ID)));
-        arguments.add(new BasicNameValuePair("Name",eventName));
-        arguments.add(new BasicNameValuePair("Description",eventDescription));
-        arguments.add(new BasicNameValuePair("StartTime",Long.toString(startDate.getTime())));
-        arguments.add(new BasicNameValuePair("EndTime",Long.toString(endDate.getTime())));
-        arguments.add(new BasicNameValuePair("Latitude",Float.toString(latitude)));
-        arguments.add(new BasicNameValuePair("Longitude",Float.toString(longitude)));
-        arguments.add(new BasicNameValuePair("Radius",Float.toString(radius)));
-        arguments.add(new BasicNameValuePair("Host",emailTrim));
-
-        try {
-            httpPost.setEntity(new UrlEncodedFormEntity(arguments));
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-            System.out.println(httpResponse.getStatusLine().getStatusCode());
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }*/
     }
 
     public void joinEvent(int eventID) {

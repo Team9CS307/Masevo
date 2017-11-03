@@ -39,4 +39,5 @@ public abstract class Event implements Serializable{
         // int storing the ID of the event.
     public float radius;
         // Radius of the event as set by a host
+    public String host;
 }

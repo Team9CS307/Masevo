@@ -1,6 +1,8 @@
 package com.example.brianduffy.masevo;
 
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -14,6 +16,7 @@ import java.util.HashSet;
 public class PublicEvent extends Event implements Serializable{
     // Use this to create a PublicEvent
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public PublicEvent(String eventName, String eventDesc, Date startTime, Date endTime,
                        float latitude, float longitude, float radius, String creatorEmail)
     {
@@ -23,11 +26,10 @@ public class PublicEvent extends Event implements Serializable{
         this.eventName = eventName;
         this.eventDesc = eventDesc;
         this.radius = radius;
+        this.host = creatorEmail;
 
         this.hostList = new HashSet<>();
-        this.hostList.add(creatorEmail);
         this.attendeeList = new HashSet<>();
-        this.attendeeList.add(creatorEmail);
         this.activeList = new HashSet<>();
         this.emailToDisplay = new HashMap<>();
 
@@ -40,8 +42,12 @@ public class PublicEvent extends Event implements Serializable{
         //***DATABASE CALL***//
         //***DATABASE CALL***//
         ///////////////////////
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void createPublicEvent () {
         Server s = new Server();
         s.createPublicEvent(eventID, eventName, eventDesc, startTime, endTime,
-                latitude, longitude, radius, creatorEmail);
+                location.latitude, location.longitude, radius, host);
     }
 }
