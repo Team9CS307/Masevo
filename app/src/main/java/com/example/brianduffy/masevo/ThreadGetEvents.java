@@ -27,15 +27,11 @@ import java.util.Map;
  * Created by Josh on 11/3/2017.
  */
 
-public class ThreadWithResult extends Thread {
-    private ResultSetter setter;
-    public void setResultSetter(ResultSetter setter) {
-        this.setter = setter;
-    }
+public class ThreadGetEvents implements Runnable {
+    private ArrayList<PublicEvent> returnResult = new ArrayList<>();
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        ArrayList<PublicEvent> returnResult = new ArrayList<>();
         String methodName;
         methodName = "getPublicEvents";
         ContentValues contentValues = new ContentValues();
@@ -88,34 +84,33 @@ public class ThreadWithResult extends Thread {
                 }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
-                for (int i = 0; i < trtd.length; i++) {
+                for (String[] aTrtd : trtd) {
                     java.util.Date d1, d2;
-                    Date d3,d4;
+                    Date d3, d4;
                     try {
-                        d1 = sdf.parse(trtd[i][3]);
-                        d2 = sdf.parse(trtd[i][4]);
+                        d1 = sdf.parse(aTrtd[3]);
+                        d2 = sdf.parse(aTrtd[4]);
                         d3 = new Date(d1.getTime());
                         d4 = new Date(d2.getTime());
                     } catch (ParseException pe) {
                         return;
                     }
-                    PublicEvent p = new PublicEvent(trtd[i][1], trtd[i][2], d3, d4,
-                            Float.parseFloat(trtd[i][5]), Float.parseFloat(trtd[i][6]),
-                            Float.parseFloat(trtd[i][7]), trtd[i][8]);
+                    PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
+                            Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
+                            Float.parseFloat(aTrtd[7]), aTrtd[8]);
                     returnResult.add(p);
                 }
-                setter.setResult(returnResult);
-                // trtd now contains the desired array for this table
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
-            return;
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            return;
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
-            return;
         }
+    }
+
+    public ArrayList<PublicEvent> getReturnResult() {
+        return returnResult;
     }
 }

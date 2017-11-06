@@ -42,28 +42,22 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
     static TextView textView;
     EditText one;
     ArrayList<String> list = new ArrayList<>();
-    Server server;
     User user;
     ArrayList<String> input = new ArrayList<>();
     int count = 0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View v = inflater.inflate(R.layout.fragment_main_activity,container,false);
-
-
-
         /* Define Your Functionality Here
            Find any view  => v.findViewById()
           Specifying Application Context in Fragment => getActivity() */
-
-        return v;
+        //returns the view
+        return inflater.inflate(R.layout.fragment_main_activity,container,false);
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-       textView = (TextView) getView().findViewById(R.id.textView);
-        one = (EditText)getView().findViewById(R.id.editText);
+       textView = getView().findViewById(R.id.textView);
+        one = getView().findViewById(R.id.editText);
 
         getView().findViewById(R.id.create_public_event).setOnClickListener(this);
         getView().findViewById(R.id.create_private_event).setOnClickListener(this);
@@ -80,18 +74,14 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
             case R.id.create_public_event:
                 textView.setText("");
-                Server s = new Server();
-                s.getPublicEvents();
-                s = null;
+                new PublicEvent().getPublicEvents();
                 //sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 
                 break;
             case R.id.create_private_event:
                 textView.setText("");
                 int ID = Integer.parseInt(one.getText().toString());
-                s = new Server();
-                s.deleteEvent(ID);
-                s = null;
+                new PublicEvent().deleteEvent(ID);
                 //sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 
                 list.clear();
@@ -168,8 +158,8 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         //Create variables
         String eventName;
         String eventDesc;
-        java.sql.Date jud1 = null;
-        java.sql.Date jud2 = null;
+        java.sql.Date jud1;
+        java.sql.Date jud2;
         float longitude;
         float latitude;
         float radius;

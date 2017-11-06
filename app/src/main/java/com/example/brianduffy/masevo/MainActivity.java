@@ -68,26 +68,16 @@ public class MainActivity extends AppCompatActivity
             BufferedReader fr = new BufferedReader(new FileReader(file));
             text = fr.readLine();
             String[] g = text.split(",");
-            for (int i = 0; i < g.length; i++) {
-                user.myIDs.add(Integer.parseInt(g[i]));
+            for (String aG : g) {
+                user.myIDs.add(Integer.parseInt(aG));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
 
-        Server s = new Server();
-        user.events = s.getPublicEvents();
+        user.events = new PublicEvent().getPublicEvents();
 
-        float lat = 0f;
-        float lon = 1f;
-        /*
-        user.nearby.add(new PublicEvent(new Date(1509653894), new Date(1509826694), 40.426829f, -86.911904f, "Purdue Linux Club", "Help Freshmen create Linux partions.", 500, "bduffy2019@gmail.com"));
-        user.nearby.add(new PublicEvent(new Date(1509653894), new Date(1509826694), 40.426208f, -86.915455f,
-                "CS307 Meeting", "Work on Masevo", 500, "bduffy2019@gmail.com"));
-        user.nearby.add(new PublicEvent(new Date(1509653894), new Date(1509826694), 40.428782f, -86.913517f,
-                "Meeting thingy", "we will meet for stuff", 500, "bduffy2019@gmail.com"));*/
         //TODO get data from databse call to populate events variable
 
         setContentView(R.layout.activity_main);

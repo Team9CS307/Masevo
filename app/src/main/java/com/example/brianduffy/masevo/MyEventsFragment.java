@@ -65,7 +65,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
 
         //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
-         listview = (ListView) v.findViewById(R.id.listview);
+         listview = v.findViewById(R.id.listview);
 
         //System.out.println(Arrays.toString(mockeventlist.toArray()));
 
@@ -90,7 +90,6 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
                 ft.replace(R.id.content_frame, mapFragment);
                 ft.addToBackStack(null);
                 ft.commit();
-
             }
         });
         registerForContextMenu(listview);
@@ -127,13 +126,13 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
 
             case R.id.leave:
                 MainActivity.user.nearby.add(MainActivity.user.events.
-                        get(((AdapterView.AdapterContextMenuInfo)info).position));
+                        get((info).position));
 
-                MainActivity.user.events.remove(((AdapterView.AdapterContextMenuInfo)info).position);
+                MainActivity.user.events.remove((info).position);
                 updateList();
                 return true;
             case R.id.delete:
-                MainActivity.user.events.remove(((AdapterView.AdapterContextMenuInfo)info).position);
+                MainActivity.user.events.remove((info).position);
                 updateList();
                 //TODO remove event from database **********************
 
