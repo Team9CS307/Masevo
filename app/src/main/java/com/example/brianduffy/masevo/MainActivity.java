@@ -2,8 +2,12 @@ package com.example.brianduffy.masevo;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +28,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,42 +40,78 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener,View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final String TAG = "MainActivity";
     GoogleApiClient mGoogleApiClient;
-    static final int REQUEST_LOCATION= 45;
+    static final int REQUEST_LOCATION = 45;
+    ArrayList<Event> events = new ArrayList<>();
     MapofEventsFragment mapevents;
-    TextView textView;
-    EditText one;
-    User user;
-    //Buttons
+    LocationManager lm;
+    //    TextView textView;
+//    EditText one;
+    static User user;
+    static android.location.Location location;
 
-    ArrayList<String> list = new ArrayList<>();
-    Server server;
+    //Buttons
+    final String save_loc = "save.txt";
+    String text = "";
+
+    //    ArrayList<String> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new HashSet<Integer>(), new HashSet<Integer>());
+
+
+        File file = new File(getFilesDir(), save_loc);
+        try {
+            BufferedReader fr = new BufferedReader(new FileReader(file));
+            text = fr.readLine();
+            String[] g = text.split(",");
+            for (String aG : g) {
+                user.myIDs.add(Integer.parseInt(aG));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        user.events = new PublicEvent().getPublicEvents();
+
+        //TODO get data from databse call to populate events variable
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mapevents = MapofEventsFragment.newInstance();
-        textView = (TextView)findViewById(R.id.textView);
-        one = (EditText)findViewById(R.id.editText);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        //Buttons
-        findViewById(R.id.button2).setOnClickListener(this);
-        findViewById(R.id.create_public_event).setOnClickListener(this);
-        findViewById(R.id.create_private_event).setOnClickListener(this);
-        findViewById(R.id.join_private_event).setOnClickListener(this);
-        findViewById(R.id.join_public_event).setOnClickListener(this);
+        lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-         user = new User("emailAddress",0.0f,0.0f,new HashSet<Integer>(),new HashSet<Integer>());
+        MainActivityFragment myEventsFragment = new MainActivityFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, myEventsFragment)
+                .addToBackStack(null)
+                .commit();
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
     }
 
     @Override
@@ -148,13 +193,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
     }
-// Here, thisActivity is the current activity
-//public void joinEvent(User user, PublicEvent event) {
-//
-//}
-//public void joinEvent(User user, PrivateEvent event) {
-    //   user.joinEvent(event,event.eventID);
-//}
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -163,6 +202,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.home) {
+
             MainActivityFragment mainActivityFragment = new MainActivityFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, mainActivityFragment)
@@ -181,12 +221,14 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.myevents) {
+
             MyEventsFragment myEventsFragment = new MyEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, myEventsFragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nearbyevents) {
+
             NearbyEventsFragment nearbyEventsFragment = new NearbyEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, nearbyEventsFragment)
@@ -207,107 +249,29 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onClick(View view) {
-        float lat = 40.4302296f;
-        float lon = -86.9107470f;
-        switch (view.getId()) {
-            case R.id.join_public_event:
-                textView.setText("");
-                int eventID = Integer.parseInt(list.get(0));
-                user.joinEvent(eventID);
-                user.joinEvent(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                        "Public Event test","event description",500,user.emailAddress));
+//
+    }
 
-                textView.setText(user.emailAddress + "joined public event ");
-                list.clear();
-                break;
-            case R.id.join_private_event:
-                textView.setText("");
-                user.joinEvent(new PublicEvent(new Date(3),new Date(500),lat,lon,
-                        "Private Event test","event description",500,user.emailAddress));
-
-                textView.setText(user.emailAddress + "joined public event ");
-                list.clear();
-                break;
-            case R.id.create_public_event:
-                textView.setText("");
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
-                float latitude = 40.4302296f;
-                float longitude = -86.9107470f;
-                String d1 = "2017-10-05 16:00";
-                String d2 = "2017-10-05 17:00";
-                Date startDate = null;
-                Date endDate = null;
-                try {
-                    java.util.Date jud1 = sdf.parse(d1);
-                    java.util.Date jud2 = sdf.parse(d2);
-                    startDate = new Date(jud1.getTime());
-                    endDate = new Date(jud2.getTime());
-                } catch (ParseException pe) {
-                    pe.printStackTrace();
-                }
-                String hostName = "masevo.database.windows.net";
-                String dbName = "MasevoFields2";
-                String user = "MASEVO_ADMIN";
-                String password = "M4s3v0_4dm1n";
-                server = new Server(hostName, dbName, user, password);
-                PublicEvent pe = new PublicEvent(startDate, endDate, latitude,
-                        longitude, list.get(0), list.get(1), Integer.parseInt(list.get(2)),
-                        list.get(3), server);
-                textView.setText("Event Created: " + pe.eventName + " " + pe.eventDesc +
-                        " lat: " + latitude + " log:" +
-                        longitude + " created by: " + list.get(3));
-                /*
-                PublicEvent pe = new PublicEvent(new Date(2), new Date(2),lat,log,
-                        "Event Desc","Event name",100.0,"bduffy2019@gmail.com");
-                //user.joinEvent(pe);
-
-                user.myPublicEventIDs.add(pe.eventID);
-                user.myPublicEventList.add(pe);
-                */
-                list.clear();
-                break;
-            case R.id.create_private_event:
-                textView.setText("");
-                 sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
-                 latitude = 40.4302296f;
-                 longitude = -86.9107470f;
-                 d1 = "2017-10-05 16:00";
-                 d2 = "2017-10-05 17:00";
-                 startDate = null;
-                 endDate = null;
-                try {
-                    java.util.Date jud1 = sdf.parse(d1);
-                    java.util.Date jud2 = sdf.parse(d2);
-                    startDate = new Date(jud1.getTime());
-                    endDate = new Date(jud2.getTime());
-                } catch (ParseException pee) {
-                    pee.printStackTrace();
-                }
-                 hostName = "masevo.database.windows.net";
-                 dbName = "MasevoFields2";
-                 user = "MASEVO_ADMIN";
-                 password = "M4s3v0_4dm1n";
-                server = new Server(hostName, dbName, user, password);
-                PublicEvent pee = new PublicEvent(startDate, endDate, latitude,
-                        longitude, list.get(0), list.get(1), Integer.parseInt(list.get(2)),
-                        list.get(3), server);
-                textView.setText("Event Created: " + pee.eventName + " " + pee.eventDesc +
-                        " lat: " + latitude + " log:" +
-                        longitude + " created by: " + list.get(3));
-                /*
-                PublicEvent pe = new PublicEvent(new Date(2), new Date(2),lat,log,
-                        "Event Desc","Event name",100.0,"bduffy2019@gmail.com");
-                //user.joinEvent(pe);
-
-                user.myPublicEventIDs.add(pe.eventID);
-                user.myPublicEventList.add(pe);
-                */
-                list.clear();
-                break;
-            case R.id.button2:
-                list.add(one.getText().toString());
-                one.setText("");
+    @Override
+    protected void onPause() {
+        super.onPause();
+        File f = new File(getFilesDir(), save_loc);
+        try {
+            PrintWriter pw = new PrintWriter(f);
+            for (int i = 0; i < user.events.size(); i++) {
+                pw.write(user.events.get(i).eventID + ",");
+            }
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 }

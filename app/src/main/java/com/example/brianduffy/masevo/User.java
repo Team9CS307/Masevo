@@ -1,6 +1,7 @@
 package com.example.brianduffy.masevo;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -16,6 +17,9 @@ public class User {
     HashSet<PublicEvent> myPublicEventList;
     HashSet<PrivateEvent> myPrivateEventList;
     Location myLocation;
+    ArrayList<PublicEvent> events = new ArrayList<>();
+    ArrayList<PublicEvent> nearby = new ArrayList<>();
+    ArrayList<Integer> myIDs = new ArrayList<>();
 
     // We decided that Brian would store the ID of events that users are subscribed to in a .txt
     // locally. So I am going to assume here that I will be passed 2 HashSest of ints containing IDs
@@ -67,9 +71,6 @@ public class User {
     }
 
     // Allows a user to join a given PublicEvent
-    public void joinEvent(int id) {
-
-    }
     public void joinEvent(PublicEvent eventToJoin) {
 
         // Add user to the events list of attendees
@@ -78,6 +79,7 @@ public class User {
         myPublicEventIDs.add(eventToJoin.eventID);
         // Add users name/displayname to Map, by default display name will be email
         eventToJoin.emailToDisplay.put(this.emailAddress, this.emailAddress);
+        myPublicEventList.add(eventToJoin);
         ///////////////////////
         //***DATABASE CALL***//
         //***DATABASE CALL***//
@@ -96,6 +98,7 @@ public class User {
             myPrivateEventIDs.add(eventToJoin.eventID);
             // Add users name/displayname to Map, by defualt display name will be email
             eventToJoin.emailToDisplay.put(this.emailAddress, this.emailAddress);
+            myPrivateEventList.add(eventToJoin);
             ///////////////////////
             //***DATABASE CALL***//
             //***DATABASE CALL***//

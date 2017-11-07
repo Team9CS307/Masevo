@@ -1,5 +1,6 @@
 package com.example.brianduffy.masevo;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -36,8 +37,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.sql.Date;
+import java.util.ArrayList;
 
 public class MapofEventsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener {
     private static final int REQUEST_CHECK_SETTINGS = 2;
@@ -51,6 +56,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     private User user;
     private LocationRequest mLocationRequest;
     private boolean mRequestingLocationUpdates;
+    ArrayList<Event> testList = new ArrayList<>();
     /**
      * Stores the types of location services the client is interested in using. Used for checking
      * settings to determine if the device has optimal location settings.
@@ -111,10 +117,21 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
             startLocationUpdates();
 
+
     }
 
 
-
+    public void markEvents(GoogleMap googleMap) {
+        //TODO create a list of events from database and add markers to those locations
+        for (int i = 0; i < MainActivity.user.nearby.size(); i++) {
+            if (MainActivity.user.nearby.get(i) instanceof PublicEvent) {
+                LatLng eventloc = new LatLng(MainActivity.user.nearby.get(i).location.latitude,
+                        MainActivity.user.nearby.get(i).location.longitude);
+                googleMap.addMarker(new MarkerOptions().position(eventloc)
+                        .title(MainActivity.user.nearby.get(i).eventName));
+            }
+        }
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -173,16 +190,16 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    private void startLocationUpdates() {
+    private void startLocationUpdates() throws SecurityException{
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(this.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
+                    @SuppressLint("MissingPermission")
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                         //Log.i(TAG, "All location settings are satisfied.");
 
                         //noinspection MissingPermission
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                                mLocationCallback, Looper.myLooper());
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,mLocationCallback, Looper.myLooper());
 
                        // updateUI();
                     }
@@ -220,7 +237,6 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     }
     private void startUI() {
         if (ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -250,7 +266,6 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     private void updateUI() {
 
         if (ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -309,13 +324,13 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(final GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) throws SecurityException {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         //mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-
+        markEvents(mMap);
         if (ActivityCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling  **************************** NEED TO ACCOUNT FOR THIS ***************************
             //    ActivityCompat#requestPermissions

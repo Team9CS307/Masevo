@@ -21,7 +21,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
@@ -36,7 +35,7 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener,GoogleApiClient.ConnectionCallbacks {
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
-
+    static String emailAddress;
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9004;
 
@@ -72,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
         // [END build_client]
 
         // [START customize_button]
@@ -211,6 +211,7 @@ public class LoginActivity extends AppCompatActivity implements
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
             handleSignInResult(result);
         }
     }
@@ -222,6 +223,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+            emailAddress = result.getSignInAccount().getEmail();
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
         } else {
@@ -303,7 +305,8 @@ public class LoginActivity extends AppCompatActivity implements
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
             Intent main = new Intent(this,MainActivity.class);
             startActivity(main);
-            finish();
+           finish();
+
         } else {
             mStatusTextView.setText(R.string.signed_out);
 

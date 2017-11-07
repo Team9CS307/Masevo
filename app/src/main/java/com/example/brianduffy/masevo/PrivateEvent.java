@@ -13,7 +13,7 @@ import java.util.HashSet;
 public class PrivateEvent extends Event {
     // Use this to create a PrivateEvent
     public PrivateEvent(Date startTime, Date endTime, float latitude, float longitude,
-                        String eventDesc, String eventName, int radius, String creatorEmail ,Server server)
+                        String eventDesc, String eventName, float radius, String creatorEmail)
     {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -38,5 +38,8 @@ public class PrivateEvent extends Event {
         //***DATABASE CALL***//
         //***DATABASE CALL***//
         ///////////////////////
+        Server s = new Server();
+        //s.createPrivateEvent(eventID, eventName, eventDesc, startTime, endTime,
+        //        latitude, longitude, radius, creatorEmail);
     }
 }
