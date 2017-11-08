@@ -3,6 +3,7 @@ package com.example.brianduffy.masevo;
 import android.icu.text.SimpleDateFormat;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -15,8 +16,8 @@ public class PrivateEvent extends Event {
     public PrivateEvent(Date startTime, Date endTime, float latitude, float longitude,
                         String eventDesc, String eventName, float radius, String creatorEmail)
     {
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startTime;
+        this.endDate = endTime;
         this.location = new Location(latitude, longitude);
         this.eventDesc = eventDesc;
         this.eventName = eventName;
@@ -38,8 +39,62 @@ public class PrivateEvent extends Event {
         //***DATABASE CALL***//
         //***DATABASE CALL***//
         ///////////////////////
-        Server s = new Server();
         //s.createPrivateEvent(eventID, eventName, eventDesc, startTime, endTime,
         //        latitude, longitude, radius, creatorEmail);
+    }
+
+    public void createEvent() {}
+
+    void deleteEvent(int eventID) {
+
+    }
+
+    @Override
+    void modifyEvent(int eventID) {
+
+    }
+
+    @Override
+    void joinEvent(int eventID) {
+
+    }
+
+    @Override
+    void leaveEvent(int eventID) {
+
+    }
+
+    ArrayList<PrivateEvent> getEvents() {
+        return null;
+    }
+
+    @Override
+    void addUser(int eventID, String email) {
+
+    }
+
+    @Override
+    void removeUser(int eventID, String email) {
+
+    }
+
+    @Override
+    void banUser(int eventID, String email) {
+
+    }
+
+    @Override
+    void makeOwner(int eventID, String email) {
+
+    }
+
+    @Override
+    void makeHost(int eventID, String email) {
+
+    }
+
+    @Override
+    void makeUser(int eventID, String email) {
+
     }
 }

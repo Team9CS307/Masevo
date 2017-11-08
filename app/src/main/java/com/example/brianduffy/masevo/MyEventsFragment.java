@@ -166,8 +166,6 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
         //mockeventlist.remove(1);
         listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.events));
         swipe.setRefreshing(false);
-
-
     }
     @Override
     public void onRefresh() {
