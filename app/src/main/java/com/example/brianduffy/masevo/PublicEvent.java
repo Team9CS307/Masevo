@@ -57,7 +57,7 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void createPublicEvent() {
+    public void createEvent() {
         String methodName = "createPublicEvent";
         String emailTrim = hostEmail.substring(0,hostEmail.indexOf("@"));
 
@@ -120,10 +120,40 @@ public class PublicEvent extends Event implements Serializable{
         }).start();
     }
 
-    public ArrayList<PublicEvent> getPublicEvents () {
+    public ArrayList<PublicEvent> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();
+    }
+
+    @Override
+    void addUser(int eventID, String email) {
+
+    }
+
+    @Override
+    void removeUser(int eventID, String email) {
+
+    }
+
+    @Override
+    void banUser(int eventID, String email) {
+
+    }
+
+    @Override
+    void makeOwner(int eventID, String email) {
+
+    }
+
+    @Override
+    void makeHost(int eventID, String email) {
+
+    }
+
+    @Override
+    void makeUser(int eventID, String email) {
+
     }
 
     public void deleteEvent(int eventID) {
@@ -178,6 +208,21 @@ public class PublicEvent extends Event implements Serializable{
                 }
             }
         }).start();
+    }
+
+    @Override
+    void modifyEvent(int eventID) {
+
+    }
+
+    @Override
+    void joinEvent(int eventID) {
+
+    }
+
+    @Override
+    void leaveEvent(int eventID) {
+
     }
 
     public void modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,

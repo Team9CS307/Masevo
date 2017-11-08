@@ -1,37 +1,22 @@
 package com.example.brianduffy.masevo;
 
-import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-
-import static android.R.id.list;
-import static com.example.brianduffy.masevo.R.id.icon;
-import static com.example.brianduffy.masevo.R.id.swiperef;
-import static com.example.brianduffy.masevo.R.id.textView;
 //import static com.example.brianduffy.masevo.R.id.thing_proto;
 
 /**
@@ -74,7 +59,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
             case R.id.create_public_event:
                 textView.setText("");
-                new PublicEvent().getPublicEvents();
+                new PublicEvent().getEvents();
                 //sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
 
                 break;
@@ -212,7 +197,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
         PublicEvent e = new PublicEvent(eventName, eventDesc, startDate, endDate,
                 latitude, longitude, radius,email);
-        e.createPublicEvent();
+        e.createEvent();
         MainActivity.user.events.add(e);
         textView.setText(Arrays.toString(input.toArray()));
         input.clear();

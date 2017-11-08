@@ -33,7 +33,7 @@ public class ThreadGetEvents implements Runnable {
     @Override
     public void run() {
         String methodName;
-        methodName = "getPublicEvents";
+        methodName = "getEvents";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method", methodName);
         String query = "";

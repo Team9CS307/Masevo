@@ -5,6 +5,7 @@ import android.icu.text.StringPrepParseException;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -41,4 +42,19 @@ public abstract class Event implements Serializable{
         // HashSet of all active members of the event
     public HashMap<String, String> emailToDisplay = new HashMap<>();
         // HashMap relating a given email to a display name
+
+    abstract void createEvent();
+    abstract void deleteEvent(int eventID);
+    abstract void modifyEvent(int eventID);
+    abstract void joinEvent(int eventID);
+    abstract void leaveEvent(int eventID);
+
+    abstract ArrayList<? extends Event> getEvents ();
+
+    abstract void addUser (int eventID, String email);
+    abstract void removeUser (int eventID, String email);
+    abstract void banUser (int eventID, String email);
+    abstract void makeOwner(int eventID, String email);
+    abstract void makeHost(int eventID, String email);
+    abstract void makeUser(int eventID, String email);
 }
