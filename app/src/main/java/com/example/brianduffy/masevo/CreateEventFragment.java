@@ -3,6 +3,7 @@ package com.example.brianduffy.masevo;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,6 +13,17 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.GoogleApiActivity;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.GoogleMap;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Brian Duffy on 11/9/2017.
@@ -25,6 +37,10 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     Button start_time;
     TextView start_text;
     TextView end_text;
+    int PLACE_PICKER_REQUEST = 1;
+    Double latitude;
+    Double longitude;
+
     Button end_time;
     @Nullable
     @Override
@@ -38,7 +54,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
         title_text = getView().findViewById(R.id.event_name_text);
         title = getView().findViewById(R.id.event_name);
         desc_text = getView().findViewById(R.id.event_desc_text);
@@ -50,12 +65,24 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
 //        dpf.showDatePickerDialog(view);
         getView().findViewById(R.id.start_date).setOnClickListener(this);
         getView().findViewById(R.id.end_date).setOnClickListener(this);
+        getView().findViewById(R.id.location_but).setOnClickListener(this);
 //        getView().findViewById(R.id.create_private_event).setOnClickListener(this);
 //        getView().findViewById(R.id.enter).setOnClickListener(this);
 
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this.getContext(), data);
 
+                latitude = place.getLatLng().latitude;
+                longitude = place.getLatLng().longitude;
+                String toastMsg = "latitude: " + latitude + " longitude: " + longitude;
+                Toast.makeText(this.getContext(), toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -81,6 +108,19 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.location_but:
                 //TODO dod this
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+
+
                 break;
         }
     }
