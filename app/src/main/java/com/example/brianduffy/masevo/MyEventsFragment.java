@@ -69,7 +69,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
 
         //System.out.println(Arrays.toString(mockeventlist.toArray()));
 
-        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.events));
+        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.myevents));
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
@@ -164,9 +164,11 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
     }
     public void updateList() {
         //mockeventlist.remove(1);
-        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.events));
+        //TODO update via server call or something
+        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.myevents));
         swipe.setRefreshing(false);
     }
+
     @Override
     public void onRefresh() {
         updateList();

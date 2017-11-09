@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new HashSet<Integer>(), new HashSet<Integer>());
+        user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new ArrayList<Integer>(), new ArrayList<Integer>());
 
 
         File file = new File(getFilesDir(), save_loc);
@@ -87,9 +87,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        MainActivityFragment myEventsFragment = new MainActivityFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, myEventsFragment)
+//        MainActivityFragment mainActivityFragment = new MainActivityFragment();
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.content_frame, mainActivityFragment)
+//                .addToBackStack(null)
+//                .commit();
+        CreateEventFragment createEventFragment = new CreateEventFragment();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, createEventFragment)
                 .addToBackStack(null)
                 .commit();
 
@@ -122,6 +127,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStart() {
+        super.onStart();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -132,7 +139,6 @@ public class MainActivity extends AppCompatActivity
                     .build();
             mGoogleApiClient.connect();
         }
-        super.onStart();
 
     }
 
@@ -195,9 +201,14 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.home) {
 
-            MainActivityFragment mainActivityFragment = new MainActivityFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, mainActivityFragment)
+//            MainActivityFragment mainActivityFragment = new MainActivityFragment();
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.content_frame, mainActivityFragment)
+//                    .addToBackStack(null)
+//                    .commit();
+            CreateEventFragment createEventFragment = new CreateEventFragment();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, createEventFragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.mapofevents) {

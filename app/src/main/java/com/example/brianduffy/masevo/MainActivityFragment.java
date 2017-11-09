@@ -1,5 +1,7 @@
 package com.example.brianduffy.masevo;
 
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +11,8 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,13 +27,15 @@ import java.util.Arrays;
  * Created by Brian on 9/18/2017.
  */
 
-public class MainActivityFragment extends Fragment implements View.OnClickListener {
+public class MainActivityFragment extends Fragment implements View.OnClickListener,DatePickerDialog.OnDateSetListener {
     static TextView textView;
     EditText one;
     ArrayList<String> list = new ArrayList<>();
     User user;
     ArrayList<String> input = new ArrayList<>();
     int count = 0;
+    DatePickerFragment dpf;
+    Button mButton;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,13 +43,18 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
            Find any view  => v.findViewById()
           Specifying Application Context in Fragment => getActivity() */
         //returns the view
+
         return inflater.inflate(R.layout.fragment_main_activity,container,false);
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-       textView = getView().findViewById(R.id.textView);
-        one = getView().findViewById(R.id.editText);
 
+       textView = getView().findViewById(R.id.event_name_text);
+        one = getView().findViewById(R.id.event_name);
+
+//        dpf = new DatePickerFragment();// ERROR
+//        dpf.showDatePickerDialog(view);
+        getView().findViewById(R.id.start_date).setOnClickListener(this);
         getView().findViewById(R.id.create_public_event).setOnClickListener(this);
         getView().findViewById(R.id.create_private_event).setOnClickListener(this);
         getView().findViewById(R.id.enter).setOnClickListener(this);
@@ -51,11 +62,16 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
+    //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View view) {
 
         switch (view.getId()) {
+            case R.id.start_date:
+                DialogFragment picker = new DatePickerFragment();
+
+                picker.show(getActivity().getFragmentManager(), "datePicker");
 
             case R.id.create_public_event:
                 textView.setText("");
@@ -262,5 +278,10 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         }
 
         return true;
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
     }
 }

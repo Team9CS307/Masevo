@@ -82,7 +82,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
         switch(item.getItemId()) {
 
             case R.id.join:
-                MainActivity.user.events.add(MainActivity.user.nearby.
+                MainActivity.user.myevents.add(MainActivity.user.nearby.
                         get(((AdapterView.AdapterContextMenuInfo)info).position));
 
                 MainActivity.user.nearby.remove(((AdapterView.AdapterContextMenuInfo)info).position);

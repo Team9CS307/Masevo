@@ -12,21 +12,22 @@ import java.util.HashSet;
 public class User {
     String emailAddress;
     //HashMap<Integer, String> myEventList; // Why did we have a HashMap here not a HashSet?
-    HashSet<Integer> myPrivateEventIDs;
-    HashSet<Integer> myPublicEventIDs;
-    HashSet<PublicEvent> myPublicEventList;
-    HashSet<PrivateEvent> myPrivateEventList;
+    ArrayList<Integer> myPrivateEventIDs;
+    ArrayList<Integer> myPublicEventIDs;
+    ArrayList<PublicEvent> myPublicEventList;
+    ArrayList<PrivateEvent> myPrivateEventList;
+    ArrayList<Event> myevents;
     Location myLocation;
     ArrayList<PublicEvent> events = new ArrayList<>();
-    ArrayList<PublicEvent> nearby = new ArrayList<>();
+    ArrayList<Event> nearby = new ArrayList<>();
     ArrayList<Integer> myIDs = new ArrayList<>();
 
     // We decided that Brian would store the ID of events that users are subscribed to in a .txt
     // locally. So I am going to assume here that I will be passed 2 HashSest of ints containing IDs
     // One set will be from the .txt of public, the other set from the .txt of private
     // Upon quiting the app the user should write these IDS to the .txt files
-    public User(String emailAddress, float longitude, float latitude, HashSet<Integer> publicIDs,
-                HashSet<Integer> privateIDs)
+    public User(String emailAddress, float longitude, float latitude, ArrayList<Integer> publicIDs,
+                ArrayList<Integer> privateIDs)
     {
         this.emailAddress = emailAddress;
         this.myLocation = new Location(longitude, latitude);
@@ -38,9 +39,9 @@ public class User {
 
     // Fetch public events in the ID list from the database
     // This function can also be used to update myPublicEventList given the ID list is correct
-    public void populateMyPublicEventList(HashSet<Integer> publicIDs)
+    public void populateMyPublicEventList(ArrayList<Integer> publicIDs)
     {
-        myPublicEventList = new HashSet<>();
+        myPublicEventList = new ArrayList<>();
         for (int i : publicIDs)
         {
             ///////////////////////
@@ -55,9 +56,9 @@ public class User {
 
     // Fetch private events in the ID list from the database
     // This function can also be used to update myPrivateEventList given the ID list is correct
-    public void populateMyPrivateEventList(HashSet<Integer> privateIDs)
+    public void populateMyPrivateEventList(ArrayList<Integer> privateIDs)
     {
-        myPrivateEventList = new HashSet<>();
+        myPrivateEventList = new ArrayList<>();
         for (int i : privateIDs)
         {
             ///////////////////////
@@ -194,8 +195,8 @@ public class User {
     {
         if (event.hostList.contains(this.emailAddress))
         {
-            event.startTime = startTime;
-            event.endTime = endTime;
+//            event.startTime = startTime;
+//            event.endTime = endTime;
             ///////////////////////
             //***DATABASE CALL***//
             //***DATABASE CALL***//
@@ -209,8 +210,8 @@ public class User {
     {
         if (event.hostList.contains(this.emailAddress))
         {
-            event.startTime = startTime;
-            event.endTime = endTime;
+//            event.startTime = startTime;
+//            event.endTime = endTime;
             ///////////////////////
             //***DATABASE CALL***//
             //***DATABASE CALL***//
