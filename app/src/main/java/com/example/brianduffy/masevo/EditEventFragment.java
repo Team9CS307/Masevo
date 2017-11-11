@@ -6,7 +6,11 @@ package com.example.brianduffy.masevo;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -64,12 +68,14 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
         desc = getView().findViewById(R.id.event_desc);
         start_text = getView().findViewById(R.id.start_time);
         end_text = getView().findViewById(R.id.end_time);
-
+        Button button = (Button) getView().findViewById(R.id.create_event);
+        button.setText("Edit Event");
 //        dpf = new DatePickerFragment();// ERROR
 //        dpf.showDatePickerDialog(view);
         getView().findViewById(R.id.start_date).setOnClickListener(this);
         getView().findViewById(R.id.end_date).setOnClickListener(this);
         getView().findViewById(R.id.location_but).setOnClickListener(this);
+        getView().findViewById(R.id.create_event).setOnClickListener(this);
 //        getView().findViewById(R.id.create_private_event).setOnClickListener(this);
 //        getView().findViewById(R.id.enter).setOnClickListener(this);
         title.setText(event.eventName);
@@ -112,6 +118,20 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
                 break;
             case R.id.create_event:
                 //TODO add stuff here
+                NotificationManager notifManager=(NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                String eventData = "Event: " + event.eventName + "\n" +
+                        "Description: " + event.eventDesc + "\n" +
+                        "Start Date: " + event.startDate.toString() + "\n" +
+                        "End Date: " + event.endDate.toString() + "\n" +
+                        "Location: Latitude = " + event.location.latitude + " Longitude = " + event.location.longitude;
+
+                Notification notification = new Notification.Builder(getContext().
+                        getApplicationContext()).setSmallIcon(R.drawable.ic_notifications_black_24dp).setContentTitle("Masevo Event Changed").setContentText(eventData).build();
+
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                notifManager.notify(NotificationManager.IMPORTANCE_HIGH, notification);
+
                 break;
             case R.id.location_but:
                 //TODO dod this
