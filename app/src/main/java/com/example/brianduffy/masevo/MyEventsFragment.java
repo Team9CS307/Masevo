@@ -30,6 +30,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     SwipeRefreshLayout swipe;
     public static Event event;
     ArrayList<PublicEvent> testList = new ArrayList<>();
+    static int listindex;
 
     @Nullable
     @Override
@@ -37,31 +38,9 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
         //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
 
         testList = MainActivity.user.events; //TODO TODO use this to populate stuff
-
-//        float lat = 0f;
-//        float lon = 1f;
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 1","event description",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 2","event description",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 3","event description",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 4","event description",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 5","event description",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 6","event description",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 7","event description",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
-//        mockeventlist.add(new PublicEvent(new Date(3),new Date(500),lat,lon,
-//                "Public Event 8","event description 2f oifj wqoifj ep;ofi2jew pofijefo ijfepoqfijw",500,"String email"));
+        MainActivity.user.myevents = new ArrayList<>();
+        MainActivity.user.myevents.add(new PublicEvent("name","desc",
+                new Date(100000),new Date(100000), 0.0f,0.0f, 200f,"email"));
 
         //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
@@ -73,7 +52,8 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
-                event = MainActivity.user.events.get(itemPosition);
+                event = MainActivity.user.myevents.get(itemPosition);
+
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 EventMapFragment mapFragment = new EventMapFragment();
@@ -124,6 +104,21 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
 
+            case R.id.edit:
+                event = MainActivity.user.myevents.get((info).position);
+
+                FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
+                ft.setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                EditEventFragment editFragment = new EditEventFragment();
+                Bundle bundle = new Bundle();
+
+                // this event; GET data about event that was chosen
+                bundle.putSerializable("eventedit", event);
+                editFragment.setArguments(bundle);
+                ft.replace(R.id.content_frame, editFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                return true;
             case R.id.leave:
                 MainActivity.user.nearby.add(MainActivity.user.events.
                         get((info).position));

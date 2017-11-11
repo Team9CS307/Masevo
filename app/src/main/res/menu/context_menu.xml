@@ -10,5 +10,8 @@
     <item android:id="@+id/delete"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete" />
+    <item android:id="@+id/edit"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Edit Event" />
 
 </menu>

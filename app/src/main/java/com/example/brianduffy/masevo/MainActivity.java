@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
 //                .addToBackStack(null)
 //                .commit();
         CreateEventFragment createEventFragment = new CreateEventFragment();
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, createEventFragment)
                 .addToBackStack(null)
                 .commit();
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity
 //                    .addToBackStack(null)
 //                    .commit();
             CreateEventFragment createEventFragment = new CreateEventFragment();
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, createEventFragment)
                     .addToBackStack(null)
                     .commit();

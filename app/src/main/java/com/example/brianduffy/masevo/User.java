@@ -35,6 +35,8 @@ public class User {
         this.myPrivateEventIDs = privateIDs;
         populateMyPublicEventList(publicIDs);
         populateMyPrivateEventList(privateIDs);
+//        myevents.addAll(myPublicEventList);
+//        myevents.addAll(myPrivateEventList);
     }
 
     // Fetch public events in the ID list from the database

@@ -1,5 +1,8 @@
 package com.example.brianduffy.masevo;
 
+/**
+ * Created by Brian Duffy on 11/11/2017.
+ */
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -29,7 +32,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by Brian Duffy on 11/9/2017.
  */
 
-public class CreateEventFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
+public class EditEventFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
     TextView title_text;
     EditText title;
     TextView desc_text;
@@ -40,7 +43,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     int PLACE_PICKER_REQUEST = 1;
     Double latitude;
     Double longitude;
-
+    Event event;
     Button end_time;
     @Nullable
     @Override
@@ -49,7 +52,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
            Find any view  => v.findViewById()
           Specifying Application Context in Fragment => getActivity() */
         //returns the view
-
+        Bundle bundle = getArguments();
+        event= (Event) bundle.getSerializable("eventedit");
         return inflater.inflate(R.layout.create_event_layout,container,false); // TODO maybe true
     }
     @Override
@@ -68,7 +72,10 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         getView().findViewById(R.id.location_but).setOnClickListener(this);
 //        getView().findViewById(R.id.create_private_event).setOnClickListener(this);
 //        getView().findViewById(R.id.enter).setOnClickListener(this);
-
+        title.setText(event.eventName);
+        desc.setText(event.eventDesc);
+        start_text.setText(event.startDate.toString());
+        end_text.setText(event.endDate.toString());
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

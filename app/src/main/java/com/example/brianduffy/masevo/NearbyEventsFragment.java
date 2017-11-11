@@ -81,6 +81,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
 
+
             case R.id.join:
                 MainActivity.user.myevents.add(MainActivity.user.nearby.
                         get(((AdapterView.AdapterContextMenuInfo)info).position));
@@ -89,6 +90,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
                 updateList();
 
                 // TODO Server call
+
                 return true;
 
 
