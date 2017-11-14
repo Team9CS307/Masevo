@@ -32,8 +32,8 @@ public abstract class Event implements Serializable{
         // Radius of the event as set by a host
     //public MapView curEventMapView
     // Reference to the map for this event
-    public String hostEmail;
-        //The host's email
+    public String ownerEmail;
+        //The owners email
     public HashSet<String> hostList = new HashSet<>();
         // HashSet of hosts for the event
     public HashSet<String> attendeeList = new HashSet<>();
@@ -42,6 +42,7 @@ public abstract class Event implements Serializable{
         // HashSet of all active members of the event
     public HashMap<String, String> emailToDisplay = new HashMap<>();
         // HashMap relating a given email to a display name
+
 
     abstract void createEvent();
     abstract void deleteEvent(int eventID);
