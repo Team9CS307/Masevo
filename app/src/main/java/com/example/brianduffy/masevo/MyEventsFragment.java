@@ -105,6 +105,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
         switch(item.getItemId()) {
 
             case R.id.edit:
+
                 event = MainActivity.user.myevents.get((info).position);
 
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
@@ -139,7 +140,6 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
     }
     @Override
     public void onClick(View v) {
-        //TODO find way to generalize potentially infinite buttons that can be pressed
 
         FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -154,11 +154,10 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
         ft.addToBackStack(null);
         ft.commit();
 //
-        //TODO depending on what event is chosen, set static variable event to the chosen list item.
-        // TODO then commit a new fragment transaction. Inside new fragment, get location and name of event
+
     }
     public void updateList() {
-        //mockeventlist.remove(1);
+
         //TODO update via server call or something
         listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.myevents));
         swipe.setRefreshing(false);

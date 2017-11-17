@@ -92,12 +92,15 @@ public class MainActivity extends AppCompatActivity
 //                .replace(R.id.content_frame, mainActivityFragment)
 //                .addToBackStack(null)
 //                .commit();
+
+        // show the create event fragment on start up
         CreateEventFragment createEventFragment = new CreateEventFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, createEventFragment)
                 .addToBackStack(null)
                 .commit();
 
+        // check those permissions
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        // get their location based on ip address
         location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
     }
 
@@ -144,6 +148,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        // when drawer open this closes it
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -168,7 +173,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.sign_out_button) {
+        if (id == R.id.sign_out_button) { // user chose the signout button
             signOut();
             //finish();
             return true;
@@ -178,6 +183,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void signOut() {
+        // signout the user from the app
         final Intent login = new Intent(this, LoginActivity.class);
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -199,13 +205,15 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.home) {
+        if (id == R.id.home) { // home icon will likely be create event now
 
 //            MainActivityFragment mainActivityFragment = new MainActivityFragment();
 //            getSupportFragmentManager().beginTransaction()
 //                    .replace(R.id.content_frame, mainActivityFragment)
 //                    .addToBackStack(null)
 //                    .commit();
+
+            // AS of now the create event fragment is the home fragment
             CreateEventFragment createEventFragment = new CreateEventFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, createEventFragment)
@@ -213,6 +221,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else if (id == R.id.mapofevents) {
 
+            // start the map of events fragment
             MapofEventsFragment mapofEventsFragment = new MapofEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, mapofEventsFragment)
@@ -220,18 +229,20 @@ public class MainActivity extends AppCompatActivity
                     .commit();
 
         } else if (id == R.id.nav_slideshow) {
+            // TODO either remove or add something here
 
         } else if (id == R.id.nav_manage) {
+            // TODO either remove or add something here
 
         } else if (id == R.id.myevents) {
-
+            // start the my events listview fragment
             MyEventsFragment myEventsFragment = new MyEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, myEventsFragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nearbyevents) {
-
+            // start the nearby events fragment // TODO need to add functionality to this
             NearbyEventsFragment nearbyEventsFragment = new NearbyEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, nearbyEventsFragment)
@@ -239,6 +250,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         }
 
+        // close drawer on item selected
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -256,7 +268,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause() { // TODO FIGURE out what we are doing with file io
         super.onPause();
         File f = new File(getFilesDir(), save_loc);
         try {

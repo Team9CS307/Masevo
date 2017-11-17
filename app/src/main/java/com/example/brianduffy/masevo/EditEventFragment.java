@@ -3,33 +3,25 @@ package com.example.brianduffy.masevo;
 /**
  * Created by Brian Duffy on 11/11/2017.
  */
-import android.app.DatePickerDialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.GoogleApi;
-import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.GoogleMap;
-
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -56,12 +48,20 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
            Find any view  => v.findViewById()
           Specifying Application Context in Fragment => getActivity() */
         //returns the view
+
+        // get data from a previous activity unpack bundle
         Bundle bundle = getArguments();
+
+        // build copy of serilaized data with key eventedit
         event= (Event) bundle.getSerializable("eventedit");
-        return inflater.inflate(R.layout.create_event_layout,container,false); // TODO maybe true
+
+        // expand the view
+        return inflater.inflate(R.layout.create_event_layout,container,false);
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
+        // initialize the instance variables
         title_text = getView().findViewById(R.id.event_name_text);
         title = getView().findViewById(R.id.event_name);
         desc_text = getView().findViewById(R.id.event_desc_text);
@@ -69,15 +69,16 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
         start_text = getView().findViewById(R.id.start_time);
         end_text = getView().findViewById(R.id.end_time);
         Button button = (Button) getView().findViewById(R.id.create_event);
+
         button.setText("Edit Event");
-//        dpf = new DatePickerFragment();// ERROR
-//        dpf.showDatePickerDialog(view);
+
+        // set onclick listeners for buttons
         getView().findViewById(R.id.start_date).setOnClickListener(this);
         getView().findViewById(R.id.end_date).setOnClickListener(this);
         getView().findViewById(R.id.location_but).setOnClickListener(this);
         getView().findViewById(R.id.create_event).setOnClickListener(this);
-//        getView().findViewById(R.id.create_private_event).setOnClickListener(this);
-//        getView().findViewById(R.id.enter).setOnClickListener(this);
+
+        // set text to what event parameters are before editing
         title.setText(event.eventName);
         desc.setText(event.eventDesc);
         start_text.setText(event.startDate.toString());
@@ -85,12 +86,17 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // handle place picker request
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this.getContext(), data);
 
+                // store lat and lon for later use
                 latitude = place.getLatLng().latitude;
                 longitude = place.getLatLng().longitude;
+
+                // build toast message to let user know location
                 String toastMsg = "latitude: " + latitude + " longitude: " + longitude;
                 Toast.makeText(this.getContext(), toastMsg, Toast.LENGTH_LONG).show();
             }
@@ -101,23 +107,31 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.start_date:
+            case R.id.start_date: // start date button id
+
+                // build timepicker
                 DialogFragment timestart = new TimePickerFragment();
                 timestart.show(getActivity().getFragmentManager(),"timeSPicker");
+
+                // build datepicker
                 DialogFragment start = new DatePickerFragment();
                 start.show(getActivity().getFragmentManager(), "startPicker");
 
-
                 break;
-            case R.id.end_date:
+            case R.id.end_date: // end date button id
 
+                // build timepicker
                 DialogFragment timeend = new TimePickerFragment();
                 timeend.show(getActivity().getFragmentManager(),"timeEPicker");
+
+                // build datepicker
                 DialogFragment end = new DatePickerFragment();
                 end.show(getActivity().getFragmentManager(), "endPicker");
+
                 break;
-            case R.id.create_event:
-                //TODO add stuff here
+            case R.id.create_event: // create event button id
+
+                // build notification for event change (can be changed later)
                 NotificationManager notifManager=(NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                 String eventData = "Event: " + event.eventName + "\n" +
                         "Description: " + event.eventDesc + "\n" +
@@ -125,6 +139,7 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
                         "End Date: " + event.endDate.toString() + "\n" +
                         "Location: Latitude = " + event.location.latitude + " Longitude = " + event.location.longitude;
 
+                // TODO change drawable icon to masevo icon
                 Notification notification = new Notification.Builder(getContext().
                         getApplicationContext()).setSmallIcon(R.drawable.ic_notifications_black_24dp).setContentTitle("Masevo Event Changed").setContentText(eventData).build();
 
@@ -132,11 +147,21 @@ public class EditEventFragment extends android.support.v4.app.Fragment implement
 
                 notifManager.notify(NotificationManager.IMPORTANCE_HIGH, notification);
 
-                break;
-            case R.id.location_but:
-                //TODO dod this
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
+                //TODO ********** Server call here
+
+
+
+                //TODO *************************
+                //TODO will need to repopulate the event after the event has been modified.
+
+                // return to where the user was when they first initiated edit event
+                getActivity().onBackPressed();
+                break;
+            case R.id.location_but: // location button id
+
+                // create placepicker
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                 try {
                     startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);

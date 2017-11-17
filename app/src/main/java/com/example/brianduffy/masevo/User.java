@@ -22,6 +22,8 @@ public class User {
     ArrayList<Event> nearby = new ArrayList<>();
     ArrayList<Integer> myIDs = new ArrayList<>();
 
+    // TODO instead of using HashSets, use Arraylists. It is much easier to use with the listview fragments
+
     // We decided that Brian would store the ID of events that users are subscribed to in a .txt
     // locally. So I am going to assume here that I will be passed 2 HashSest of ints containing IDs
     // One set will be from the .txt of public, the other set from the .txt of private
@@ -35,8 +37,8 @@ public class User {
         this.myPrivateEventIDs = privateIDs;
         populateMyPublicEventList(publicIDs);
         populateMyPrivateEventList(privateIDs);
-//        myevents.addAll(myPublicEventList);
-//        myevents.addAll(myPrivateEventList);
+//        myevents.addAll(myPublicEventList); //TODO need to uncomment
+//        myevents.addAll(myPrivateEventList); // TODO need to use eventually for listivew poplation
     }
 
     // Fetch public events in the ID list from the database

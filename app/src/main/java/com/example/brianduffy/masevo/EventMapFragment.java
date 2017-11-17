@@ -57,16 +57,18 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
-//        MyEventsFragment.mockeventlist
+        // get data sent from previous activity
         Bundle bundle = getArguments();
+
+        // rebuild serialized object with key event
         event= (Event) bundle.getSerializable("event");
+        // expand view
         View view = inflater.inflate(R.layout.fragment_event_map, null, false);
 
+        // get map call back from google api DO NOT CHANGE
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.eventmap);
         mapFragment.getMapAsync(this);
-        // Get Location Manager and check for GPS & Network location services
 
         return view;
     }
@@ -77,8 +79,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
+        // Initialize location client for location services
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity()); // NULL pointer here maybe
 
 
@@ -88,12 +89,10 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode,resultCode,data);
-        Log.d("onActivityResult()", Integer.toString(resultCode));
 
-        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode)
         {
-            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED: // user does not have loc serv on
                 switch (resultCode)
                 {
                     case Activity.RESULT_OK:
@@ -121,9 +120,9 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
+        // get the lat and lon from the serialized data sent from MainActivity and set locaiton to that
+        // this data is the location of the event that they clicked from the listview fragments
+        // fragment
         LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
         googleMap.addMarker(new MarkerOptions().position(eventloc)
                 .title(event.eventName));

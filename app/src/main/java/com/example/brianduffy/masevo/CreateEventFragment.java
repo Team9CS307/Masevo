@@ -54,6 +54,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        //Initilize variables
         title_text = getView().findViewById(R.id.event_name_text);
         title = getView().findViewById(R.id.event_name);
         desc_text = getView().findViewById(R.id.event_desc_text);
@@ -61,25 +62,26 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         start_text = getView().findViewById(R.id.start_time);
         end_text = getView().findViewById(R.id.end_time);
 
-//        dpf = new DatePickerFragment();// ERROR
-//        dpf.showDatePickerDialog(view);
+        // Set onclick listenters to buttons
+
         getView().findViewById(R.id.start_date).setOnClickListener(this);
         getView().findViewById(R.id.end_date).setOnClickListener(this);
         getView().findViewById(R.id.location_but).setOnClickListener(this);
-//        getView().findViewById(R.id.create_private_event).setOnClickListener(this);
-//        getView().findViewById(R.id.enter).setOnClickListener(this);
 
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
+        if (requestCode == PLACE_PICKER_REQUEST) { // Response from google Place Picker Activity
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(this.getContext(), data);
+                Place place = PlacePicker.getPlace(this.getContext(), data); // Get place data
 
                 latitude = place.getLatLng().latitude;
                 longitude = place.getLatLng().longitude;
-                String toastMsg = "latitude: " + latitude + " longitude: " + longitude;
+                String toastMsg = "latitude: " + latitude + " longitude: " + longitude; // Display
+
                 Toast.makeText(this.getContext(), toastMsg, Toast.LENGTH_LONG).show();
+                //TODO now use data
+
             }
         }
     }
@@ -88,28 +90,31 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.start_date:
+            case R.id.start_date: // startdate button id
                 DialogFragment timestart = new TimePickerFragment();
-                timestart.show(getActivity().getFragmentManager(),"timeSPicker");
+                timestart.show(getActivity().getFragmentManager(),"timeSPicker"); // start Timepicker
                 DialogFragment start = new DatePickerFragment();
-                start.show(getActivity().getFragmentManager(), "startPicker");
-
+                start.show(getActivity().getFragmentManager(), "startPicker"); // start datepicker
 
                 break;
-            case R.id.end_date:
+            case R.id.end_date: // enddate button id
+                //TODO the timepicker is started first because it is at the bottom of the view stack
+                //TODO then the datepicker is put on top. Once datepicker is done, timepicker moves to view.
 
                 DialogFragment timeend = new TimePickerFragment();
-                timeend.show(getActivity().getFragmentManager(),"timeEPicker");
+                timeend.show(getActivity().getFragmentManager(),"timeEPicker"); //start timepicker
                 DialogFragment end = new DatePickerFragment();
-                end.show(getActivity().getFragmentManager(), "endPicker");
+                end.show(getActivity().getFragmentManager(), "endPicker"); // start datepicker
                 break;
-            case R.id.create_event:
+            case R.id.create_event: // create event button id
                 //TODO add stuff here
-                break;
-            case R.id.location_but:
-                //TODO dod this
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
+
+
+                break;
+            case R.id.location_but: // pick location button id
+
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                 try {
                     startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);

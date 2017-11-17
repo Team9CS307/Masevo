@@ -24,30 +24,24 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
+
 
         return new DatePickerDialog(getActivity(),
-                AlertDialog.THEME_HOLO_DARK, this, year, month, day);
+                AlertDialog.THEME_HOLO_DARK, this, year, month, day); // return new instance
     }
 
-    public void showDatePickerDialog(View v) {
 
-        DialogFragment newFragment = new DatePickerFragment();
-
-        newFragment.show(getParentFragment().getFragmentManager(), "datePicker");
-    }
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        // Do something with the date chosen by the user
-       // String s = this.getTag();
 
         if (this.getTag().equals("startPicker")) {
             TextView start = getActivity().findViewById(R.id.start_time);
             start.setText(String.format("%d:%02d:%02d",year,month,day));
+            //show user the date they chose
 
         } else if (this.getTag().equals("endPicker")) {
             TextView end = getActivity().findViewById(R.id.end_time);
             end.setText(String.format("%d:%02d:%02d",year,month,day));
+            //show user the date they chose
         }
 
     }

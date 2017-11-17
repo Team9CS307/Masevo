@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.Status;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO *************** dont touch this, it works
 /**
  * Activity to demonstrate basic retrieval of the Google user's ID, email address, and basic
  * profile.
