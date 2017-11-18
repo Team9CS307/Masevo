@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import static com.example.brianduffy.masevo.MyEventsFragment.mockeventlist;
 
 /**
  * Created by Brian on 9/18/2017.
@@ -84,9 +83,9 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
 
             case R.id.join:
                 MainActivity.user.myevents.add(MainActivity.user.nearby.
-                        get(((AdapterView.AdapterContextMenuInfo)info).position));
+                        get((info).position));
 
-                MainActivity.user.nearby.remove(((AdapterView.AdapterContextMenuInfo)info).position);
+                MainActivity.user.nearby.remove((info).position);
                 updateList();
 
                 // TODO Server call

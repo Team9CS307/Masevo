@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +31,8 @@ import static android.app.Activity.RESULT_OK;
  * Created by Brian Duffy on 11/9/2017.
  */
 
-public class CreateEventFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
+public class CreateEventFragment extends android.support.v4.app.Fragment implements  View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener{
     TextView title_text;
     EditText title;
     TextView desc_text;
@@ -40,8 +43,11 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     int PLACE_PICKER_REQUEST = 1;
     Double latitude;
     Double longitude;
-
+    Switch eventSwitch;
     Button end_time;
+    Button getLoc;
+    Boolean eventType = true; // true is public, false is private
+    TextView eventTypeText;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,12 +67,17 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         desc = getView().findViewById(R.id.event_desc);
         start_text = getView().findViewById(R.id.start_time);
         end_text = getView().findViewById(R.id.end_time);
+        eventSwitch = getView().findViewById(R.id.event_type);
+        start_time = getView().findViewById(R.id.start_date);
+        end_time = getView().findViewById(R.id.end_date);
+        getLoc = getView().findViewById(R.id.location_but);
+        eventTypeText = getView().findViewById(R.id.event_type_text);
 
-        // Set onclick listenters to buttons
-
-        getView().findViewById(R.id.start_date).setOnClickListener(this);
-        getView().findViewById(R.id.end_date).setOnClickListener(this);
-        getView().findViewById(R.id.location_but).setOnClickListener(this);
+        // Set onclick listeners to buttons
+        eventSwitch.setOnCheckedChangeListener(this);
+        start_time.setOnClickListener(this);
+        end_time.setOnClickListener(this);
+        getLoc.setOnClickListener(this);
 
     }
 
@@ -106,12 +117,6 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 DialogFragment end = new DatePickerFragment();
                 end.show(getActivity().getFragmentManager(), "endPicker"); // start datepicker
                 break;
-            case R.id.create_event: // create event button id
-                //TODO add stuff here
-
-
-
-                break;
             case R.id.location_but: // pick location button id
 
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -125,8 +130,34 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     e.printStackTrace();
                 }
 
+                break;
+            case R.id.create_event: // create event button id
+                //TODO add stuff here
+                if (eventType) {
+                // TODO create public event and add to myevents list and nearby list
+
+                }
 
                 break;
+
         }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.event_type:
+                if (isChecked) {
+
+                    eventTypeText.setText("Private Event");
+                    eventType = false;
+                } else {
+
+                    eventTypeText.setText("Public Event");
+                    eventType = true;
+                }
+
+        }
+
     }
 }

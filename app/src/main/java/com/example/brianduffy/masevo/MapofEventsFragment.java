@@ -77,6 +77,8 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
 
     public static MapofEventsFragment newInstance() {
+
+        //instantiate a new Map of Events Fragment
         MapofEventsFragment fragment = new MapofEventsFragment();
         return fragment;
     }
@@ -85,11 +87,10 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
-
-
+    // init a view and inflate it with the fragment map of events
         View view = inflater.inflate(R.layout.fragment_map_of_events, null, false);
 
+        // create the google map view here
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -104,10 +105,10 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
+        // initilize location services to get users location over time
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity()); // NULL pointer here maybe
 
+        // used to check if the user has locations services on or off
         mSettingsClient = LocationServices.getSettingsClient(this.getActivity());
 
         createLocationRequest();
@@ -122,11 +123,21 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
 
     public void markEvents(GoogleMap googleMap) {
+
         //TODO create a list of events from database and add markers to those locations
+        // used to mark events from the nearby arraylist of the given user. This will be defined
+        // populated in Oncreate of the MainActivity
+        //TODO
         for (int i = 0; i < MainActivity.user.nearby.size(); i++) {
+
+            // only show public events that are nearby
             if (MainActivity.user.nearby.get(i) instanceof PublicEvent) {
+
+                // get the lat and lon
                 LatLng eventloc = new LatLng(MainActivity.user.nearby.get(i).location.latitude,
                         MainActivity.user.nearby.get(i).location.longitude);
+
+                // mark their location on the google map
                 googleMap.addMarker(new MarkerOptions().position(eventloc)
                         .title(MainActivity.user.nearby.get(i).eventName));
             }
@@ -136,18 +147,19 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode,resultCode,data);
-        Log.d("onActivityResult()", Integer.toString(resultCode));
 
-        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode)
         {
+                // case where user has location services turned off
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                 switch (resultCode)
                 {
                     case Activity.RESULT_OK:
                     {
-                        // All required changes were successfully made
+                        // All required changes were successfully made, show toast message
                         Toast.makeText(getActivity(), "Location enabled by user!", Toast.LENGTH_LONG).show();
+
+                        //start the location updates
                         startLocationUpdates();
                         break;
                     }
@@ -155,6 +167,9 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
                     {
                         // The user was asked to change settings, but chose not to
                         Toast.makeText(getActivity(), "Location not enabled, user cancelled.", Toast.LENGTH_LONG).show();
+
+                        // TODO the user refused location services handle this accordingly
+
                         break;
                     }
                     default:
@@ -168,6 +183,8 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
 //
     private void createLocationRequest() {
+
+        // init location request
         mLocationRequest = new LocationRequest();
 
         // Sets the desired interval for active location updates. This interval is
@@ -191,17 +208,20 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
 
 
     private void startLocationUpdates() throws SecurityException{
+
+        // start loc updates iff their location settings are turned on.
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(this.getActivity(), new OnSuccessListener<LocationSettingsResponse>() {
                     @SuppressLint("MissingPermission")
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        //Log.i(TAG, "All location settings are satisfied.");
 
-                        //noinspection MissingPermission
+                        // The user's location services are turned on. we are good to go!
+
+                        // start the looper for getting location every time interval defined in
+                        // createLocationRequest()
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest,mLocationCallback, Looper.myLooper());
 
-                       // updateUI();
                     }
                 })
                 .addOnFailureListener(this.getActivity(), new OnFailureListener() {
@@ -209,96 +229,47 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
                     public void onFailure(@NonNull Exception e) {
                         int statusCode = ((ApiException) e).getStatusCode();
                         switch (statusCode) {
+                            // users loc services are off,
                             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-//                                Log.i(TAG, "Location settings are not satisfied. Attempting to upgrade " +
-//                                        "location settings ");
+
                                 try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
+                                    // create resolution intent to allow the user to turn on loc services
+                                    // in app
                                     ResolvableApiException rae = (ResolvableApiException) e;
                                     rae.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
                                 } catch (IntentSender.SendIntentException sie) {
-                                    //Log.i(TAG, "PendingIntent unable to execute request.");
                                     sie.printStackTrace();
                                 }
                                 break;
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                                 String errorMessage = "Location settings are inadequate, and cannot be " +
                                         "fixed here. Fix in Settings.";
-                                // Log.e(TAG, errorMessage);
                                 Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
                                 mRequestingLocationUpdates = false;
                         }
 
-                       // updateUI();
-                       // startUI();
-                    }
-                });
-    }
-    private void startUI() {
-        if (ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this.getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-
-                            onLocationChanged(location);
-                            startLocationUpdates();
-
-                            // mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
-                        }
-
                     }
                 });
     }
 
-
-    private void updateUI() {
-
-        if (ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this.getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-
-                            onLocationChanged(location);
-                            // mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
-                        }
-                    }
-                });
-    }
 
     @Override
     public void onPause() {
         super.onPause();
+
+        // when screen is put in background, stop location updates to reduce map api calls
         stopLocationUpdates();
     }
 
     private void stopLocationUpdates() {
+
+        // remove location updates. handled by google
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
     private void createLocationCallback() {
+
+        // When user reopens app this is started
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -311,6 +282,8 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void buildLocationSettingsRequest() {
+
+        // build location settings dialog for permission handleing
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
@@ -325,23 +298,21 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
      */
     @Override
     public void onMapReady(final GoogleMap googleMap) throws SecurityException {
+
+        // init the google map enabling location zoom and go to my location
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        //mMap.getUiSettings().setAllGesturesEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        markEvents(mMap);
-        if (ActivityCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling  **************************** NEED TO ACCOUNT FOR THIS ***************************
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
 
+        // mark the events on the nearyby events arraylist
+        markEvents(mMap);
+
+        // This is here to make program compile. Already check for permissions above
+        if (ActivityCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        // get user's last location
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this.getActivity(), new OnSuccessListener<Location>() {
                     @Override
@@ -349,49 +320,57 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
 
+                            // check if user has moved since last location.
                             onLocationChanged(location);
+
+                            // got user's location, now start the location updates
                             startLocationUpdates();
 
-                            // mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude())));
                         }
                         if (location == null) {
+
+                            // if location cannot be retrieved, continue to try and wait until they
+                            // allow location services
                             onMapReady(googleMap);
                         }
                     }
                 });
-
-
-        // mMap.setOnCameraMoveListener(this);
-        //  onLocationChanged(mFusedLocationClient.getLastLocation().getResult());
 
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
+
+        // user has moved, get new lat and lon and move camera to that location
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
-        // locationManager.removeUpdates(this);
     }
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 
+        // needed to compile. may handle this later
     }
 
     @Override
     public void onProviderEnabled(String s) {
 
+        //if user has internet, try that location. Not implemented due to lack of precise location
+        // needed to compile
     }
 
     @Override
     public void onProviderDisabled(String s) {
 
+        //if user has internet, try that location. Not implemented due to lack of precise location
+        // needed to compile
     }
 
     @Override
     public void onCameraMove() {
 
+        //handle what happens when user moves map arround. not needed here
     }
 }

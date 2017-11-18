@@ -16,7 +16,7 @@ public class User {
     ArrayList<Integer> myPublicEventIDs;
     ArrayList<PublicEvent> myPublicEventList;
     ArrayList<PrivateEvent> myPrivateEventList;
-    ArrayList<Event> myevents;
+    ArrayList<Event> myevents = new ArrayList<>();
     Location myLocation;
     ArrayList<PublicEvent> events = new ArrayList<>();
     ArrayList<Event> nearby = new ArrayList<>();

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new ArrayList<Integer>(), new ArrayList<Integer>());
 
-
+        //TODO determine what to do with this. Are we doing it or not? read in from file my events id's
         File file = new File(getFilesDir(), save_loc);
         try {
             BufferedReader fr = new BufferedReader(new FileReader(file));

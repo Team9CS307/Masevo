@@ -24,21 +24,15 @@ import java.util.ArrayList;
  */
 
 public class MyEventsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener{
-  //  User user = new User("brian",0f,0f,new HashSet<Integer>(),new HashSet<Integer>());
-    static ArrayList<PublicEvent> mockeventlist = new ArrayList<>();
     ListView listview;
     SwipeRefreshLayout swipe;
     public static Event event;
-    ArrayList<PublicEvent> testList = new ArrayList<>();
-    static int listindex;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
 
-        testList = MainActivity.user.events; //TODO TODO use this to populate stuff
-        MainActivity.user.myevents = new ArrayList<>();
         MainActivity.user.myevents.add(new PublicEvent("name","desc",
                 new Date(100000),new Date(100000), 0.0f,0.0f, 200f,"email"));
 
@@ -121,14 +115,19 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 ft.commit();
                 return true;
             case R.id.leave:
-                MainActivity.user.nearby.add(MainActivity.user.events.
-                        get((info).position));
+                if (MainActivity.user.myevents.get((info).position) instanceof PublicEvent) {
 
-                MainActivity.user.events.remove((info).position);
+                    //TODO figure out for nearby events
+                    MainActivity.user.nearby.add(MainActivity.user.myevents.
+                            get((info).position));
+                }
+
+                MainActivity.user.myevents.remove((info).position);
+
                 updateList();
                 return true;
             case R.id.delete:
-                MainActivity.user.events.remove((info).position);
+                MainActivity.user.myevents.remove((info).position);
                 updateList();
                 //TODO remove event from database **********************
 
