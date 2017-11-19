@@ -35,12 +35,12 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
         if (this.getTag().equals("startPicker")) {
             TextView start = getActivity().findViewById(R.id.start_time);
-            start.setText(String.format("%d:%02d:%02d",year,month,day));
+            start.setText(String.format("%d-%02d-%02d",year,month+1,day));
             //show user the date they chose
 
         } else if (this.getTag().equals("endPicker")) {
             TextView end = getActivity().findViewById(R.id.end_time);
-            end.setText(String.format("%d:%02d:%02d",year,month,day));
+            end.setText(String.format("%d-%02d-%02d",year,month+1,day));
             //show user the date they chose
         }
 

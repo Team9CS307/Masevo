@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,10 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -41,10 +46,11 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     TextView start_text;
     TextView end_text;
     int PLACE_PICKER_REQUEST = 1;
-    Double latitude;
-    Double longitude;
+    float latitude;
+    float longitude;
     Switch eventSwitch;
     Button end_time;
+    Button createButton;
     Button getLoc;
     Boolean eventType = true; // true is public, false is private
     TextView eventTypeText;
@@ -72,12 +78,15 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         end_time = getView().findViewById(R.id.end_date);
         getLoc = getView().findViewById(R.id.location_but);
         eventTypeText = getView().findViewById(R.id.event_type_text);
+        createButton = getView().findViewById(R.id.create_event);
 
         // Set onclick listeners to buttons
         eventSwitch.setOnCheckedChangeListener(this);
         start_time.setOnClickListener(this);
         end_time.setOnClickListener(this);
         getLoc.setOnClickListener(this);
+        createButton.setOnClickListener(this);
+
 
     }
 
@@ -86,8 +95,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this.getContext(), data); // Get place data
 
-                latitude = place.getLatLng().latitude;
-                longitude = place.getLatLng().longitude;
+                latitude = (float) place.getLatLng().latitude;
+                longitude = (float) place.getLatLng().longitude;
                 String toastMsg = "latitude: " + latitude + " longitude: " + longitude; // Display
 
                 Toast.makeText(this.getContext(), toastMsg, Toast.LENGTH_LONG).show();
@@ -133,8 +142,47 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 break;
             case R.id.create_event: // create event button id
                 //TODO add stuff here
+                String eventName = title.getText().toString();
+                String eventDesc = desc.getText().toString();
+                float radius;
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+                Date jud1 = null;
+                Date jud2 = null;
+
+                try {
+                    jud1 = new Date(sdf.parse(start_text.getText().toString()).getTime());
+                    jud2 = new Date(sdf.parse(end_text.getText().toString()).getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 if (eventType) {
+                    //TODO verify data is set correctly
+
                 // TODO create public event and add to myevents list and nearby list
+                    MainActivity.user.myevents.add(new PublicEvent(eventName,eventDesc,jud1,jud2,
+                            latitude,longitude,50f,MainActivity.user.emailAddress));
+
+                    FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    MyEventsFragment myEventsFragment = new MyEventsFragment();
+                    ft.replace(R.id.content_frame, myEventsFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                } else {
+                    MainActivity.user.myevents.add(new PrivateEvent(eventName,eventDesc,jud1,jud2,
+                            latitude,longitude,50f,MainActivity.user.emailAddress));
+
+                    //TODO go to myeventslist
+                    FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    MyEventsFragment myEventsFragment = new MyEventsFragment();
+                    ft.replace(R.id.content_frame, myEventsFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+
 
                 }
 

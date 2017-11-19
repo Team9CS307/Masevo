@@ -33,8 +33,8 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
 
-        MainActivity.user.myevents.add(new PublicEvent("name","desc",
-                new Date(100000),new Date(100000), 0.0f,0.0f, 200f,"email"));
+//        MainActivity.user.myevents.add(new PublicEvent("name","desc",
+//                new Date(100000),new Date(100000), 0.0f,0.0f, 200f,"email"));
 
         //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
@@ -99,6 +99,8 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
         switch(item.getItemId()) {
 
             case R.id.edit:
+                // TODO handle the changing from public to private event
+
 
                 event = MainActivity.user.myevents.get((info).position);
 

@@ -44,13 +44,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             // show new start time to user
 
             TextView start = getActivity().findViewById(R.id.start_time);
-            start.append(String.format(":%02d:%02d",hourOfDay,minute));
+            start.append(String.format(" %02d:%02d",hourOfDay,minute));
 
         } else if (this.getTag().equals("timeEPicker")) {
             //show new end time to user
 
             TextView end = getActivity().findViewById(R.id.end_time);
-            end.append(String.format(":%02d:%02d",hourOfDay,minute));
+            end.append(String.format(" %02d:%02d",hourOfDay,minute));
         }
     }
 }
