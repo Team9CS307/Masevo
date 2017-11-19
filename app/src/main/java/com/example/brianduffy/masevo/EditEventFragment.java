@@ -97,8 +97,11 @@ Switch.OnCheckedChangeListener{
         editButton.setOnClickListener(this);
         editButton.setText("Edit Event");
 
+        //repopulate fields with event data
         title.setText(event.eventName);
         desc.setText(event.eventDesc);
+        latitude = event.location.latitude;
+        longitude = event.location.longitude;
         SimpleDateFormat sfd = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
         start_text.setText(sfd.format(event.startDate));
@@ -184,8 +187,9 @@ Switch.OnCheckedChangeListener{
                     //TODO verify data is set correctly
 
                     // TODO create public event and add to myevents list and nearby list
-                    MainActivity.user.myevents.add(new PublicEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress));
+                    event = new PublicEvent(eventName,eventDesc,jud1,jud2,
+                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                    MainActivity.user.myevents.add(event);
 
 //                    FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
 //                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -194,8 +198,9 @@ Switch.OnCheckedChangeListener{
 //                    ft.addToBackStack(null);
 //                    ft.commit();
                 } else {
-                    MainActivity.user.myevents.add(new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress));
+                    event = new PrivateEvent(eventName,eventDesc,jud1,jud2,
+                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                    MainActivity.user.myevents.add(event);
 
                     //TODO go to myeventslist
 //                    FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
