@@ -103,7 +103,7 @@ Switch.OnCheckedChangeListener{
         latitude = event.location.latitude;
         longitude = event.location.longitude;
         SimpleDateFormat sfd = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-
+        //if (event.startDate)
         start_text.setText(sfd.format(event.startDate));
         end_text.setText(sfd.format(event.endDate));
         if (event instanceof PublicEvent) {

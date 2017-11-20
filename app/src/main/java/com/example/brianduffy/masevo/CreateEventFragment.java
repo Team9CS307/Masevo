@@ -147,7 +147,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 String eventDesc = desc.getText().toString();
                 float radius;
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
                 Date jud1 = null;
                 Date jud2 = null;
