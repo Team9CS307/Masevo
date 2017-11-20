@@ -30,7 +30,11 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
-
+//TODO *********************************************************************************************
+/*TODO
+    need to implement arraylist of geofences for every event. Upon entry of the current user,
+    add the current user to the arraylist of the event and update the event arraylist
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final String TAG = "MainActivity";
@@ -48,7 +52,6 @@ public class MainActivity extends AppCompatActivity
     final String save_loc = "save.txt";
     String text = "";
 
-    //    ArrayList<String> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,12 +106,7 @@ public class MainActivity extends AppCompatActivity
         // check those permissions
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         // get their location based on ip address
@@ -273,8 +271,8 @@ public class MainActivity extends AppCompatActivity
         File f = new File(getFilesDir(), save_loc);
         try {
             PrintWriter pw = new PrintWriter(f);
-            for (int i = 0; i < user.events.size(); i++) {
-                pw.write(user.events.get(i).eventID + ",");
+            for (int i = 0; i < user.myevents.size(); i++) {
+                pw.write(user.myevents.get(i).eventID + ",");
             }
             pw.close();
         } catch (FileNotFoundException e) {

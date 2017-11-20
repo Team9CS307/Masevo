@@ -140,6 +140,9 @@ Switch.OnCheckedChangeListener{
         switch (v.getId()) {
             case R.id.start_date: // start date button id
 
+                //clear the textview
+                start_text.setText("");
+
                 // build timepicker
                 DialogFragment timestart = new TimePickerFragment();
                 timestart.show(getActivity().getFragmentManager(),"timeSPicker");
@@ -150,6 +153,9 @@ Switch.OnCheckedChangeListener{
 
                 break;
             case R.id.end_date: // end date button id
+
+                //clear the textview
+                end_text.setText("");
 
                 // build timepicker
                 DialogFragment timeend = new TimePickerFragment();
@@ -182,33 +188,33 @@ Switch.OnCheckedChangeListener{
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                int count = 0;
+                if (validateEventName(eventName)) count++;
+                if (validateEventDesc(eventDesc)) count++;
+                if (validateDateText(start_text.getText().toString(),true)) count++;
+                if (validateDateText(end_text.getText().toString(),false)) count++;
 
+                //TODO modify validate Location to handle unchanged locations
+                if (validateLocation(new Location(latitude,longitude))) count++;
+                else Toast.makeText(getContext(),"Please choose a location!",Toast.LENGTH_LONG).show();
+
+                if (count != 5) {
+                    Toast.makeText(getContext(),"Invalid input. Try again.",Toast.LENGTH_LONG).show();
+
+                    break;
+                }
                 if (eventType) {
-                    //TODO verify data is set correctly
 
                     // TODO create public event and add to myevents list and nearby list
                     event = new PublicEvent(eventName,eventDesc,jud1,jud2,
                             latitude,longitude,50f,MainActivity.user.emailAddress);
                     MainActivity.user.myevents.add(event);
 
-//                    FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
-//                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//                    MyEventsFragment myEventsFragment = new MyEventsFragment();
-//                    ft.replace(R.id.content_frame, myEventsFragment);
-//                    ft.addToBackStack(null);
-//                    ft.commit();
                 } else {
+                    // create private event
                     event = new PrivateEvent(eventName,eventDesc,jud1,jud2,
                             latitude,longitude,50f,MainActivity.user.emailAddress);
                     MainActivity.user.myevents.add(event);
-
-                    //TODO go to myeventslist
-//                    FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
-//                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//                    MyEventsFragment myEventsFragment = new MyEventsFragment();
-//                    ft.replace(R.id.content_frame, myEventsFragment);
-//                    ft.addToBackStack(null);
-//                    ft.commit();
 
 
                 }
@@ -222,7 +228,7 @@ Switch.OnCheckedChangeListener{
 
                 // TODO change drawable icon to masevo icon
                 Notification notification = new Notification.Builder(getContext().
-                        getApplicationContext()).setSmallIcon(R.drawable.ic_notifications_black_24dp).setContentTitle("Masevo Event Changed").setContentText(eventData).build();
+                        getApplicationContext()).setSmallIcon(R.mipmap.ic_masevo_app).setContentTitle("Masevo Event Changed").setContentText(eventData).build();
 
                 notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
@@ -256,6 +262,51 @@ Switch.OnCheckedChangeListener{
 
                 break;
         }
+    }
+    // used to check for valid eventname
+    private boolean validateEventName(String eventname) {
+        if(!eventname.matches("[A-Za-z0-9 .'_-]*")) {
+            title_text.setText(R.string.invalid_eventname);
+            return false;
+        }
+        else if (eventname.length() == 0 || eventname.length() > 24) {
+            title_text.setText(R.string.invalid_eventname2);
+            return false;
+        }
+        return true;
+    }
+    // used to check for valid eventDesc
+    private boolean validateEventDesc(String eventdesc) {
+
+        if (eventdesc.length() > 300) {
+            desc_text.setText(R.string.invalid_eventdesc);
+            return false;
+        }
+        return true;
+    }
+
+    // used to check for valid date and time
+    private boolean validateDateText(String datetext, boolean isStart) {
+
+        if (datetext.length() == 10 || datetext.length() == 6 || datetext.length() == 0) {
+            if (isStart) {
+                start_text.setText(R.string.invalid_datetext);
+            } else {
+                end_text.setText(R.string.invalid_datetext);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    //used to check for valid location TODO what if user doesnt want to edit the event's location?
+    private boolean validateLocation(Location latLon) {
+        //TODO what if location is off?
+        if (latLon.latitude == MainActivity.user.myLocation.latitude &&
+                latLon.longitude == MainActivity.user.myLocation.longitude) {
+            return false;
+        }
+        return true;
     }
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

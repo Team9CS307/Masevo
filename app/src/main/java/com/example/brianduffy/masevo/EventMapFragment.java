@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.location.LocationSettingsStatusCodes;
@@ -25,6 +27,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -42,6 +46,9 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
     private LocationManager locationManager;
     private android.location.Location loc;
     private User user;
+    private Geofence geofence;
+    private GeofencingRequest mGeofenceRequest;
+    private String GeoReqID = "myEvent";
     public static EventMapFragment newInstance() {
         EventMapFragment fragment = new EventMapFragment();
         return fragment;
@@ -69,6 +76,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.eventmap);
         mapFragment.getMapAsync(this);
+
 
         return view;
     }
@@ -124,8 +132,11 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         // this data is the location of the event that they clicked from the listview fragments
         // fragment
         LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
-        googleMap.addMarker(new MarkerOptions().position(eventloc)
-                .title(event.eventName));
+
+        googleMap.addMarker(new MarkerOptions().position(eventloc).title(event.eventName));
+
+
+
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(eventloc, 15);
         googleMap.moveCamera(cameraUpdate);
     }

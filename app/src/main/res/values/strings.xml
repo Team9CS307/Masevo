@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Masevo</string>
-    <string name="server_client_id">68605354319-do34thhur588mfcfjg2rs80qh1pslec2.apps.googleusercontent.com</string>
+    <string name="server_client_id" translatable="false">68605354319-do34thhur588mfcfjg2rs80qh1pslec2.apps.googleusercontent.com</string>
+
+    <!--error messages-->
+    <string name="invalid_eventname" translatable="false">Event names can only contain \".\'_-\" and alphanumeric characters.</string>
+    <string name="invalid_eventname2" translatable="false">Event names must not be empty and must be 24 characters or less!</string>
+    <string name="invalid_eventdesc" translatable="false">Event name can be at most 300 characters.</string>
+    <string name="invalid_datetext" translatable="false">You need to choose both a start date and time!</string>
 
     <!-- Button text -->
     <string name="btn_logout_from_google">Logout from Google</string>
