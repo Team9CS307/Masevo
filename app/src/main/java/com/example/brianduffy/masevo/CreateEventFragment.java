@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import static android.app.Activity.RESULT_OK;
+import static android.widget.Toast.makeText;
 
 /**
  * Created by Brian Duffy on 11/9/2017.
@@ -99,7 +100,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 longitude = (float) place.getLatLng().longitude;
                 String toastMsg = "latitude: " + latitude + " longitude: " + longitude; // Display
 
-                Toast.makeText(this.getContext(), toastMsg, Toast.LENGTH_LONG).show();
+                makeText(this.getContext(), toastMsg, Toast.LENGTH_LONG).show();
                 //TODO now use data
 
             }
@@ -146,7 +147,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 String eventDesc = desc.getText().toString();
                 float radius;
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
                 Date jud1 = null;
                 Date jud2 = null;
@@ -157,9 +158,20 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                int count = 0;
+                if (validateEventName(eventName)) count++;
+                if (validateEventDesc(eventDesc)) count++;
+                if (validateDateText(start_text.getText().toString(),true)) count++;
+                if (validateDateText(end_text.getText().toString(),false)) count++;
+                if (validateLocation(new Location(latitude,longitude))) count++;
+                else Toast.makeText(getContext(),"Please choose a location!",Toast.LENGTH_LONG).show();
 
+                if (count != 5) {
+                    Toast.makeText(getContext(),"Invalid input. Try again.",Toast.LENGTH_LONG).show();
+
+                    break;
+                }
                 if (eventType) {
-                    //TODO verify data is set correctly
 
                 // TODO create public event and add to myevents list and nearby list
                     MainActivity.user.myevents.add(new PublicEvent(eventName,eventDesc,jud1,jud2,
@@ -183,7 +195,6 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     ft.addToBackStack(null);
                     ft.commit();
 
-
                 }
 
                 break;
@@ -191,6 +202,46 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         }
     }
 
+    private boolean validateEventName(String eventname) {
+        if(!eventname.matches("[A-Za-z0-9 .'_-]*")) {
+            title_text.setText(R.string.invalid_eventname);
+            return false;
+        }
+        else if (eventname.length() == 0 || eventname.length() > 24) {
+            title_text.setText(R.string.invalid_eventname2);
+            return false;
+        }
+        return true;
+    }
+    private boolean validateEventDesc(String eventdesc) {
+
+        if (eventdesc.length() > 300) {
+            desc_text.setText(R.string.invalid_eventdesc);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateDateText(String datetext, boolean isStart) {
+
+        if (datetext.length() == 10 || datetext.length() == 6 || datetext.length() == 0) {
+            if (isStart) {
+                start_text.setText(R.string.invalid_datetext);
+            } else {
+                end_text.setText(R.string.invalid_datetext);
+            }
+            return false;
+        }
+        return true;
+    }
+    private boolean validateLocation(Location latLon) {
+        //TODO what if location is off?
+        if (latLon.latitude == MainActivity.user.myLocation.latitude &&
+                latLon.longitude == MainActivity.user.myLocation.longitude) {
+            return false;
+        }
+        return true;
+    }
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {

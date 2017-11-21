@@ -35,7 +35,6 @@ public class PublicEvent extends Event implements Serializable{
      * Used for call to server which do not require an event to be present
      */
     public PublicEvent() {};
-
     public PublicEvent(String eventName, String eventDesc, Date startDate, Date endDate,
                        float latitude, float longitude, float radius, String creatorEmail)
     {
@@ -54,6 +53,7 @@ public class PublicEvent extends Event implements Serializable{
 
         this.eventID = (eventName + eventDesc + startDate + endDate + latitude + longitude +
                 radius + Double.toString(Math.random())).hashCode();
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -289,4 +289,5 @@ public class PublicEvent extends Event implements Serializable{
             }
         }).start();
     }
+
 }
