@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file:///u/data/u95/vpasuma/StudioProjects/Masevo/Masevo.iml" filepath="/u/data/u95/vpasuma/StudioProjects/Masevo/Masevo.iml" />
       <module fileurl="file://$PROJECT_DIR$/Masevo.iml" filepath="$PROJECT_DIR$/Masevo.iml" />
       <module fileurl="file://C:\Users\Brian Duffy\AndroidStudioProjects\Masevo\Masevo\Masevo2.iml" filepath="C:\Users\Brian Duffy\AndroidStudioProjects\Masevo\Masevo\Masevo2.iml" />
+      <module fileurl="file:///u/data/u95/vpasuma/StudioProjects/Masevo/app/app.iml" filepath="/u/data/u95/vpasuma/StudioProjects/Masevo/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

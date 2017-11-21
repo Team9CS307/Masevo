@@ -226,8 +226,13 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.feedback) {
             // TODO either remove or add something here
+            FeedbackFragment feedbackFragment = new FeedbackFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, feedbackFragment)
+                    .addToBackStack(null)
+                    .commit();
 
         } else if (id == R.id.nav_manage) {
             // TODO either remove or add something here
