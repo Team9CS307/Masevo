@@ -3,6 +3,8 @@ package com.example.brianduffy.masevo;
 import android.icu.text.SimpleDateFormat;
 import android.icu.text.StringPrepParseException;
 
+import com.google.android.gms.location.GeofencingClient;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -57,4 +59,5 @@ public abstract class Event implements Serializable{
     abstract void makeOwner(int eventID, String email);
     abstract void makeHost(int eventID, String email);
     abstract void makeUser(int eventID, String email);
+
 }

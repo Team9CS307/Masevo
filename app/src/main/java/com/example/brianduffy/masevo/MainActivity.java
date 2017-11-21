@@ -1,9 +1,12 @@
 package com.example.brianduffy.masevo;
 
+import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +18,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -22,12 +27,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 //TODO *********************************************************************************************
@@ -36,15 +46,15 @@ import java.util.HashSet;
     add the current user to the arraylist of the event and update the event arraylist
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener, GoogleApiClient.ConnectionCallbacks {
     private static final String TAG = "MainActivity";
     GoogleApiClient mGoogleApiClient;
     static final int REQUEST_LOCATION = 45;
     ArrayList<Event> events = new ArrayList<>();
     MapofEventsFragment mapevents;
     LocationManager lm;
-    //    TextView textView;
-//    EditText one;
+
     static User user;
     static android.location.Location location;
 
@@ -52,11 +62,15 @@ public class MainActivity extends AppCompatActivity
     final String save_loc = "save.txt";
     String text = "";
 
+    private PendingIntent mGeofenceRequestIntent;
+
+
+    private ArrayList<Geofence> mGeofenceList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new ArrayList<Integer>(), new ArrayList<Integer>());
-
         //TODO determine what to do with this. Are we doing it or not? read in from file my events id's
         File file = new File(getFilesDir(), save_loc);
         try {
@@ -90,11 +104,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-//        MainActivityFragment mainActivityFragment = new MainActivityFragment();
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.content_frame, mainActivityFragment)
-//                .addToBackStack(null)
-//                .commit();
+
 
         // show the create event fragment on start up
         CreateEventFragment createEventFragment = new CreateEventFragment();
@@ -111,7 +121,80 @@ public class MainActivity extends AppCompatActivity
         }
         // get their location based on ip address
         location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//        user.myevents.add(new PublicEvent("name","desc",new Date(1000000),new Date(100000000),
+//                (float)location.getLatitude(),(float)location.getLongitude(),100f,user.emailAddress));
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addApi(LocationServices.API)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .build();
+//
+//        mGoogleApiClient.connect();
+//        mGeofenceList = new ArrayList<>();
+//        populateGeofenceList();
+
+
     }
+
+    private PendingIntent getGeofenceTransitionPendingIntent() {
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        // Get the PendingIntent for the geofence monitoring request.
+        // Send a request to add the current geofences.
+        mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
+        LocationServices.GeofencingApi.addGeofences(mGoogleApiClient, mGeofenceList,
+                mGeofenceRequestIntent);
+        Toast.makeText(this, "geofence has begun!", Toast.LENGTH_SHORT).show();
+//        finish();
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (null != mGeofenceRequestIntent) {
+            LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, mGeofenceRequestIntent);
+        }
+    }
+
+    private void populateGeofenceList() {
+
+        for (Event e: user.myevents) {
+
+            mGeofenceList.add(new Geofence.Builder()
+                    // Set the request ID of the geofence. This is a string to identify this
+                    // geofence.
+                    .setRequestId(e.eventName)
+
+                    // Set the circular region of this geofence.
+                    .setCircularRegion(
+                            e.location.latitude,
+                            e.location.longitude,
+                            e.radius
+                    )
+
+                    // Set the expiration duration of the geofence. This geofence gets automatically
+                    // removed after this period of time.
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+
+                    // Set the transition types of interest. Alerts are only generated for these
+                    // transition. We track entry and exit transitions in this sample.
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+
+                    // Create the geofence.
+                    .build());
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -130,6 +213,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+//        if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
+//            mGoogleApiClient.connect();
+//        }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -290,6 +376,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+//        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+//            mGoogleApiClient.disconnect();
+//        }
 
     }
 }
