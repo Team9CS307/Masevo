@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Brian on 9/18/2017.
@@ -33,14 +34,9 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
 
-//        MainActivity.user.myevents.add(new PublicEvent("name","desc",
-//                new Date(100000),new Date(100000), 0.0f,0.0f, 200f,"email"));
-
-        //android.widget.ListAdapter listAdapter = new ListAdapter(this.getContext(),(String[])mockeventlist.toArray());
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
          listview = v.findViewById(R.id.listview);
 
-        //System.out.println(Arrays.toString(mockeventlist.toArray()));
 
         listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.myevents));
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,12 +74,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     }
 
 
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//        //TODO
-//    }
+
 @Override
 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
     super.onCreateContextMenu(menu, v, menuInfo);
@@ -117,7 +108,23 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 ft.commit();
                 return true;
             case R.id.leave:
-                if (MainActivity.user.myevents.get((info).position) instanceof PublicEvent) {
+
+                Event temp = MainActivity.user.myevents.get((info).position);
+
+                // check to see if user has creator permissions
+                if (temp.eventUsers.userPerm.get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
+                    for (Map.Entry<String,Permission> entry: temp.eventUsers.userPerm.entrySet()) {
+                        // find user who has host privlages and set them to creator
+                        if (entry.getValue().hasHostPermissions()) {
+                            entry.setValue(new Permission(2));
+                            break;
+                        }
+                    }
+                    //remove leaver from eventUsers
+                    temp.eventUsers.userPerm.remove(MainActivity.user.emailAddress);
+                    temp.eventUsers.userActive.remove(MainActivity.user.emailAddress);
+                }
+                if (temp instanceof PublicEvent) {
 
                     //TODO figure out for nearby events
                     MainActivity.user.nearby.add(MainActivity.user.myevents.
@@ -129,7 +136,12 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 updateList();
                 return true;
             case R.id.delete:
-                MainActivity.user.myevents.remove((info).position);
+                    // only delete if user has creator permissions
+                if (MainActivity.user.myevents.get((info).position).eventUsers.userPerm.
+                        get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
+                    MainActivity.user.myevents.remove((info).position);
+
+                }
                 updateList();
                 //TODO remove event from database **********************
 

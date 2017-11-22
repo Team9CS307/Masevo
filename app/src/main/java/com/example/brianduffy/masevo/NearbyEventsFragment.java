@@ -44,7 +44,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
                 event = MainActivity.user.nearby.get(itemPosition);
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                EventMapFragment mapFragment = new EventMapFragment();
+                NearbyMapFragment mapFragment = new NearbyMapFragment();
 //
                 Bundle bundle = new Bundle();
 
@@ -82,8 +82,11 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
 
 
             case R.id.join:
-                MainActivity.user.myevents.add(MainActivity.user.nearby.
-                        get((info).position));
+                 // add user to event as a regular attendee and set thier status as active
+                Event toJoin = MainActivity.user.nearby.get((info).position);
+                toJoin.eventUsers.userPerm.put(MainActivity.user.emailAddress,new Permission(0));
+                toJoin.eventUsers.userActive.put(MainActivity.user.emailAddress, true);
+                MainActivity.user.myevents.add(toJoin);
 
                 MainActivity.user.nearby.remove((info).position);
                 updateList();
@@ -115,7 +118,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
     public void onClick(View v) {
         FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        EventMapFragment mapFragment = new EventMapFragment();
+        NearbyMapFragment mapFragment = new NearbyMapFragment();
 
         Bundle bundle = new Bundle();
         Event event =  null;

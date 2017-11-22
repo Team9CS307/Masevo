@@ -1,10 +1,12 @@
 package com.example.brianduffy.masevo;
 
+import java.io.Serializable;
+
 /**
  * Created by Josh on 11/18/2017.
  */
 
-public class Permission {
+public class Permission implements Serializable {
     private int permissionLevel;
     public Permission (int permissionLevel) {
         this.permissionLevel = permissionLevel;

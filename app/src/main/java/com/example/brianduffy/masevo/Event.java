@@ -44,6 +44,7 @@ public abstract class Event implements Serializable{
         // HashSet of all active members of the event
     public HashMap<String, String> emailToDisplay = new HashMap<>();
         // HashMap relating a given email to a display name
+    public EventUsers eventUsers = new EventUsers(new ArrayList<String>(),new ArrayList<Permission>(),new ArrayList<Boolean>());
 
     abstract void createEvent();
     abstract void deleteEvent(int eventID);

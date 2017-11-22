@@ -173,9 +173,14 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 }
                 if (eventType) {
 
-                // TODO create public event and add to myevents list and nearby list
-                    MainActivity.user.myevents.add(new PublicEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress));
+                    PublicEvent pubEvent = new PublicEvent(eventName,eventDesc,jud1,jud2,
+                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                    pubEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
+                    pubEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
+                            new Permission(2));
+
+                    //TODO add to the maps in eventUsers Class
+                    MainActivity.user.myevents.add(pubEvent);
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -184,8 +189,13 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     ft.addToBackStack(null);
                     ft.commit();
                 } else {
-                    MainActivity.user.myevents.add(new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress));
+                    PrivateEvent privEvent = new PrivateEvent(eventName,eventDesc,jud1,jud2,
+                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                    privEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
+                    privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
+                            new Permission(2));
+                    MainActivity.user.myevents.add(privEvent);
+
 
                     //TODO go to myeventslist
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
