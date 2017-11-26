@@ -1,5 +1,6 @@
 package com.example.brianduffy.masevo;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -22,6 +23,8 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiActivity;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,6 +35,8 @@ import java.text.SimpleDateFormat;
 
 import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.makeText;
+import static com.example.brianduffy.masevo.MainActivity.mGeofenceRequestIntent;
+import static com.example.brianduffy.masevo.MainActivity.mGoogleApiClient;
 
 /**
  * Created by Brian Duffy on 11/9/2017.
@@ -107,6 +112,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onClick(View v) {
 
@@ -174,14 +180,39 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 if (eventType) {
 
                     PublicEvent pubEvent = new PublicEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                            latitude,longitude,100f,MainActivity.user.emailAddress);
                     pubEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     pubEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
+                    MainActivity.mGeofenceList.add(new Geofence.Builder()
+                            // Set the request ID of the geofence. This is a string to identify this
+                            // geofence.
+                            .setRequestId(pubEvent.eventName)
+
+                            // Set the circular region of this geofence.
+                            .setCircularRegion(
+                                    pubEvent.location.latitude,
+                                    pubEvent.location.longitude,
+                                    pubEvent.radius
+                            )
+
+                            // Set the expiration duration of the geofence. This geofence gets automatically
+                            // removed after this period of time.
+                            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+
+                            // Set the transition types of interest. Alerts are only generated for these
+                            // transition. We track entry and exit transitions in this sample.
+                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                    Geofence.GEOFENCE_TRANSITION_EXIT)
+
+                            // Create the geofence.
+                            .build());
+                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
+                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
+
 
                     //TODO add to the maps in eventUsers Class
                     MainActivity.user.myevents.add(pubEvent);
-
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();

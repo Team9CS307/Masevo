@@ -2,10 +2,12 @@ package com.example.brianduffy.masevo;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener, GoogleApiClient.ConnectionCallbacks {
     private static final String TAG = "MainActivity";
-    GoogleApiClient mGoogleApiClient;
+    static GoogleApiClient mGoogleApiClient;
     static final int REQUEST_LOCATION = 45;
     ArrayList<Event> events = new ArrayList<>();
     MapofEventsFragment mapevents;
@@ -62,10 +64,10 @@ public class MainActivity extends AppCompatActivity
     final String save_loc = "save.txt";
     String text = "";
 
-    private PendingIntent mGeofenceRequestIntent;
+    static PendingIntent mGeofenceRequestIntent;
 
 
-    private ArrayList<Geofence> mGeofenceList;
+    public static ArrayList<Geofence> mGeofenceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,40 +123,57 @@ public class MainActivity extends AppCompatActivity
         }
         // get their location based on ip address
         location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//        user.myevents.add(new PublicEvent("name","desc",new Date(1000000),new Date(100000000),
-//                (float)location.getLatitude(),(float)location.getLongitude(),100f,user.emailAddress));
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addApi(LocationServices.API)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .build();
-//
-//        mGoogleApiClient.connect();
-//        mGeofenceList = new ArrayList<>();
-//        populateGeofenceList();
+        user.myevents.add(new PublicEvent("name","desc",new Date(1000000),new Date(100000000),
+                40.4257f,-86.92446f,100f,user.emailAddress));
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
+        mGoogleApiClient.connect();
+        mGeofenceList = new ArrayList<>();
+        populateGeofenceList();
 
     }
 
+
+
+
     private PendingIntent getGeofenceTransitionPendingIntent() {
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+    public static GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
+        // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
+        // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
+        // is already inside that geofence.
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+
+        // Add the geofences to be monitored by geofencing service.
+        builder.addGeofences(mGeofenceList);
+
+        // Return a GeofencingRequest.
+        return builder.build();
+    }
     @SuppressLint("MissingPermission")
     @Override
     public void onConnected(Bundle connectionHint) {
         // Get the PendingIntent for the geofence monitoring request.
         // Send a request to add the current geofences.
         mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
-        LocationServices.GeofencingApi.addGeofences(mGoogleApiClient, mGeofenceList,
-                mGeofenceRequestIntent);
+
+        LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,getGeofencingRequest(),mGeofenceRequestIntent);
+
         Toast.makeText(this, "geofence has begun!", Toast.LENGTH_SHORT).show();
-//        finish();
     }
 
 
@@ -213,9 +232,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-//        if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
-//            mGoogleApiClient.connect();
-//        }
+        if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -282,6 +301,12 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateGeofenceList();
+
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -291,11 +316,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.home) { // home icon will likely be create event now
 
-//            MainActivityFragment mainActivityFragment = new MainActivityFragment();
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.content_frame, mainActivityFragment)
-//                    .addToBackStack(null)
-//                    .commit();
+
 
             // AS of now the create event fragment is the home fragment
             CreateEventFragment createEventFragment = new CreateEventFragment();
@@ -376,9 +397,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-//        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
-//            mGoogleApiClient.disconnect();
-//        }
+        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
 
     }
 }

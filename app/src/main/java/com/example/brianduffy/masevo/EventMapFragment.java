@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.*;
 import android.os.Bundle;
 
@@ -35,6 +36,7 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,7 +153,10 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         // this data is the location of the event that they clicked from the listview fragments
         // fragment
         LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
-
+        Circle circle = googleMap.addCircle(new CircleOptions()
+                .center(eventloc)
+                .radius(event.radius)
+                .strokeColor(Color.BLUE));
         googleMap.addMarker(new MarkerOptions().position(eventloc).title(event.eventName));
 
 
