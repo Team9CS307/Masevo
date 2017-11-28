@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/blue_grey_800"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey">
+
+        <TextView
+            android:id="@+id/event_desc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="Enter the event description"
+            android:textColor="@color/masevo_green"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_name" />
+
+        <TextView
+            android:id="@+id/start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_desc" />
+
+        <TextView
+            android:id="@+id/end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:textSize="14sp"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/start_date" />
+
+        <EditText
+            android:id="@+id/event_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="textPersonName"
+            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_desc_text" />
+
+        <TextView
+            android:id="@+id/event_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="24dp"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="Enter the name of the event"
+            android:textColor="@color/masevo_green"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="textPersonName"
+            android:textColor="@android:color/black"
+            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_name_text" />
+
+        <Button
+            android:id="@+id/start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:onClick="showDatePickerDialog"
+            android:text="Choose a start time"
+            android:textStyle="bold"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/start_time" />
+
+        <Button
+            android:id="@+id/end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:onClick="showDatePickerDialog"
+            android:text="Choose an end time"
+            android:textStyle="bold"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/end_time" />
+
+        <Button
+            android:id="@+id/location_but"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Choose Location"
+            android:textStyle="bold"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/end_date" />
+
+        <Button
+            android:id="@+id/create_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:forceHasOverlappingRendering="false"
+            android:text="Create event"
+            android:textStyle="bold"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_type" />
+
+        <Switch
+            android:id="@+id/event_type"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:splitTrack="false"
+            android:switchMinWidth="75dp"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_type_text" />
+
+        <TextView
+            android:id="@+id/event_type_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Public Event"
+            android:textColor="@color/masevo_green"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/location_but" />
+
+    </android.support.constraint.ConstraintLayout>
+</RelativeLayout>
