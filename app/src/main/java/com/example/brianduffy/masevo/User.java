@@ -46,12 +46,7 @@ public class User {
 
     }
 
-    //TODO server call here
-    public void updateLocation(Location loc) {
-        //set location to loc
 
-
-    }
 
     // Fetch public events in the ID list from the database
     // This function can also be used to update myPublicEventList given the ID list is correct

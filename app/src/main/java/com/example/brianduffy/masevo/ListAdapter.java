@@ -25,7 +25,6 @@ class ListAdapter extends ArrayAdapter<Event> {
 
 //        Event[] s = (Event[])data.toArray();
 //        String g = s[0].eventName;
-        // TODO Auto-generated constructor stub
         this.context = context;
         this.data = data;
         inflater = (LayoutInflater) context
@@ -34,25 +33,21 @@ class ListAdapter extends ArrayAdapter<Event> {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return data.size();
     }
 
     @Override
     public Event getItem(int position) {
-        // TODO Auto-generated method stub
         return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         //View vi = convertView;
         Event e = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view

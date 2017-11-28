@@ -32,7 +32,6 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
 
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
          listview = v.findViewById(R.id.listview);
@@ -118,11 +117,18 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                         if (entry.getValue().hasHostPermissions()) {
                             entry.setValue(new Permission(2));
                             break;
+                        } else {
+
+                            MainActivity.user.myevents.remove((info).position);
+                            //TODO now server removes event from database
+
+
                         }
                     }
                     //remove leaver from eventUsers
                     temp.eventUsers.userPerm.remove(MainActivity.user.emailAddress);
                     temp.eventUsers.userActive.remove(MainActivity.user.emailAddress);
+
                 }
                 if (temp instanceof PublicEvent) {
 

@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity
 
         // check those permissions
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
 
             return;
         }
@@ -186,7 +185,7 @@ public class MainActivity extends AppCompatActivity
         // inexact. You may not receive updates at all if no location sources are available, or
         // you may receive them slower than requested. You may also receive updates faster than
         // requested if other applications are requesting location at a faster interval.
-        mLocationRequest.setInterval(1000* 60 * 5); // five minutes
+        mLocationRequest.setInterval(1000 * 60 * 2); // five minutes
 
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
@@ -215,6 +214,9 @@ public class MainActivity extends AppCompatActivity
     }
     public void onLocationChanged(Location location) {
 
+        //************************** DEBUG *****************************
+        Toast.makeText(this,"Lat: " + location.getLatitude() +
+                " Lon: " + location.getLongitude(),Toast.LENGTH_SHORT).show();
         // user has moved, get new lat and lon and move camera to that location
        //TODO server call to update user's location
 
@@ -260,6 +262,7 @@ public class MainActivity extends AppCompatActivity
                                     // in app
                                     ResolvableApiException rae = (ResolvableApiException) e;
                                     rae.startResolutionForResult(MainActivity.this,REQUEST_CHECK_SETTINGS);
+
                                 } catch (IntentSender.SendIntentException sie) {
                                     sie.printStackTrace();
                                 }
@@ -305,6 +308,7 @@ public class MainActivity extends AppCompatActivity
         // Get the PendingIntent for the geofence monitoring request.
         // Send a request to add the current geofences.
         startLocationUpdates();
+
         //TODO comment out when doing espresso testing
         if (mGeofenceList.size() == 0) {
             mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
@@ -445,6 +449,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        startLocationUpdates();
         populateGeofenceList();
 
     }
@@ -475,7 +480,6 @@ public class MainActivity extends AppCompatActivity
                     .commit();
 
         } else if (id == R.id.feedback) {
-            // TODO either remove or add something here
             FeedbackFragment feedbackFragment = new FeedbackFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, feedbackFragment)
@@ -493,7 +497,7 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nearbyevents) {
-            // start the nearby events fragment // TODO need to add functionality to this
+            // start the nearby events fragment
             NearbyEventsFragment nearbyEventsFragment = new NearbyEventsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, nearbyEventsFragment)
@@ -521,6 +525,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() { // TODO FIGURE out what we are doing with file io
         super.onPause();
+        stopLocationUpdates();
+
         File f = new File(getFilesDir(), save_loc);
         try {
             PrintWriter pw = new PrintWriter(f);

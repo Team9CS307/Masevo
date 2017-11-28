@@ -35,7 +35,6 @@ public class UserListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        // TODO implement you own logic with ID
         return position;
     }
 
@@ -51,7 +50,6 @@ public class UserListAdapter extends BaseAdapter {
 
         Map.Entry<String, Permission> item = getItem(position);
 
-        // TODO replace findViewById by ViewHolder
         ((TextView) result.findViewById(R.id.username)).setText(item.getKey());
         ((TextView) result.findViewById(R.id.perm_level)).setText(item.getValue().getPermissionLevel() + "");
 

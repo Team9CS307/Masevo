@@ -168,7 +168,6 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
                         // The user was asked to change settings, but chose not to
                         Toast.makeText(getActivity(), "Location not enabled, user cancelled.", Toast.LENGTH_LONG).show();
 
-                        // TODO the user refused location services handle this accordingly
 
                         break;
                     }
