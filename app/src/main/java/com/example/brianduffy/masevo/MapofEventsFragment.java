@@ -207,7 +207,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    private void startLocationUpdates() throws SecurityException{
+    private void startLocationUpdates() throws SecurityException {
 
         // start loc updates iff their location settings are turned on.
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)

@@ -32,6 +32,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.makeText;
@@ -164,6 +165,12 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                Calendar calendar = Calendar.getInstance();
+                java.util.Date curr = calendar.getTime();
+                if (!(curr.before(jud1) && curr.before(jud2) && jud1.before(jud2))) {
+                    Toast.makeText(getContext(),"Date is invalid!",Toast.LENGTH_LONG).show();
+                    break;
+                }
                 int count = 0;
                 if (validateEventName(eventName)) count++;
                 if (validateEventDesc(eventDesc)) count++;
@@ -199,20 +206,24 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             // Set the expiration duration of the geofence. This geofence gets automatically
                             // removed after this period of time.
                             .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                            .setLoiteringDelay(1000)
 
                             // Set the transition types of interest. Alerts are only generated for these
                             // transition. We track entry and exit transitions in this sample.
                             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                                    Geofence.GEOFENCE_TRANSITION_EXIT)
+                                    Geofence.GEOFENCE_TRANSITION_EXIT |
+                                    Geofence.GEOFENCE_TRANSITION_DWELL)
 
                             // Create the geofence.
                             .build());
+                    //TODO comment out for espresso testing
                     LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
                             MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
 
 
                     //TODO add to the maps in eventUsers Class
                     MainActivity.user.myevents.add(pubEvent);
+
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();
@@ -221,7 +232,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     ft.commit();
                 } else {
                     PrivateEvent privEvent = new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                            latitude,longitude,100f,MainActivity.user.emailAddress);
                     privEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));

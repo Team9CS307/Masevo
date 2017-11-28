@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
+import android.location.*;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -26,13 +29,28 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -56,7 +74,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<Event> events = new ArrayList<>();
     MapofEventsFragment mapevents;
     LocationManager lm;
-
+    private static final int REQUEST_CHECK_SETTINGS = 2;
     static User user;
     static android.location.Location location;
 
@@ -68,6 +86,13 @@ public class MainActivity extends AppCompatActivity
 
 
     public static ArrayList<Geofence> mGeofenceList;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private SettingsClient mSettingsClient;
+    private LocationRequest mLocationRequest;
+    private LocationSettingsRequest mLocationSettingsRequest;
+    private LocationCallback mLocationCallback;
+    private boolean mRequestingLocationUpdates;
+    private Location mCurrentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +148,8 @@ public class MainActivity extends AppCompatActivity
         }
         // get their location based on ip address
         location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        user.myevents.add(new PublicEvent("name","desc",new Date(1000000),new Date(100000000),
-                40.4257f,-86.92446f,100f,user.emailAddress));
+//        user.myevents.add(new PublicEvent("name","desc",new Date(1000000),new Date(100000000),
+//                40.4257f,-86.92446f,100f,user.emailAddress));
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
@@ -136,12 +161,122 @@ public class MainActivity extends AppCompatActivity
         mGeofenceList = new ArrayList<>();
         populateGeofenceList();
 
+        // initilize location services to get users location over time
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this); // NULL pointer here maybe
+
+        // used to check if the user has locations services on or off
+        mSettingsClient = LocationServices.getSettingsClient(this);
+
+        createLocationRequest();
+
+        createLocationCallback();
+        buildLocationSettingsRequest();
+
+        startLocationUpdates();
+
+    }
+
+
+    private void createLocationRequest() {
+
+        // init location request
+        mLocationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(1000* 60 * 5); // five minutes
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        //mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+    private void stopLocationUpdates() {
+
+        // remove location updates. handled by google
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
+    private void createLocationCallback() {
+
+        // When user reopens app this is started
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+
+                mCurrentLocation = locationResult.getLastLocation();
+                onLocationChanged(mCurrentLocation);
+            }
+        };
+    }
+    public void onLocationChanged(Location location) {
+
+        // user has moved, get new lat and lon and move camera to that location
+       //TODO server call to update user's location
+
+
+
+    }
+    private void buildLocationSettingsRequest() {
+
+        // build location settings dialog for permission handleing
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
+    }
+
+    private void startLocationUpdates() throws SecurityException {
+
+        // start loc updates iff their location settings are turned on.
+        mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
+                .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+
+                        // The user's location services are turned on. we are good to go!
+
+                        // start the looper for getting location every time interval defined in
+                        // createLocationRequest()
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,mLocationCallback, Looper.myLooper());
+
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        int statusCode = ((ApiException) e).getStatusCode();
+                        switch (statusCode) {
+                            // users loc services are off,
+                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+
+                                try {
+                                    // create resolution intent to allow the user to turn on loc services
+                                    // in app
+                                    ResolvableApiException rae = (ResolvableApiException) e;
+                                    rae.startResolutionForResult(MainActivity.this,REQUEST_CHECK_SETTINGS);
+                                } catch (IntentSender.SendIntentException sie) {
+                                    sie.printStackTrace();
+                                }
+                                break;
+                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+
+                                mRequestingLocationUpdates = false;
+                        }
+
+                    }
+                });
     }
 
 
 
-
     private PendingIntent getGeofenceTransitionPendingIntent() {
+
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
 
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -169,6 +304,13 @@ public class MainActivity extends AppCompatActivity
     public void onConnected(Bundle connectionHint) {
         // Get the PendingIntent for the geofence monitoring request.
         // Send a request to add the current geofences.
+        startLocationUpdates();
+        //TODO comment out when doing espresso testing
+        if (mGeofenceList.size() == 0) {
+            mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
+
+            return;
+        }
         mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
 
         LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,getGeofencingRequest(),mGeofenceRequestIntent);
@@ -208,7 +350,6 @@ public class MainActivity extends AppCompatActivity
                     // transition. We track entry and exit transitions in this sample.
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
-
                     // Create the geofence.
                     .build());
         }
