@@ -32,7 +32,6 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //TODO get user eventlist and insert into arraylist of events, then populate it with list adapter
 
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
          listview = v.findViewById(R.id.listview);
@@ -108,7 +107,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 ft.commit();
                 return true;
             case R.id.leave:
-
+                boolean del = true;
                 Event temp = MainActivity.user.myevents.get((info).position);
 
                 // check to see if user has creator permissions
@@ -117,14 +116,16 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                         // find user who has host privlages and set them to creator
                         if (entry.getValue().hasHostPermissions()) {
                             entry.setValue(new Permission(2));
+                            del = false;
                             break;
                         }
                     }
                     //remove leaver from eventUsers
                     temp.eventUsers.userPerm.remove(MainActivity.user.emailAddress);
                     temp.eventUsers.userActive.remove(MainActivity.user.emailAddress);
+
                 }
-                if (temp instanceof PublicEvent) {
+                if (temp instanceof PublicEvent && !del) {
 
                     //TODO figure out for nearby events
                     MainActivity.user.nearby.add(MainActivity.user.myevents.

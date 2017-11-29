@@ -25,7 +25,6 @@ class ListAdapter extends ArrayAdapter<Event> {
 
 //        Event[] s = (Event[])data.toArray();
 //        String g = s[0].eventName;
-        // TODO Auto-generated constructor stub
         this.context = context;
         this.data = data;
         inflater = (LayoutInflater) context
@@ -34,25 +33,21 @@ class ListAdapter extends ArrayAdapter<Event> {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return data.size();
     }
 
     @Override
     public Event getItem(int position) {
-        // TODO Auto-generated method stub
         return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         //View vi = convertView;
         Event e = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
@@ -62,9 +57,13 @@ class ListAdapter extends ArrayAdapter<Event> {
         // Lookup view for data population
         TextView tvName = (TextView) convertView.findViewById(R.id.header);
         TextView tvHome = (TextView) convertView.findViewById(R.id.text);
+        TextView tvID = (TextView) convertView.findViewById(R.id.event_id);
         // Populate the data into the template view using the data object
         tvName.setText(e.eventName);
         tvHome.setText(e.eventDesc);
+        if (e instanceof PrivateEvent) {
+            tvID.setText(e.eventID + "");
+        }
         // Return the completed view to render on screen
         return convertView;
     }

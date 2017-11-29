@@ -13,7 +13,7 @@ import java.util.HashSet;
 
 public class PrivateEvent extends Event {
     // Use this to create a PrivateEvent
-    public PrivateEvent(String eventDesc, String eventName,Date startTime, Date endTime,
+    public PrivateEvent(String eventName, String eventDesc,Date startTime, Date endTime,
                         float latitude, float longitude, float radius, String creatorEmail)
     {
         this.startDate = startTime;

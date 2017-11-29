@@ -32,6 +32,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.makeText;
@@ -68,7 +69,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
           Specifying Application Context in Fragment => getActivity() */
         //returns the view
 
-        return inflater.inflate(R.layout.create_event_layout,container,false); // TODO maybe true
+        return inflater.inflate(R.layout.create_event_layout,container,false);
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -106,7 +107,6 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 String toastMsg = "latitude: " + latitude + " longitude: " + longitude; // Display
 
                 makeText(this.getContext(), toastMsg, Toast.LENGTH_LONG).show();
-                //TODO now use data
 
             }
         }
@@ -125,8 +125,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
 
                 break;
             case R.id.end_date: // enddate button id
-                //TODO the timepicker is started first because it is at the bottom of the view stack
-                //TODO then the datepicker is put on top. Once datepicker is done, timepicker moves to view.
+                // the timepicker is started first because it is at the bottom of the view stack
+                // then the datepicker is put on top. Once datepicker is done, timepicker moves to view.
 
                 DialogFragment timeend = new TimePickerFragment();
                 timeend.show(getActivity().getFragmentManager(),"timeEPicker"); //start timepicker
@@ -148,7 +148,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
 
                 break;
             case R.id.create_event: // create event button id
-                //TODO add stuff here
+                //TODO add stuff here maybe
                 String eventName = title.getText().toString();
                 String eventDesc = desc.getText().toString();
                 float radius;
@@ -164,6 +164,13 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                //TODO comment out when espresso testing
+//                Calendar calendar = Calendar.getInstance();
+//                java.util.Date curr = calendar.getTime();
+//                if (!(curr.before(jud1) && curr.before(jud2) && jud1.before(jud2))) {
+//                    Toast.makeText(getContext(),"Date is invalid!",Toast.LENGTH_LONG).show();
+//                    break;
+//                }
                 int count = 0;
                 if (validateEventName(eventName)) count++;
                 if (validateEventDesc(eventDesc)) count++;
@@ -178,7 +185,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     break;
                 }
                 if (eventType) {
-
+                         // todo change the radius or something
                     PublicEvent pubEvent = new PublicEvent(eventName,eventDesc,jud1,jud2,
                             latitude,longitude,100f,MainActivity.user.emailAddress);
                     pubEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
@@ -204,15 +211,16 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             // transition. We track entry and exit transitions in this sample.
                             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                                     Geofence.GEOFENCE_TRANSITION_EXIT)
-
                             // Create the geofence.
                             .build());
-                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
-                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
+                    //TODO comment out for espresso testing
+//                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
+//                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
 
 
                     //TODO add to the maps in eventUsers Class
                     MainActivity.user.myevents.add(pubEvent);
+
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();
@@ -220,15 +228,16 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     ft.addToBackStack(null);
                     ft.commit();
                 } else {
+
+                    //TODO should private events have geofences?
                     PrivateEvent privEvent = new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                            latitude,longitude,100f,MainActivity.user.emailAddress);
                     privEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
                     MainActivity.user.myevents.add(privEvent);
 
 
-                    //TODO go to myeventslist
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();

@@ -18,7 +18,7 @@ import java.util.Map;
 public class UserListAdapter extends BaseAdapter {
     private final ArrayList mData;
 
-    public UserListAdapter(Map<String, Boolean> map) {
+    public UserListAdapter(Map<String, Permission> map) {
         mData = new ArrayList();
         mData.addAll(map.entrySet());
     }
@@ -29,14 +29,13 @@ public class UserListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Map.Entry<String, Boolean> getItem(int position) {
+    public Map.Entry<String, Permission> getItem(int position) {
         return (Map.Entry) mData.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO implement you own logic with ID
-        return 0;
+        return position;
     }
 
     @Override
@@ -49,11 +48,10 @@ public class UserListAdapter extends BaseAdapter {
             result = convertView;
         }
 
-        Map.Entry<String, Boolean> item = getItem(position);
+        Map.Entry<String, Permission> item = getItem(position);
 
-        // TODO replace findViewById by ViewHolder
         ((TextView) result.findViewById(R.id.username)).setText(item.getKey());
-        ((TextView) result.findViewById(R.id.active)).setText(item.getValue().toString());
+        ((TextView) result.findViewById(R.id.perm_level)).setText(item.getValue().getPermissionLevel() + "");
 
         return result;
     }

@@ -160,7 +160,6 @@ public class LoginActivity extends AppCompatActivity implements
                     // contacts-related task you need to do.
 
                 } else {
-                    //TODO handle this.
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }

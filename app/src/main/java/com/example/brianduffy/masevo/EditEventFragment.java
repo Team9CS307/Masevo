@@ -29,6 +29,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -55,6 +56,7 @@ Switch.OnCheckedChangeListener{
     TextView eventTypeText;
     Event event;
     Button editButton;
+    Permission userPerm;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,6 +114,14 @@ Switch.OnCheckedChangeListener{
         } else {
             eventType = false;
             eventSwitch.setChecked(true);
+        }
+
+        // Get the user perm of person changing the event
+        for(Map.Entry<String,Permission> entry: event.eventUsers.userPerm.entrySet()) {
+            if (MainActivity.user.emailAddress.equals(entry.getKey())) {
+                userPerm = entry.getValue();
+                break;
+            }
         }
 
     }
@@ -206,14 +216,15 @@ Switch.OnCheckedChangeListener{
                 if (eventType) {
 
                     // TODO create public event and add to myevents list and nearby list
-                    event = new PublicEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress);
-                    MainActivity.user.myevents.add(event);
+                    Event temp = new PublicEvent(eventName,eventDesc,jud1,jud2,
+                            latitude,longitude,event.radius,MainActivity.user.emailAddress);
+                    temp.eventUsers = event.eventUsers;
+                    MainActivity.user.myevents.add(temp);
 
                 } else {
                     // create private event
                     event = new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,50f,MainActivity.user.emailAddress);
+                            latitude,longitude,event.radius,MainActivity.user.emailAddress);
                     MainActivity.user.myevents.add(event);
 
 

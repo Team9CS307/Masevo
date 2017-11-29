@@ -40,6 +40,13 @@ public class User {
 //        myevents.addAll(myPublicEventList); //TODO need to uncomment
 //        myevents.addAll(myPrivateEventList); // TODO need to use eventually for listivew poplation
     }
+    public User(String emailAddress,float longitude, float latitude) {
+        this.emailAddress = emailAddress;
+        this.myLocation = new Location(latitude,longitude);
+
+    }
+
+
 
     // Fetch public events in the ID list from the database
     // This function can also be used to update myPublicEventList given the ID list is correct
