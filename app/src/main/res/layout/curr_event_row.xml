@@ -17,7 +17,7 @@
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/active"
+        android:id="@+id/perm_level"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"

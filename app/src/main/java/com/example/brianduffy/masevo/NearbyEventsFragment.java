@@ -84,6 +84,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
             case R.id.join:
                  // add user to event as a regular attendee and set thier status as active
                 Event toJoin = MainActivity.user.nearby.get((info).position);
+
                 toJoin.eventUsers.userPerm.put(MainActivity.user.emailAddress,new Permission(0));
                 toJoin.eventUsers.userActive.put(MainActivity.user.emailAddress, true);
                 MainActivity.user.myevents.add(toJoin);

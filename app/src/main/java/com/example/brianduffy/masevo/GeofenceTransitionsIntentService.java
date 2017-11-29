@@ -15,6 +15,8 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.location.*;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -73,6 +75,7 @@ public class GeofenceTransitionsIntentService extends IntentService
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         // Test that the reported transition was of interest.
+
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
                 geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
 
@@ -82,12 +85,14 @@ public class GeofenceTransitionsIntentService extends IntentService
 
             // Get the transition details as a String.
 
+
             String geofenceTransitionDetails = getGeofenceTransitionDetails(
                     geofenceTransition,
                     triggeringGeofences
             );
 
             // Send notification and log the transition details.
+
             sendNotification(geofenceTransitionDetails);
             Toast.makeText(this,"afiowe",Toast.LENGTH_LONG).show();
             Log.i(TAG, geofenceTransitionDetails);

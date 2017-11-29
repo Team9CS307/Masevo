@@ -14,7 +14,6 @@ public class EventUsers implements Serializable{
     private ArrayList<Permission> permissions;
     private ArrayList<Boolean> actives;
 
-    // TODO maybe have a hash map linking emails to permissions?
 
     public Map<String,Permission> userPerm = new HashMap<>();
 

@@ -22,6 +22,9 @@ public class Permission implements Serializable {
         return (permissionLevel == 0) ? true : false;
     }
 
+    public int getPermissionLevel() {
+        return permissionLevel;
+    }
     public void setPermissionLevel(int permissionLevel) {
         this.permissionLevel = permissionLevel;
     }
