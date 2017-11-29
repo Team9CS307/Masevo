@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#8effc3</color>
+    <color name="menuColor">#363636</color>
+    <color name="grey">#ffffff</color>
+    <color name="blue_grey_500">#e5edf3</color>
+    <color name="blue_grey_600">#928b9397</color>
+    <color name="blue_grey_700">#365137</color>
+    <color name="blue_grey_800">#37474f</color>
+    <color name="blue_grey_900">#283826</color>
+    <color name="masevo_green">#00b050</color>
+    <color name="dark_masevo">#00401d</color>
+    <color name="dark_masevo_lighter">#008b40</color>
+    <color name="masevo_light">#d9ead3</color>
+</resources>
