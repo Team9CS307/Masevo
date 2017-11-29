@@ -213,8 +213,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             // Create the geofence.
                             .build());
                     //TODO comment out for espresso testing
-                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
-                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
+//                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
+//                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
 
 
                     //TODO add to the maps in eventUsers Class

@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (LoginActivity.emailAddress == null) {
+            LoginActivity.emailAddress = "bduffy2019@gmail.com";
+        }
         user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new ArrayList<Integer>(), new ArrayList<Integer>());
         //TODO determine what to do with this. Are we doing it or not? read in from file my events id's
         File file = new File(getFilesDir(), save_loc);
@@ -157,6 +160,7 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         mGoogleApiClient.connect();
+
         mGeofenceList = new ArrayList<>();
         populateGeofenceList();
 
@@ -319,7 +323,7 @@ public class MainActivity extends AppCompatActivity
 
         LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,getGeofencingRequest(),mGeofenceRequestIntent);
 
-        Toast.makeText(this, "geofence has begun!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "geofence has begun!", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -486,8 +490,13 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.join_priv) {
             // TODO either remove or add something here
+            MainActivityFragment mainActivityFragment = new MainActivityFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, mainActivityFragment)
+                    .addToBackStack(null)
+                    .commit();
 
         } else if (id == R.id.myevents) {
             // start the my events listview fragment

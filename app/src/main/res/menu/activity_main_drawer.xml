@@ -15,9 +15,9 @@
             android:icon="@drawable/ic_chat_black_24dp"
             android:title="Feedback" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/join_priv"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Join Private Event" />
     </group>
 
     <item android:title="Events">

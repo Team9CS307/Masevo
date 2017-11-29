@@ -1,5 +1,6 @@
 package com.example.brianduffy.masevo;
 
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.matcher.ViewMatchers;
@@ -77,9 +78,10 @@ public class CreateEventTest {
         onView(withId(R.id.event_name)).perform(typeText("&())@"));
         onView(withId(R.id.event_desc)).perform(typeText(""));
         onView(withId(R.id.start_date)).perform(click());
-//        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-//                .perform(setDate(2017,12,12));
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform();
         onView(withText("Cancel")).perform(click());
+
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
                 .perform(setTime(12,12));
         onView(withText("OK")).perform(click());
