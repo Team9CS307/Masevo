@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
-            android:divider="@color/colorAccent"
+            android:divider="@color/masevo_green"
             android:dividerHeight="3dp"
             android:headerDividersEnabled="true"
             android:scrollbars="horizontal|vertical"

@@ -53,8 +53,7 @@ import java.util.Set;
  * Created by Brian Duffy on 10/26/2017.
  */
 
-public class EventMapFragment extends Fragment implements OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener,
-        AdapterView.OnItemClickListener {
+public class EventMapFragment extends Fragment implements OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener{
     private static final int REQUEST_CHECK_SETTINGS = 2;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 45;
     Event event;
@@ -311,22 +310,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        switch (view.getId()) {
 
-            case R.id.ban:
-
-                break;
-            case R.id.kick:
-
-                break;
-            case R.id.perm_level:
-
-                break;
-        }
-
-    }
 }
 
 

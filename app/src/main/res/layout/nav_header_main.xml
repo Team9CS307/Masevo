@@ -18,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_masevo_app" />
+        app:srcCompat="@drawable/ic_masevovector"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"/>
 
 </LinearLayout>
