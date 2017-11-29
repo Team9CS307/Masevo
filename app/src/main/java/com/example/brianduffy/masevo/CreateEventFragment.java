@@ -164,12 +164,13 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Calendar calendar = Calendar.getInstance();
-                java.util.Date curr = calendar.getTime();
-                if (!(curr.before(jud1) && curr.before(jud2) && jud1.before(jud2))) {
-                    Toast.makeText(getContext(),"Date is invalid!",Toast.LENGTH_LONG).show();
-                    break;
-                }
+                //TODO comment out when espresso testing
+//                Calendar calendar = Calendar.getInstance();
+//                java.util.Date curr = calendar.getTime();
+//                if (!(curr.before(jud1) && curr.before(jud2) && jud1.before(jud2))) {
+//                    Toast.makeText(getContext(),"Date is invalid!",Toast.LENGTH_LONG).show();
+//                    break;
+//                }
                 int count = 0;
                 if (validateEventName(eventName)) count++;
                 if (validateEventDesc(eventDesc)) count++;

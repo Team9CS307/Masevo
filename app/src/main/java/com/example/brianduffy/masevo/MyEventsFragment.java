@@ -107,7 +107,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 ft.commit();
                 return true;
             case R.id.leave:
-
+                boolean del = true;
                 Event temp = MainActivity.user.myevents.get((info).position);
 
                 // check to see if user has creator permissions
@@ -116,13 +116,8 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                         // find user who has host privlages and set them to creator
                         if (entry.getValue().hasHostPermissions()) {
                             entry.setValue(new Permission(2));
+                            del = false;
                             break;
-                        } else {
-
-                            MainActivity.user.myevents.remove((info).position);
-                            //TODO now server removes event from database
-
-
                         }
                     }
                     //remove leaver from eventUsers
@@ -130,7 +125,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                     temp.eventUsers.userActive.remove(MainActivity.user.emailAddress);
 
                 }
-                if (temp instanceof PublicEvent) {
+                if (temp instanceof PublicEvent && !del) {
 
                     //TODO figure out for nearby events
                     MainActivity.user.nearby.add(MainActivity.user.myevents.
