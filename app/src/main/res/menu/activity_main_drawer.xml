@@ -17,7 +17,7 @@
         <item
             android:id="@+id/join_priv"
             android:icon="@drawable/ic_menu_share"
-            android:title="Join Private Event" />
+            android:title="Join Event By ID" />
     </group>
 
     <item android:title="Events">

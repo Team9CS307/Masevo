@@ -61,9 +61,8 @@ class ListAdapter extends ArrayAdapter<Event> {
         // Populate the data into the template view using the data object
         tvName.setText(e.eventName);
         tvHome.setText(e.eventDesc);
-        if (e instanceof PrivateEvent) {
-            tvID.setText(e.eventID + "");
-        }
+
+        tvID.setText(e.eventID + "");
         // Return the completed view to render on screen
         return convertView;
     }
