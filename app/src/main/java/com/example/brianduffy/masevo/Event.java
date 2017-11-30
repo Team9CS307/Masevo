@@ -46,19 +46,19 @@ public abstract class Event implements Serializable{
         // HashMap relating a given email to a display name
     public EventUsers eventUsers = new EventUsers(new ArrayList<String>(),new ArrayList<Permission>(),new ArrayList<Boolean>());
 
-    abstract void createEvent();
-    abstract void deleteEvent(int eventID);
-    abstract void modifyEvent(int eventID);
-    abstract void joinEvent(int eventID);
-    abstract void leaveEvent(int eventID);
+    abstract public void createEvent();
+    abstract public void deleteEvent(int eventID);
+    abstract public void modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+                            float latitude, float longitude, float radius, String hostEmail);
+    abstract public void joinEvent(int eventID);
+    abstract public void leaveEvent(int eventID);
 
     abstract ArrayList<? extends Event> getEvents ();
 
-    abstract void addUser (int eventID, String email);
-    abstract void removeUser (int eventID, String email);
-    abstract void banUser (int eventID, String email);
-    abstract void makeOwner(int eventID, String email);
-    abstract void makeHost(int eventID, String email);
-    abstract void makeUser(int eventID, String email);
-
+    abstract public void addUser (int eventID, String email);
+    abstract public void removeUser (int eventID, String email);
+    abstract public void banUser (int eventID, String email);
+    abstract public void makeOwner(int eventID, String email);
+    abstract public void makeHost(int eventID, String email);
+    abstract public void makeUser(int eventID, String email);
 }

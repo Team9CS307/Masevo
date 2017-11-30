@@ -126,36 +126,6 @@ public class PublicEvent extends Event implements Serializable{
         return threadGetEvents.getReturnResult();
     }
 
-    @Override
-    void addUser(int eventID, String email) {
-
-    }
-
-    @Override
-    void removeUser(int eventID, String email) {
-
-    }
-
-    @Override
-    void banUser(int eventID, String email) {
-
-    }
-
-    @Override
-    void makeOwner(int eventID, String email) {
-
-    }
-
-    @Override
-    void makeHost(int eventID, String email) {
-
-    }
-
-    @Override
-    void makeUser(int eventID, String email) {
-
-    }
-
     public void deleteEvent(int eventID) {
         String methodName = "deleteEvent";
         ContentValues contentValues = new ContentValues();
@@ -211,22 +181,47 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @Override
-    void modifyEvent(int eventID) {
+    public void joinEvent(int eventID) {
 
     }
 
     @Override
-    void joinEvent(int eventID) {
+    public void leaveEvent(int eventID) {
 
     }
 
     @Override
-    void leaveEvent(int eventID) {
+    public void addUser(int eventID, String email) {
+
+    }
+
+    @Override
+    public void removeUser(int eventID, String email) {
+
+    }
+
+    @Override
+    public void banUser(int eventID, String email) {
+
+    }
+
+    @Override
+    public void makeOwner(int eventID, String email) {
+
+    }
+
+    @Override
+    public void makeHost(int eventID, String email) {
+
+    }
+
+    @Override
+    public void makeUser(int eventID, String email) {
 
     }
 
     public void modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
-                       float latitude, float longitude, float radius, String hostEmail) {
+                            float latitude, float longitude, float radius, String hostEmail) {
         String methodName = "modifyEvent";
         String emailTrim = hostEmail.substring(0,hostEmail.indexOf("@"));
 

@@ -28,24 +28,10 @@ public class EventUsers implements Serializable{
     public ArrayList<String> getEmails() {
         return emails;
     }
-
-    public void setEmails(ArrayList<String> emails) {
-        this.emails = emails;
-    }
-
     public ArrayList<Permission> getPermissions() {
         return permissions;
     }
-
-    public void setPermissions(ArrayList<Permission> permissions) {
-        this.permissions = permissions;
-    }
-
     public ArrayList<Boolean> getActives() {
         return actives;
-    }
-
-    public void setActives(ArrayList<Boolean> actives) {
-        this.actives = actives;
     }
 }
