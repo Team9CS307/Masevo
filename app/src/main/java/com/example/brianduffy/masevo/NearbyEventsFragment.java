@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -13,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.example.chambe41.masevo.ThreadJoinEvent;
 
 
 /**
@@ -83,9 +87,35 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
 
             case R.id.join:
                  // add user to event as a regular attendee and set thier status as active
+
                 Event toJoin = MainActivity.user.nearby.get((info).position);
+                Boolean isPub;
+                if (toJoin instanceof PublicEvent) {
+                    isPub = true;
+                }else {
+                    isPub = false;
+                }
+                ThreadJoinEvent threadJoinEvent= new ThreadJoinEvent(toJoin.eventID,MainActivity.user.emailAddress,isPub);
+                Thread thread = new Thread(threadJoinEvent);
+
+                Pair<Boolean,Integer> ret;
+                thread.start();
+                try {
+                    thread.join();
+                    ret = threadJoinEvent.getReturnResult();
+
+                    if (ret.second != 0) {
+                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        return false;
+                    } else {
+                        //TODO implement successs
 
 
+                        return true;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 toJoin.eventUsers.userPerm.put(MainActivity.user.emailAddress,new Permission(0));
                 toJoin.eventUsers.userActive.put(MainActivity.user.emailAddress, true);
                 MainActivity.user.myevents.add(toJoin);

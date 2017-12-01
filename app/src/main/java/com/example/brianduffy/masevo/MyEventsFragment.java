@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +16,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.chambe41.masevo.ThreadDeleteEvent;
+import com.example.chambe41.masevo.ThreadLeaveEvent;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -109,6 +114,30 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
             case R.id.leave:
                 boolean del = true;
                 Event temp = MainActivity.user.myevents.get((info).position);
+                Boolean isPub;
+                if (temp instanceof PublicEvent) {
+                    isPub = true;
+                } else {
+                    isPub = false;
+                }
+                ThreadLeaveEvent threadLeaveEvent = new ThreadLeaveEvent(temp.eventID,MainActivity.user.emailAddress,isPub);
+
+                Thread thread = new Thread(threadLeaveEvent);
+                Pair<Boolean,Integer> ret;
+                thread.start();
+                try {
+                    thread.join();
+                    ret = threadLeaveEvent.getReturnResult();
+
+                    if (ret.second!=0) {
+                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
 
                 // check to see if user has creator permissions
                 if (temp.eventUsers.userPerm.get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
@@ -138,6 +167,33 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 return true;
             case R.id.delete:
                     // only delete if user has creator permissions
+                Event event = MainActivity.user.myevents.get((info).position);
+                    Boolean isPub1;
+                    if (event instanceof PublicEvent) {
+                        isPub = true;
+                    } else {
+                        isPub = false;
+                    }
+                ThreadDeleteEvent threadDeleteEvent = new ThreadDeleteEvent(event.eventID,MainActivity.user.emailAddress,isPub);
+
+                Thread thread1 = new Thread(threadDeleteEvent);
+                Pair<Boolean,Integer> ret1;
+                thread1.start();
+                try {
+                    thread1.join();
+                    ret1 = threadDeleteEvent.getReturnResult();
+
+                    if (ret1.second != 0) {
+                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        return false;
+                    }else  {
+                        //client side update
+                        MainActivity.user.myevents.remove((info).position);
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 if (MainActivity.user.myevents.get((info).position).eventUsers.userPerm.
                         get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
                     MainActivity.user.myevents.remove((info).position);
@@ -151,6 +207,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
             default:
                 return super.onContextItemSelected(item);
         }
+
     }
     @Override
     public void onClick(View v) {
