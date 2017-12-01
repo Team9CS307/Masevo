@@ -3,10 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Masevo.iml" filepath="$PROJECT_DIR$/Masevo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../../vikpa/StudioProjects/Masevo/Masevo.iml" filepath="$PROJECT_DIR$/../../../vikpa/StudioProjects/Masevo/Masevo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../../Brian Duffy/AndroidStudioProjects/Masevo/Masevo/Masevo2.iml" filepath="$PROJECT_DIR$/../../../Brian Duffy/AndroidStudioProjects/Masevo/Masevo/Masevo2.iml" />
+      <module fileurl="file://C:\Users\Brian Duffy\AndroidStudioProjects\Masevo\Masevo\Masevo2.iml" filepath="C:\Users\Brian Duffy\AndroidStudioProjects\Masevo\Masevo\Masevo2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../../vikpa/StudioProjects/Masevo/app/app.iml" filepath="$PROJECT_DIR$/../../../vikpa/StudioProjects/Masevo/app/app.iml" />
     </modules>
   </component>
 </project>
