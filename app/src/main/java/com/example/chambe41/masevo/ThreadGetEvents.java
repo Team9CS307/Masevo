@@ -1,8 +1,10 @@
-package com.example.brianduffy.masevo;
+package com.example.chambe41.masevo;
 
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+
+import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
