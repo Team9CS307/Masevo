@@ -127,7 +127,7 @@ public class ThreadGetUserEvents implements Runnable {
                         d4 = new Date(d2.getTime());
                     } catch (ParseException pe) {
 
-                        returnResult = new Pair<>(null,1);
+                        returnResult = new Pair<>(null,null);
                         return;
                     }
                     PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
@@ -148,7 +148,7 @@ public class ThreadGetUserEvents implements Runnable {
 
     }
 
-    public Pair<ArrayList<? extends Event>, Integer> getReturnResult() {
+    public Pair<ArrayList<? extends Event>, ArrayList<Users>> getReturnResult() {
         return returnResult;
     }
 }
