@@ -2,6 +2,7 @@ package com.example.brianduffy.masevo;
 
 import android.util.Pair;
 
+import com.example.chambe41.masevo.ThreadBanUser;
 import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadDeleteEvent;
 import com.example.chambe41.masevo.ThreadJoinEvent;
@@ -37,7 +38,12 @@ ERRNO
 3 - SET PUBLIC/PRIVATE ERROR
 4 - NOT IN LIST ERROR
 5 - ATTEMPT TO ADD A BANNED USER ERROR
-6 - CURR USER ERROR
+6 - BANNED
+7 - ALREADY IN EVENT
+8 - NOT IN EVENT
+9 - NOT OWNER
+10 - LEAVE AS OWNER
+11 - SELF ERROR (remove, add)
 */
 
 public class MasevoTesting {
@@ -223,7 +229,49 @@ public class MasevoTesting {
     }
 
     @Test
-    public void banUserServerTest() {
+    public void banUserServerTest() throws InterruptedException {
+        String eventName = "Sample Event";
+        String eventDesc = "This is an Event Description";
+        java.sql.Date startDate = new java.sql.Date(1543622400000l);
+        java.sql.Date endDate = new java.sql.Date(1543626000000l);
+        Location location = new Location(0,0);
+        float radius = 10;
+        int eventId = 0;
+        String hostEmail = "testing.masevo";
+        boolean pub = true;
+        ThreadCreateEvent threadCreate = new ThreadCreateEvent(eventName, eventDesc, startDate, endDate, location, radius, eventId, hostEmail, pub);
+        Thread createEventThread = new Thread(threadCreate);
+        createEventThread.start();
+        PublicEvent publicEvent = new PublicEvent(eventName,eventDesc,startDate,endDate,location.latitude,location.longitude,radius,hostEmail);
+        Pair<PublicEvent, Integer> expected = new Pair<>(publicEvent,0);
+        createEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(0,"user", true);
+        Thread joinEventThread = new Thread(threadJoinEvent);
+        joinEventThread.start();
+        joinEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent1 = new ThreadJoinEvent(0,"user2", true);
+        Thread joinEventThread1 = new Thread(threadJoinEvent1);
+        joinEventThread1.start();
+        joinEventThread1.join();
+
+        ThreadBanUser threadBanUser = new ThreadBanUser(eventId, "user", "user2",  true);
+        Thread banUserThread = new Thread(threadBanUser);
+        banUserThread.start();
+        banUserThread.join();
+        Pair<Boolean, Integer> actual = threadBanUser.getReturnResult();
+
+        Assert.assertEquals((Integer) 2, actual.second); //checks if a user tries to ban another user, should fail
+
+        ThreadBanUser threadBanUser2 = new ThreadBanUser(eventId, hostEmail, "user2",  true);
+        Thread banUserThread2 = new Thread(threadBanUser2);
+        banUserThread2.start();
+        banUserThread2.join();
+        Pair<Boolean, Integer> actual2 = threadBanUser2.getReturnResult();
+
+        Assert.assertEquals((Integer) 0, actual.second); //checks if owner tries banning a user, should succeed
+
 
     }
 
@@ -413,7 +461,7 @@ public class MasevoTesting {
         Pair<Boolean, Integer> actual3 = threadMakeUser3.getReturnResult();
 
         Assert.assertEquals((Integer) 0, actual3.second); //owner successully demotes a host to user
-
-
     }
+
+
 }
