@@ -15,9 +15,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,6 +44,15 @@ public class ThreadGetUserEvents implements Runnable {
     ArrayList<PublicEvent> pubevents = new ArrayList<>();
     ArrayList<PrivateEvent> privevents = new ArrayList<>();
     Pair<ArrayList<? extends Event>, Integer> returnResult;
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+        try(ByteArrayInputStream b = new ByteArrayInputStream(bytes)){
+            try(ObjectInputStream o = new ObjectInputStream(b)){
+                return o.readObject();
+            }
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -119,6 +130,7 @@ public class ThreadGetUserEvents implements Runnable {
                     PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
                             Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
                             Float.parseFloat(aTrtd[7]), aTrtd[8]);
+
                     pubevents.add(p);
                 }
             }

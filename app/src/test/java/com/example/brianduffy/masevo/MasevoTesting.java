@@ -47,7 +47,7 @@ ERRNO
 */
 
 public class MasevoTesting {
-    Calendar temp = Calendar.getInstance();
+
     @Test
     public void createEventDeleteEventServerTest() throws InterruptedException {
         String eventName = "Sample Event";
@@ -148,7 +148,7 @@ public class MasevoTesting {
         Thread modifyEventThread2 = new Thread(threadModifyEvent2);
         modifyEventThread2.start();
         modifyEventThread2.join();
-        Pair<Event, Integer> actualFail = threadModifyEvent.getReturnResult();
+        Pair<Event, Integer> actualFail = threadModifyEvent2.getReturnResult();
 
         Assert.assertEquals((Integer) 2, actualFail.second); //checks if permissions error is thrown because normal users should not be able to modify events.
 
@@ -184,7 +184,7 @@ public class MasevoTesting {
         joinEventThread.join();
 
         ThreadJoinEvent threadJoinEvent2 = new ThreadJoinEvent(0,"user2", true);
-        Thread joinEventThread2 = new Thread(threadJoinEvent);
+        Thread joinEventThread2 = new Thread(threadJoinEvent2);
         joinEventThread2.start();
         joinEventThread2.join();
 
@@ -270,7 +270,7 @@ public class MasevoTesting {
         banUserThread2.join();
         Pair<Boolean, Integer> actual2 = threadBanUser2.getReturnResult();
 
-        Assert.assertEquals((Integer) 0, actual.second); //checks if owner tries banning a user, should succeed
+        Assert.assertEquals((Integer) 0, actual2.second); //checks if owner tries banning a user, should succeed
 
 
     }
@@ -384,8 +384,8 @@ public class MasevoTesting {
 
         ThreadMakeHost threadMakeHost3 = new ThreadMakeHost(eventId, "userHost", "user",true);
         Thread makeHostThread3 = new Thread(threadMakeHost3);
-        makeHostThread2.start();
-        makeHostThread2.join();
+        makeHostThread3.start();
+        makeHostThread3.join();
         Pair<Boolean, Integer> actual3 = threadMakeHost3.getReturnResult();
 
         Assert.assertEquals((Integer) 2, actual3.second); //checks if host tries to promote user, should fail
