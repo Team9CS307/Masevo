@@ -56,7 +56,7 @@ public class MasevoTesting {
 
         Assert.assertEquals(expected.second,actual.second); //checks if event made successfully
 
-        ThreadDeleteEvent threadDelete = new ThreadDeleteEvent(0,1);
+        ThreadDeleteEvent threadDelete = new ThreadDeleteEvent(0,"testing.masevo",true);
         Thread deleteEventThread = new Thread(threadDelete);
         deleteEventThread.start();
         deleteEventThread.join();
