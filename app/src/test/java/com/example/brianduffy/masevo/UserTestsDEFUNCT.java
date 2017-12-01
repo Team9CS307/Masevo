@@ -7,11 +7,15 @@ import java.sql.Date;
 import java.util.HashSet;
 
 import static org.junit.Assert.*;
+/* ***************************************************
+ * THESE TESTS ARE DEFUNCT, KEPT ONLY FOR ARCHIVE
+ * **************************************************
+ * */
 
 /**
  * Created by Gabriel on 10/30/2017.
  */
-public class UserTests {
+public class UserTestsDEFUNCT {
     public User tUser0;
 
     @Before
