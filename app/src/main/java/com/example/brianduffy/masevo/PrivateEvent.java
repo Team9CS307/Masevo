@@ -1,6 +1,21 @@
 package com.example.brianduffy.masevo;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
+
+import com.example.chambe41.masevo.ThreadAddUser;
+import com.example.chambe41.masevo.ThreadBanUser;
+import com.example.chambe41.masevo.ThreadCreateEvent;
+import com.example.chambe41.masevo.ThreadDeleteEvent;
+import com.example.chambe41.masevo.ThreadGetEvents;
+import com.example.chambe41.masevo.ThreadJoinEvent;
+import com.example.chambe41.masevo.ThreadLeaveEvent;
+import com.example.chambe41.masevo.ThreadMakeHost;
+import com.example.chambe41.masevo.ThreadMakeOwner;
+import com.example.chambe41.masevo.ThreadMakeUser;
+import com.example.chambe41.masevo.ThreadModifyEvent;
+import com.example.chambe41.masevo.ThreadRemoveUser;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -16,9 +31,9 @@ public class PrivateEvent extends Event {
     public PrivateEvent() {
 
     }
-    public PrivateEvent(String eventName, String eventDesc,Date startTime, Date endTime,
-                        float latitude, float longitude, float radius, String creatorEmail)
-    {
+
+    public PrivateEvent(String eventName, String eventDesc, Date startTime, Date endTime,
+                        float latitude, float longitude, float radius, String creatorEmail) {
         this.startDate = startTime;
         this.endDate = endTime;
         this.location = new Location(latitude, longitude);
@@ -46,77 +61,103 @@ public class PrivateEvent extends Event {
         //        latitude, longitude, radius, creatorEmail);
     }
 
-    public Pair<PrivateEvent,Integer> createEvent() {
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public Pair<Event, Integer> createEvent(String eventName,String eventDesc,java.sql.Date startDate,java.sql.Date endDate,
+                                            Location location, float radius,int eventID, String hostEmail,boolean pub) {
+        ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,startDate,
+                endDate,location,radius,eventID,hostEmail,false);
+        new Thread(threadCreateEvent).start();
 
-        return null;
-
+        return threadCreateEvent.getReturnResult();
     }
-
-    public Pair<Boolean,Integer> deleteEvent(int eventID) {
-
-        return null;
+    @Override
+    public Pair<ArrayList<? extends Event>, Integer> getEvents() {
+        ThreadGetEvents threadGetEvents = new ThreadGetEvents();
+        new Thread(threadGetEvents).start();
+        return threadGetEvents.getReturnResult();
     }
 
     @Override
-    public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate, float latitude, float longitude, float radius, String hostEmail) {
+    public Pair<Boolean,Integer> deleteEvent(int eventID, String email) {
+        ThreadDeleteEvent threadDeleteEvent = new ThreadDeleteEvent(eventID,email,false);
+        new Thread(threadDeleteEvent).start();
 
-        return false;
+
+        return threadDeleteEvent.getReturnResult();
     }
 
 
-    void modifyEvent(int eventID) {
+    @Override
+    public Pair<Boolean, Integer> joinEvent(int eventID, String senderEmail) {
+        ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(eventID, senderEmail, false);
+        new Thread(threadJoinEvent).start();
+        return threadJoinEvent.getReturnResult();
+    }
+
+    //@Override
+    @Override
+    public Pair<Boolean, Integer> leaveEvent(int eventID, String senderEmail) {
+        ThreadLeaveEvent threadLeaveEvent = new ThreadLeaveEvent(eventID, senderEmail, false);
+        new Thread(threadLeaveEvent).start();
+        return threadLeaveEvent.getReturnResult();
+    }
+
+    @Override
+    public Pair<Boolean, Integer> addUser(int eventID, String email, String target) {
+        ThreadAddUser threadAddUser = new ThreadAddUser(eventID, email, target, false);
+        new Thread(threadAddUser).start();
+        return threadAddUser.getReturnResult();
 
     }
 
     @Override
-    public Pair<Boolean,Integer> joinEvent(int eventID) {
+    public Pair<Boolean, Integer> removeUser(int eventID, String email, String target) {
+        ThreadRemoveUser threadRemoveUser = new ThreadRemoveUser(eventID, email, target, false);
+        new Thread(threadRemoveUser).start();
+        return threadRemoveUser.getReturnResult();
 
-        return null;
     }
 
     @Override
-    public Pair<Boolean,Integer> leaveEvent(int eventID,String senderEmail) {
+    public Pair<Boolean, Integer> banUser(int eventID, String email, String target) {
+        ThreadBanUser threadBanUser = new ThreadBanUser(eventID, email, target, false);
+        new Thread(threadBanUser).start();
+        return threadBanUser.getReturnResult();
 
-        return null;
-    }
-
-    public Pair<ArrayList<PublicEvent>, Integer> getEvents() {
-        return null;
-    }
-
-    @Override
-    public Pair<Boolean,Integer> addUser(int eventID, String email) {
-
-        return null;
     }
 
     @Override
-    public boolean removeUser(int eventID, String email) {
+    public Pair<Boolean, Integer> makeOwner(int eventID, String email, String target) {
+        ThreadMakeOwner threadMakeOwner = new ThreadMakeOwner(eventID, email, target, false);
+        new Thread(threadMakeOwner).start();
+        return threadMakeOwner.getReturnResult();
 
-        return false;
     }
 
     @Override
-    public boolean banUser(int eventID, String email) {
+    public Pair<Boolean, Integer> makeHost(int eventID, String email, String target) {
+        ThreadMakeHost threadMakeHost = new ThreadMakeHost(eventID, email, target, false);
+        new Thread(threadMakeHost).start();
+        return threadMakeHost.getReturnResult();
 
-        return false;
     }
 
     @Override
-    public boolean makeOwner(int eventID, String email) {
+    public Pair<Boolean, Integer> makeUser(int eventID, String email, String target) {
+        ThreadMakeUser threadMakeUser = new ThreadMakeUser(eventID, email, target, false);
+        new Thread(threadMakeUser).start();
 
-        return false;
+        return threadMakeUser.getReturnResult();
     }
 
     @Override
-    public boolean makeHost(int eventID, String email) {
-
-        return false;
-    }
-
-    @Override
-    public boolean makeUser(int eventID, String email) {
-
-        return false;
+    public Pair<Event, Integer> modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+                                            float latitude, float longitude, float radius, String hostEmail) {
+        ThreadModifyEvent threadModifyEvent = new ThreadModifyEvent(eventID, eventName, eventDesc,
+                startDate, endDate, latitude, longitude, radius, hostEmail, false);
+        new Thread(threadModifyEvent).start();
+        return threadModifyEvent.getReturnResult();
     }
 }
+

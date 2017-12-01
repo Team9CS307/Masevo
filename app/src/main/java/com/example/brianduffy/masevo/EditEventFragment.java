@@ -234,24 +234,17 @@ Switch.OnCheckedChangeListener{
                         Event temp = new PublicEvent(eventName,eventDesc,jud1,jud2,
                                 latitude,longitude,event.radius,event.hostEmail);
 
-                        ThreadModifyEvent threadModifyEvent = new ThreadModifyEvent(temp.eventID,eventName,
-                                eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail,true);
-                        Thread thread = new Thread(threadModifyEvent);
-                        Pair<Event,Integer> ret;
-                        thread.start();
-                        try {
-                            thread.join();
-                            ret = threadModifyEvent.getReturnResult();
+                        //Server call
+                        Pair<Event,Integer> ret = temp.modifyEvent(temp.eventID,eventName,eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail);
 
-                            if (ret.second != 0) {
-                                Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
-                            } else {
-                                //TODO
+                        if (ret.second != 0) {
+                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                            return;
+                        }else {
+                            //todo success
 
 
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+
                         }
                         Event p = new PrivateEvent();
                         MainActivity.user.myevents.clear();
@@ -292,26 +285,17 @@ Switch.OnCheckedChangeListener{
                         Event temp = new PrivateEvent(eventName,eventDesc,jud1,jud2,
                                 latitude,longitude,event.radius,event.hostEmail);
 
-                        ThreadModifyEvent threadModifyEvent = new ThreadModifyEvent(temp.eventID,eventName,
-                                eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail,false);
-                        Thread thread = new Thread(threadModifyEvent);
-                        Pair<Event,Integer> ret;
-                        thread.start();
-                        try {
-                            thread.join();
-                            ret = threadModifyEvent.getReturnResult();
+                        //Server call
+                        Pair<Event,Integer> ret1 = temp.modifyEvent(temp.eventID,eventName,eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail);
 
-                            if (ret.second != 0) {
-                                Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
-                            } else {
-                                //TODO
+                        if (ret1.second != 0) {
+                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                            return;
+                        } else {
+                            //success todo
 
 
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
-                        //TODO may not need
                         temp.eventUsers = event.eventUsers;
                         MainActivity.user.myevents.add(temp);
                         event = temp;

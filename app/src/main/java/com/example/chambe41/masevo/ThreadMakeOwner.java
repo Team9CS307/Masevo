@@ -33,7 +33,7 @@ public class ThreadMakeOwner implements Runnable {
     int priv;
     private Integer errno;
 
-    public ThreadMakeOwner(String senderEmail, String targetEmail, int eventID, int priv, Boolean isPub) {
+    public ThreadMakeOwner(int eventID,String senderEmail, String targetEmail, Boolean isPub) {
         SenderEmail = senderEmail;
         this.targetEmail = targetEmail;
         this.eventID = eventID;
@@ -52,7 +52,6 @@ public class ThreadMakeOwner implements Runnable {
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
         contentValues.put("TargetEmail",targetEmail);
-        contentValues.put("Priv",priv);
         contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {

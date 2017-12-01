@@ -43,18 +43,22 @@ public abstract class Event implements Serializable{
         // HashMap relating a given email to a display name
     public EventUsers eventUsers = new EventUsers(new ArrayList<String>(),new ArrayList<Permission>(),new ArrayList<Boolean>());
 
-    abstract public Pair<? extends Event,Integer> createEvent();
-    abstract public Pair<Boolean,Integer> deleteEvent(int eventID);
-    abstract public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
-                            float latitude, float longitude, float radius, String hostEmail);
-    abstract public Pair<Boolean,Integer> joinEvent(int eventID);
-    abstract public Pair<Boolean, Integer> leaveEvent(int eventID, String senderEmail);
-    abstract public Pair<ArrayList<PublicEvent>, Integer> getEvents();
 
-    abstract public Pair<Boolean,Integer> addUser (int eventID, String email);
-    abstract public boolean removeUser (int eventID, String email);
-    abstract public boolean banUser (int eventID, String email);
-    abstract public boolean makeOwner(int eventID, String email);
-    abstract public boolean makeHost(int eventID, String email);
-    abstract public boolean makeUser(int eventID, String email);
+    abstract public Pair<? extends Event,Integer> createEvent(String eventName,String eventDesc,
+                                                              java.sql.Date startDate,java.sql.Date endDate,
+                                                              Location location, float radius,int eventID,
+                                                              String hostEmail,boolean pub);
+    abstract public Pair<Boolean,Integer> deleteEvent(int eventID, String email);
+    abstract public Pair<Event, Integer> modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+                                                     float latitude, float longitude, float radius, String hostEmail);
+    abstract public Pair<Boolean,Integer> joinEvent(int eventID,String senderEmail);
+    abstract public Pair<Boolean, Integer> leaveEvent(int eventID, String senderEmail);
+    abstract public Pair<ArrayList<? extends Event>, Integer> getEvents();
+
+    abstract public Pair<Boolean,Integer> addUser (int eventID, String email,String target);
+    abstract public Pair<Boolean,Integer> removeUser (int eventID, String email,String target);
+    abstract public Pair<Boolean,Integer> banUser (int eventID, String email, String target);
+    abstract public Pair<Boolean,Integer> makeOwner(int eventID, String email, String target);
+    abstract public Pair<Boolean,Integer> makeHost(int eventID, String email, String target);
+    abstract public Pair<Boolean,Integer> makeUser(int eventID, String email, String target);
 }

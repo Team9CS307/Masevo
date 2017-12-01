@@ -33,11 +33,10 @@ public class ThreadMakeHost implements Runnable {
     int priv;
     private Integer errno;
 
-    public ThreadMakeHost(String senderEmail, String targetEmail, int eventID, int priv, Boolean isPub) {
+    public ThreadMakeHost(int eventID,String senderEmail, String targetEmail, Boolean isPub) {
         SenderEmail = senderEmail;
         this.targetEmail = targetEmail;
         this.eventID = eventID;
-        this.priv = priv;
         this.isPub = isPub;
     }
 
@@ -52,7 +51,6 @@ public class ThreadMakeHost implements Runnable {
         contentValues.put("ID", Integer.toString(eventID));
         contentValues.put("SenderEmail", SenderEmail);
         contentValues.put("TargetEmail", targetEmail);
-        contentValues.put("Priv", priv);
         contentValues.put("isPub", isPub);
         String query = "";
         for (Map.Entry e : contentValues.valueSet()) {

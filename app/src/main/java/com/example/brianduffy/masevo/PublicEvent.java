@@ -59,133 +59,29 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public Pair createEvent() {
-        String methodName = "createPublicEvent";
-        String emailTrim = hostEmail;
+    @Override
+    public Pair<Event, Integer> createEvent(String eventName,String eventDesc,java.sql.Date startDate,java.sql.Date endDate,
+                Location location, float radius,int eventID, String hostEmail,boolean pub) {
+        ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,startDate,
+                endDate,location,radius,eventID,hostEmail,true);
+        new Thread(threadCreateEvent).start();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("method",methodName);
-        contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("Name",eventName);
-        contentValues.put("Description",eventDesc);
-        contentValues.put("StartTime",Long.toString(startDate.getTime()));
-        contentValues.put("EndTime",Long.toString(endDate.getTime()));
-        contentValues.put("Latitude",Float.toString(location.latitude));
-        contentValues.put("Longitude",Float.toString(location.longitude));
-        contentValues.put("Radius",Float.toString(radius));
-        contentValues.put("Host",emailTrim);
-
-        String query = "";
-        for (Map.Entry e: contentValues.valueSet()) {
-            query += (e.getKey() + "=" + e.getValue() + "&");
-        }
-        query = query.substring(0, query.length() - 1);
-        final String fQuery = query;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
-                    int postDataLength = postData.length;
-                    URL url = new URL(server_url);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setInstanceFollowRedirects(false);
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    httpURLConnection.setRequestProperty("charset", "utf-8");
-                    httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-                    httpURLConnection.setUseCaches(false);
-                    try (DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream())) {
-                        dataOutputStream.write(postData);
-                        dataOutputStream.flush();
-                    }
-                    int responseCode = httpURLConnection.getResponseCode();
-                    if (responseCode == 200) {
-                        String result = "";
-                        BufferedReader br = new BufferedReader(
-                                new InputStreamReader(httpURLConnection.getInputStream()));
-                        String output;
-                        while((output = br.readLine()) != null)
-                        {
-                            result += output;
-                        }
-                        System.out.println("Response message: " + result);
-                    }
-                } catch (MalformedURLException murle) {
-                    murle.printStackTrace();
-                    return;
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                    return;
-                }
-            }
-        }).start();
-
-
-        return null;
+        return threadCreateEvent.getReturnResult();
     }
-    public Pair<ArrayList<PublicEvent>, Integer> getEvents() {
+    @Override
+    public Pair<ArrayList<? extends Event>, Integer> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();
     }
 
-    public Pair<Boolean,Integer> deleteEvent(int eventID) {
-        String methodName = "deleteEvent";
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("method",methodName);
-        contentValues.put("ID",Integer.toString(eventID));
-        String query = "";
-        for (Map.Entry e: contentValues.valueSet()) {
-            query += (e.getKey() + "=" + e.getValue() + "&");
-        }
-        query = query.substring(0, query.length() - 1);
-        final String fQuery = query;
-        new Thread(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void run() {
-                try {
-                    byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
-                    int postDataLength = postData.length;
-                    URL url = new URL(server_url);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setInstanceFollowRedirects(false);
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    httpURLConnection.setRequestProperty("charset", "utf-8");
-                    httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-                    httpURLConnection.setUseCaches(false);
-                    try (DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream())) {
-                        dataOutputStream.write(postData);
-                        dataOutputStream.flush();
-                    }
-                    int responseCode = httpURLConnection.getResponseCode();
-                    if (responseCode == 200) {
-                        String result = "";
-                        BufferedReader br = new BufferedReader(
-                                new InputStreamReader(httpURLConnection.getInputStream()));
-                        String output;
-                        while((output = br.readLine()) != null)
-                        {
-                            result += output;
-                        }
-                        System.out.println("Response message: " + result);
-                    }
-                } catch (MalformedURLException murle) {
-                    murle.printStackTrace();
-                    return;
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                    return;
-                }
-            }
-        }).start();
+    @Override
+    public Pair<Boolean,Integer> deleteEvent(int eventID, String email) {
+        ThreadDeleteEvent threadDeleteEvent = new ThreadDeleteEvent(eventID,email,true);
+        new Thread(threadDeleteEvent).start();
 
 
-        return null;
+        return threadDeleteEvent.getReturnResult();
     }
 
     public void poop(){
@@ -246,12 +142,13 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @Override
-    public Pair<Boolean,Integer> joinEvent(int eventID) {
-
-        return null;
+    public Pair<Boolean,Integer> joinEvent(int eventID,String senderEmail) {
+        ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(eventID,senderEmail,true);
+        new Thread(threadJoinEvent).start();
+        return threadJoinEvent.getReturnResult();
     }
 
-    //@Override
+    @Override
     public Pair<Boolean, Integer> leaveEvent(int eventID, String senderEmail) {
         ThreadLeaveEvent threadLeaveEvent = new ThreadLeaveEvent(eventID, senderEmail, true);
         new Thread(threadLeaveEvent).start();
@@ -259,107 +156,56 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @Override
-    public Pair<Boolean,Integer> addUser(int eventID, String email) {
-        return null;
+    public Pair<Boolean,Integer> addUser (int eventID, String email,String target) {
+    ThreadAddUser threadAddUser = new ThreadAddUser(eventID,email,target,true);
+        new Thread(threadAddUser).start();
+        return threadAddUser.getReturnResult();
 
     }
 
     @Override
-    public boolean removeUser(int eventID, String email) {
-        return false;
+    public Pair<Boolean, Integer> removeUser(int eventID, String email,String target) {
+        ThreadRemoveUser threadRemoveUser = new ThreadRemoveUser(eventID,email,target,true);
+        new Thread(threadRemoveUser).start();
+        return threadRemoveUser.getReturnResult();
 
+    }
+    @Override
+    public Pair<Boolean, Integer> banUser(int eventID, String email, String target) {
+        ThreadBanUser threadBanUser = new ThreadBanUser(eventID,email,target,true);
+        new Thread(threadBanUser).start();
+        return threadBanUser.getReturnResult();
+
+    }
+    @Override
+    public Pair<Boolean, Integer> makeOwner(int eventID, String email, String target) {
+        ThreadMakeOwner threadMakeOwner = new ThreadMakeOwner(eventID,email,target,true);
+        new Thread(threadMakeOwner).start();
+        return threadMakeOwner.getReturnResult();
+
+    }
+    @Override
+    public Pair<Boolean, Integer> makeHost(int eventID, String email, String target) {
+        ThreadMakeHost threadMakeHost = new ThreadMakeHost(eventID,email,target,true);
+        new Thread(threadMakeHost).start();
+        return threadMakeHost.getReturnResult();
+
+    }
+    @Override
+    public Pair<Boolean, Integer> makeUser(int eventID, String email, String target) {
+        ThreadMakeUser threadMakeUser = new ThreadMakeUser(eventID,email,target,true);
+        new Thread(threadMakeUser).start();
+
+        return threadMakeUser.getReturnResult();
     }
 
     @Override
-    public boolean banUser(int eventID, String email) {
-        return false;
-
-    }
-
-    @Override
-    public boolean makeOwner(int eventID, String email) {
-        return false;
-
-    }
-
-    @Override
-    public boolean makeHost(int eventID, String email) {
-        return false;
-
-    }
-
-    @Override
-    public boolean makeUser(int eventID, String email) {
-
-        return false;
-    }
-
-    public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
-                            float latitude, float longitude, float radius, String hostEmail) {
-        String methodName = "modifyEvent";
-        String emailTrim = hostEmail;
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("method",methodName);
-        contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("Name",eventName);
-        contentValues.put("Description",eventDesc);
-        contentValues.put("StartTime",Long.toString(startDate.getTime()));
-        contentValues.put("EndTime",Long.toString(endDate.getTime()));
-        contentValues.put("Latitude",Float.toString(latitude));
-        contentValues.put("Longitude",Float.toString(longitude));
-        contentValues.put("Radius",Float.toString(radius));
-        contentValues.put("Host",emailTrim);
-        String query = "";
-        for (Map.Entry e: contentValues.valueSet()) {
-            query += (e.getKey() + "=" + e.getValue() + "&");
-        }
-        query = query.substring(0, query.length() - 1);
-        final String fQuery = query;
-        new Thread(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void run() {
-                try {
-                    byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
-                    int postDataLength = postData.length;
-                    URL url = new URL(server_url);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setInstanceFollowRedirects(false);
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    httpURLConnection.setRequestProperty("charset", "utf-8");
-                    httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-                    httpURLConnection.setUseCaches(false);
-                    try (DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream())) {
-                        dataOutputStream.write(postData);
-                        dataOutputStream.flush();
-                    }
-                    int responseCode = httpURLConnection.getResponseCode();
-                    if (responseCode == 200) {
-                        String result = "";
-                        BufferedReader br = new BufferedReader(
-                                new InputStreamReader(httpURLConnection.getInputStream()));
-                        String output;
-                        while((output = br.readLine()) != null)
-                        {
-                            result += output;
-                        }
-                        System.out.println("Response message: " + result);
-                    }
-                } catch (MalformedURLException murle) {
-                    murle.printStackTrace();
-                    return;
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                    return;
-                }
-            }
-        }).start();
-
-
-        return false;
+    public Pair<Event, Integer> modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+                                            float latitude, float longitude, float radius, String hostEmail) {
+        ThreadModifyEvent threadModifyEvent = new ThreadModifyEvent(eventID,eventName,eventDesc,
+                startDate,endDate,latitude,longitude,radius,hostEmail,true);
+        new Thread(threadModifyEvent).start();
+        return threadModifyEvent.getReturnResult();
     }
 
 }

@@ -120,24 +120,15 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 } else {
                     isPub = false;
                 }
-                ThreadLeaveEvent threadLeaveEvent = new ThreadLeaveEvent(temp.eventID,MainActivity.user.emailAddress,isPub);
+                Pair<Boolean,Integer> ret = temp.leaveEvent(temp.eventID,MainActivity.user.emailAddress);
 
-                Thread thread = new Thread(threadLeaveEvent);
-                Pair<Boolean,Integer> ret;
-                thread.start();
-                try {
-                    thread.join();
-                    ret = threadLeaveEvent.getReturnResult();
+                if (ret.second != 0) {
+                    Toast.makeText(getContext(),"err",Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    //TODO success
 
-                    if (ret.second!=0) {
-                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-
-
 
                 // check to see if user has creator permissions
                 if (temp.eventUsers.userPerm.get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
@@ -174,25 +165,14 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                     } else {
                         isPub = false;
                     }
-                ThreadDeleteEvent threadDeleteEvent = new ThreadDeleteEvent(event.eventID,MainActivity.user.emailAddress,isPub);
+                Pair<Boolean,Integer> ret1 = event.deleteEvent(event.eventID,MainActivity.user.emailAddress);
 
-                Thread thread1 = new Thread(threadDeleteEvent);
-                Pair<Boolean,Integer> ret1;
-                thread1.start();
-                try {
-                    thread1.join();
-                    ret1 = threadDeleteEvent.getReturnResult();
+                if (ret1.second != 0) {
+                    Toast.makeText(getContext(),"err",Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    //TODO success
 
-                    if (ret1.second != 0) {
-                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
-                        return false;
-                    }else  {
-                        //client side update
-                        MainActivity.user.myevents.remove((info).position);
-
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
                 if (MainActivity.user.myevents.get((info).position).eventUsers.userPerm.
                         get(MainActivity.user.emailAddress).hasCreatorPermissions()) {

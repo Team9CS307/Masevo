@@ -80,6 +80,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
                 if (isValidID(priv_edit.getText().toString())) {
 
+                    //TODO TODO fsaldfjweoigjwe;gji
                     ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(Integer.parseInt(priv_edit.getText().toString()),
                             MainActivity.user.emailAddress,eventType);
                     Thread thread = new Thread(threadJoinEvent);
@@ -99,10 +100,8 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //TODO server call
 
 
-                    //TODO go to myevents fragem
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();

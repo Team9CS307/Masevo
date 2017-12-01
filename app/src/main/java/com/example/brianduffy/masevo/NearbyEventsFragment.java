@@ -95,26 +95,17 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
                 }else {
                     isPub = false;
                 }
-                ThreadJoinEvent threadJoinEvent= new ThreadJoinEvent(toJoin.eventID,MainActivity.user.emailAddress,isPub);
-                Thread thread = new Thread(threadJoinEvent);
 
-                Pair<Boolean,Integer> ret;
-                thread.start();
-                try {
-                    thread.join();
-                    ret = threadJoinEvent.getReturnResult();
+                //Server call
+                Pair<Boolean,Integer> ret1 = toJoin.joinEvent(toJoin.eventID,MainActivity.user.emailAddress);
 
-                    if (ret.second != 0) {
-                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
-                        return false;
-                    } else {
-                        //TODO implement successs
+                if (ret1.second != 0 ) {
+                    Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                    return false;
+                }else {
+                    //todo success
 
 
-                        return true;
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
                 toJoin.eventUsers.userPerm.put(MainActivity.user.emailAddress,new Permission(0));
                 toJoin.eventUsers.userActive.put(MainActivity.user.emailAddress, true);

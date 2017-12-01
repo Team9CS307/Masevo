@@ -195,22 +195,16 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     pubEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
 
-                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
-                            jud2,pubEvent.location,pubEvent.radius,pubEvent.eventID,pubEvent.hostEmail,true);
+                    //Server call
+                    Pair<Event,Integer> ret1 = pubEvent.createEvent(eventName,eventDesc,jud1,jud2,pubEvent.location,pubEvent.radius,
+                            pubEvent.eventID,MainActivity.user.emailAddress,true);
 
-                    Thread thread = new Thread(threadCreateEvent);
-                    thread.start();
-                    Pair<Event,Integer> ret;
-                    try {
-                        thread.join();
-                        ret = threadCreateEvent.getReturnResult();
-                        if (ret.second != 0) {
-                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
-                        } else {
-                            MainActivity.user.myevents.add(ret.first);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (ret1.second != 0) {
+                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        return;
+                    } else {
+                        //success
+                        MainActivity.user.myevents.add(pubEvent);
                     }
 
                     MainActivity.mGeofenceList.add(new Geofence.Builder()
@@ -255,24 +249,18 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
 
-                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
-                            jud2,privEvent.location,privEvent.radius,privEvent.eventID,privEvent.hostEmail,false);
+                    //Server call
+                    Pair<Event,Integer> ret = privEvent.createEvent(eventName,eventDesc,jud1,jud2,privEvent.location,privEvent.radius,
+                            privEvent.eventID,MainActivity.user.emailAddress,false);
 
-                    Thread thread = new Thread(threadCreateEvent);
-                    thread.start();
-                    Pair<Event,Integer> ret;
-                    try {
-                        thread.join();
-                        ret = threadCreateEvent.getReturnResult();
-                        if (ret.second != 0) {
-                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
-                        } else {
-                            MainActivity.user.myevents.add(ret.first);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (ret.second != 0) {
+                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        return;
+                    } else {
+                        //TODO success
+                        MainActivity.user.myevents.add(privEvent);
+
                     }
-
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();

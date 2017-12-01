@@ -109,5 +109,9 @@ public class ThreadRemoveUser implements Runnable {
         returnResult = new Pair<>(true,errno);
 
     }
+    public Pair<Boolean, Integer> getReturnResult() {
+        return returnResult;
+    }
+
 }
 
