@@ -48,17 +48,18 @@ public class ThreadLeaveEvent implements Runnable{
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName;
-        if (pub) {
+        String methodName = "leaveEvent";
+        /*if (pub) {
             methodName = "leavePublicEvent";
         }
         else {
             methodName = "leavePrivateEvent";
-        }
+        }*/
         ContentValues contentValues = new ContentValues();
         contentValues.put("method", methodName);
         contentValues.put("ID", Integer.toString(eventID));
         contentValues.put("SenderEmail", senderEmail);
+        contentValues.put("isPub", pub);
         String query = "";
         for (Map.Entry<String, Object> e : contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
