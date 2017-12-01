@@ -6,6 +6,8 @@ import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadDeleteEvent;
 import com.example.chambe41.masevo.ThreadJoinEvent;
 import com.example.chambe41.masevo.ThreadModifyEvent;
+import com.example.chambe41.masevo.ThreadRemoveFromActive;
+import com.example.chambe41.masevo.ThreadRemoveUser;
 
 import junit.framework.Assert;
 
@@ -141,10 +143,79 @@ public class MasevoTesting {
 
         Assert.assertEquals((Integer) 2, actualFail.second); //checks if permissions error is thrown because normal users should not be able to modify events.
 
+        ThreadDeleteEvent threadDelete = new ThreadDeleteEvent(0,hostEmail,true); //remove test event
+        Thread deleteEventThread = new Thread(threadDelete);
+        deleteEventThread.start();
+        deleteEventThread.join();
+
+        //TODO: PUBLIC PRIVATE TESTING
     }
 
     @Test
-    public void removeUserServerTest() {
+    public void removeUserServerTest() throws InterruptedException {
+        String eventName = "Sample Event";
+        String eventDesc = "This is an Event Description";
+        java.sql.Date startDate = new java.sql.Date(1543622400000l);
+        java.sql.Date endDate = new java.sql.Date(1543626000000l);
+        Location location = new Location(0,0);
+        float radius = 10;
+        int eventId = 0;
+        String hostEmail = "testing.masevo";
+        boolean pub = true;
+        ThreadCreateEvent threadCreate = new ThreadCreateEvent(eventName, eventDesc, startDate, endDate, location, radius, eventId, hostEmail, pub);
+        Thread createEventThread = new Thread(threadCreate);
+        createEventThread.start();
+        PublicEvent publicEvent = new PublicEvent(eventName,eventDesc,startDate,endDate,location.latitude,location.longitude,radius,hostEmail);
+        Pair<PublicEvent, Integer> expected = new Pair<>(publicEvent,0);
+        createEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(0,"user", true);
+        Thread joinEventThread = new Thread(threadJoinEvent);
+        joinEventThread.start();
+        joinEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent2 = new ThreadJoinEvent(0,"user2", true);
+        Thread joinEventThread2 = new Thread(threadJoinEvent);
+        joinEventThread2.start();
+        joinEventThread2.join();
+
+
+        ThreadRemoveUser threadRemoveUser = new ThreadRemoveUser(eventId, "user", "user", pub);
+        Thread removeUserThread = new Thread(threadRemoveUser);
+        removeUserThread.start();
+        removeUserThread.join();
+        Pair<Boolean,Integer> actual = threadRemoveUser.getReturnResult();
+
+        Assert.assertEquals((Integer)10,actual.second); //checks if user tries to delete themself, should fail
+
+        ThreadRemoveUser threadRemoveUser2 = new ThreadRemoveUser(eventId, "user", "user2", pub);
+        Thread removeUserThread2 = new Thread(threadRemoveUser2);
+        removeUserThread2.start();
+        removeUserThread2.join();
+        Pair<Boolean,Integer> actual2 = threadRemoveUser2.getReturnResult();
+
+        Assert.assertEquals((Integer)9,actual2.second); //checks if user tries to delete another user, should fail
+
+        ThreadRemoveUser threadRemoveUser3 = new ThreadRemoveUser(eventId, hostEmail, "userNOTHERE", pub);
+        Thread removeUserThread3 = new Thread(threadRemoveUser3);
+        removeUserThread3.start();
+        removeUserThread3.join();
+        Pair<Boolean,Integer> actual3 = threadRemoveUser3.getReturnResult();
+
+        Assert.assertEquals((Integer)4,actual3.second); //checks if owner tries to delete a nonexistent user, should fail
+
+        ThreadRemoveUser threadRemoveUser4 = new ThreadRemoveUser(eventId, hostEmail, "user", pub);
+        Thread removeUserThread4 = new Thread(threadRemoveUser4);
+        removeUserThread4.start();
+        removeUserThread4.join();
+        Pair<Boolean,Integer> actual4 = threadRemoveUser4.getReturnResult();
+
+        Assert.assertEquals((Integer)4,actual4.second); //checks if owner tries to delete a user, should succeed
+
+        ThreadDeleteEvent threadDelete = new ThreadDeleteEvent(0,hostEmail,true); //remove test event
+        Thread deleteEventThread = new Thread(threadDelete);
+        deleteEventThread.start();
+        deleteEventThread.join();
 
     }
 
