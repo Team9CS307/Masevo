@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity
             String[] g = text.split(",");
             for (String aG : g) {
                 user.myIDs.add(Integer.parseInt(aG));
+
             }
 
         } catch (Exception e) {
@@ -455,6 +456,19 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         startLocationUpdates();
         populateGeofenceList();
+        File file = new File(getFilesDir(), save_loc);
+        try {
+            BufferedReader fr = new BufferedReader(new FileReader(file));
+            text = fr.readLine();
+            String[] g = text.split(",");
+            for (String aG : g) {
+                user.myIDs.add(Integer.parseInt(aG));
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

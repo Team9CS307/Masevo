@@ -1,10 +1,10 @@
 package com.example.chambe41.masevo;
+import com.example.brianduffy.masevo.*;
 
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-
-import com.example.brianduffy.masevo.PublicEvent;
+import android.util.Pair;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,16 +30,21 @@ import java.util.Map;
  */
 
 public class ThreadGetEvents implements Runnable {
-    private ArrayList<PublicEvent> returnResult = new ArrayList<>();
+    Integer errno;
+    Boolean isTrue;
+    ArrayList<PublicEvent> pubevents = new ArrayList<>();
+    Pair<Boolean, Pair<ArrayList<PublicEvent>, Integer>> returnResult;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
+
         String methodName;
         methodName = "getEvents";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method", methodName);
         String query = "";
-        for (Map.Entry e : contentValues.valueSet()) {
+        for (Map.Entry<String, Object> e : contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
         }
         query = query.substring(0, query.length() - 1);
@@ -95,13 +100,16 @@ public class ThreadGetEvents implements Runnable {
                         d3 = new Date(d1.getTime());
                         d4 = new Date(d2.getTime());
                     } catch (ParseException pe) {
+
+                        returnResult = new Pair<>(false,new Pair<ArrayList<PublicEvent>, Integer>(null,1));
                         return;
                     }
                     PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
                             Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
                             Float.parseFloat(aTrtd[7]), aTrtd[8]);
-                    returnResult.add(p);
+                    pubevents.add(p);
                 }
+                returnResult = new Pair<>(true,new Pair<>(pubevents,0));
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -112,7 +120,7 @@ public class ThreadGetEvents implements Runnable {
         }
     }
 
-    public ArrayList<PublicEvent> getReturnResult() {
+    public Pair<Boolean, Pair<ArrayList<PublicEvent>, Integer>> getReturnResult() {
         return returnResult;
     }
 }

@@ -186,11 +186,24 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 }
                 if (eventType) {
                          // todo change the radius or something
+
                     PublicEvent pubEvent = new PublicEvent(eventName,eventDesc,jud1,jud2,
                             latitude,longitude,100f,MainActivity.user.emailAddress);
                     pubEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     pubEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
+                    //TODO server call
+//                    if (!pubEvent.createEvent()) {
+//                        Toast.makeText(getContext(),"error",Toast.LENGTH_SHORT).show();
+//
+//                        // TODO parse server output and add locally
+//
+//
+//                    }
+
+
+                    MainActivity.user.myevents.add(pubEvent);
+
                     MainActivity.mGeofenceList.add(new Geofence.Builder()
                             // Set the request ID of the geofence. This is a string to identify this
                             // geofence.
@@ -202,7 +215,6 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                                     pubEvent.location.longitude,
                                     pubEvent.radius
                             )
-
                             // Set the expiration duration of the geofence. This geofence gets automatically
                             // removed after this period of time.
                             .setExpirationDuration(Geofence.NEVER_EXPIRE)
@@ -217,9 +229,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
 //                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
 //                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
 
-
                     //TODO add to the maps in eventUsers Class
-                    MainActivity.user.myevents.add(pubEvent);
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -235,6 +245,16 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     privEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
+
+//                    if (!privEvent.createEvent()) {
+//
+//                        Toast.makeText(getContext(),"error",Toast.LENGTH_SHORT).show();
+//
+//
+//                        // TODO parse server output and add locally
+//
+//                    }
+
                     MainActivity.user.myevents.add(privEvent);
 
 
@@ -309,4 +329,5 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         }
 
     }
+
 }

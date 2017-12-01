@@ -183,6 +183,7 @@ Switch.OnCheckedChangeListener{
                         MainActivity.user.myevents.remove(i);
                     }
                 }
+
                 String eventName = title.getText().toString();
                 String eventDesc = desc.getText().toString();
                 float radius;
@@ -198,13 +199,19 @@ Switch.OnCheckedChangeListener{
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                //TODO comment out when espresso testing
+//                Calendar calendar = Calendar.getInstance();
+//                java.util.Date curr = calendar.getTime();
+//                if (!(curr.before(jud1) && curr.before(jud2) && jud1.before(jud2))) {
+//                    Toast.makeText(getContext(),"Date is invalid!",Toast.LENGTH_LONG).show();
+//                    break;
+//                }
                 int count = 0;
                 if (validateEventName(eventName)) count++;
                 if (validateEventDesc(eventDesc)) count++;
                 if (validateDateText(start_text.getText().toString(),true)) count++;
                 if (validateDateText(end_text.getText().toString(),false)) count++;
 
-                //TODO modify validate Location to handle unchanged locations
                 if (validateLocation(new Location(latitude,longitude))) count++;
                 else Toast.makeText(getContext(),"Please choose a location!",Toast.LENGTH_LONG).show();
 
@@ -213,44 +220,82 @@ Switch.OnCheckedChangeListener{
 
                     break;
                 }
-                if (eventType) {
 
-                    // TODO create public event and add to myevents list and nearby list
-                    Event temp = new PublicEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,event.radius,MainActivity.user.emailAddress);
-                    temp.eventUsers = event.eventUsers;
-                    MainActivity.user.myevents.add(temp);
+
+
+                if (eventType) {
+                    // checkParamChanged modifies event if true
+                    if (!checkParamChanged(eventName,eventDesc,jud1,jud2,latitude,longitude,true)) {
+                        Toast.makeText(getContext(),"Nothing has been changed...",Toast.LENGTH_LONG).show();
+                    } else {
+
+                        Event temp = new PublicEvent(eventName,eventDesc,jud1,jud2,
+                                latitude,longitude,event.radius,event.hostEmail);
+                        Event p = new PrivateEvent();
+                        MainActivity.user.myevents.clear();
+                        MainActivity.user.myevents.addAll(temp.getEvents());
+                        MainActivity.user.myevents.addAll(p.getEvents());
+
+
+                        temp.eventUsers = event.eventUsers;
+
+                        //TODO remove later
+                        MainActivity.user.myevents.add(temp);
+                        event = temp;
+                        NotificationManager notifManager=(NotificationManager)getActivity()
+                                .getSystemService(Context.NOTIFICATION_SERVICE);
+                        String eventData = "Event: " + event.eventName + "\n" +
+                                "Description: " + event.eventDesc + "\n" +
+                                "Start Date: " + event.startDate.toString() + "\n" +
+                                "End Date: " + event.endDate.toString() + "\n" +
+                                "Location: Latitude = " + event.location.latitude +
+                                " Longitude = " + event.location.longitude;
+
+                        Notification notification = new Notification.Builder(getContext().
+                                getApplicationContext()).setSmallIcon(R.mipmap.ic_masevo_app)
+                                .setContentTitle("Masevo Event Changed").setContentText(eventData).build();
+
+                        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        notifManager.notify(NotificationManager.IMPORTANCE_HIGH, notification);
+
+
+                    }
 
                 } else {
-                    // create private event
-                    event = new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,event.radius,MainActivity.user.emailAddress);
-                    MainActivity.user.myevents.add(event);
+                    // checkParamChanged modifies event if true
+                    if (!checkParamChanged(eventName,eventDesc,jud1,jud2,latitude,longitude,false)) {
+                        Toast.makeText(getContext(),"Nothing has been changed...",Toast.LENGTH_LONG).show();
+                    } else {
+                        Event temp = new PrivateEvent(eventName,eventDesc,jud1,jud2,
+                                latitude,longitude,event.radius,event.hostEmail);
+                        temp.eventUsers = event.eventUsers;
+                        MainActivity.user.myevents.add(temp);
+                        event = temp;
+                        NotificationManager notifManager=(NotificationManager)getActivity()
+                                .getSystemService(Context.NOTIFICATION_SERVICE);
+                        String eventData = "Event: " + event.eventName + "\n" +
+                                "Description: " + event.eventDesc + "\n" +
+                                "Start Date: " + event.startDate.toString() + "\n" +
+                                "End Date: " + event.endDate.toString() + "\n" +
+                                "Location: Latitude = " + event.location.latitude +
+                                " Longitude = " + event.location.longitude;
+
+                        Notification notification = new Notification.Builder(getContext().
+                                getApplicationContext()).setSmallIcon(R.mipmap.ic_masevo_app)
+                                .setContentTitle("Masevo Event Changed").setContentText(eventData).build();
+
+                        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        notifManager.notify(NotificationManager.IMPORTANCE_HIGH, notification);
+
+                    }
+
 
 
                 }
-                // build notification for event change (can be changed later)
-                NotificationManager notifManager=(NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                String eventData = "Event: " + event.eventName + "\n" +
-                        "Description: " + event.eventDesc + "\n" +
-                        "Start Date: " + event.startDate.toString() + "\n" +
-                        "End Date: " + event.endDate.toString() + "\n" +
-                        "Location: Latitude = " + event.location.latitude + " Longitude = " + event.location.longitude;
-
-                // TODO change drawable icon to masevo icon
-                Notification notification = new Notification.Builder(getContext().
-                        getApplicationContext()).setSmallIcon(R.mipmap.ic_masevo_app).setContentTitle("Masevo Event Changed").setContentText(eventData).build();
-
-                notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-                notifManager.notify(NotificationManager.IMPORTANCE_HIGH, notification);
 
 
-                //TODO ********** Server call here
-
-
-
-                //TODO *************************
                 //TODO will need to repopulate the event after the event has been modified.
 
                 // return to where the user was when they first initiated edit event
@@ -273,6 +318,21 @@ Switch.OnCheckedChangeListener{
 
                 break;
         }
+    }
+
+    public boolean checkParamChanged(String eventname, String desc, Date start, Date end,
+                                  float lat, float lon, boolean type) {
+        //type = true : public event
+        if (!eventname.equals(event.eventName) || !desc.equals(event.eventDesc) ||
+                !start.equals(event.startDate) || !end.equals(event.endDate) ||
+                lat != event.location.latitude ||  lon != event.location.longitude ||
+                type && event instanceof PrivateEvent || !type && event instanceof PublicEvent) {
+                event.modifyEvent(event.eventID,eventname,desc,start,end,lat,lon,event.radius, event.hostEmail);
+
+            return true;
+        }
+
+        return false;
     }
     // used to check for valid eventname
     private boolean validateEventName(String eventname) {

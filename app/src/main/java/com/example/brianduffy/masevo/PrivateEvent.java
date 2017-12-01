@@ -1,11 +1,10 @@
 package com.example.brianduffy.masevo;
 
-import android.icu.text.SimpleDateFormat;
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by Gabriel on 9/24/2017.
@@ -13,6 +12,9 @@ import java.util.HashSet;
 
 public class PrivateEvent extends Event {
     // Use this to create a PrivateEvent
+    public PrivateEvent() {
+
+    }
     public PrivateEvent(String eventName, String eventDesc,Date startTime, Date endTime,
                         float latitude, float longitude, float radius, String creatorEmail)
     {
@@ -43,58 +45,77 @@ public class PrivateEvent extends Event {
         //        latitude, longitude, radius, creatorEmail);
     }
 
-    public void createEvent() {}
+    public boolean createEvent() {
 
-    void deleteEvent(int eventID) {
+        return false;
 
     }
 
+    public boolean deleteEvent(int eventID) {
+
+        return false;
+    }
+
     @Override
+    public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate, float latitude, float longitude, float radius, String hostEmail) {
+
+        return false;
+    }
+
+
     void modifyEvent(int eventID) {
 
     }
 
     @Override
-    void joinEvent(int eventID) {
+    public boolean joinEvent(int eventID) {
 
+        return false;
     }
 
     @Override
-    void leaveEvent(int eventID) {
+    public boolean leaveEvent(int eventID) {
 
+        return false;
     }
 
-    ArrayList<PrivateEvent> getEvents() {
+    Map.Entry<Boolean, Map.Entry<ArrayList<PublicEvent>, String>> getEvents() {
         return null;
     }
 
     @Override
-    void addUser(int eventID, String email) {
+    public boolean addUser(int eventID, String email) {
 
+        return false;
     }
 
     @Override
-    void removeUser(int eventID, String email) {
+    public boolean removeUser(int eventID, String email) {
 
+        return false;
     }
 
     @Override
-    void banUser(int eventID, String email) {
+    public boolean banUser(int eventID, String email) {
 
+        return false;
     }
 
     @Override
-    void makeOwner(int eventID, String email) {
+    public boolean makeOwner(int eventID, String email) {
 
+        return false;
     }
 
     @Override
-    void makeHost(int eventID, String email) {
+    public boolean makeHost(int eventID, String email) {
 
+        return false;
     }
 
     @Override
-    void makeUser(int eventID, String email) {
+    public boolean makeUser(int eventID, String email) {
 
+        return false;
     }
 }

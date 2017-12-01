@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Gabriel on 9/24/2017.
@@ -59,9 +58,9 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void createEvent() {
+    public boolean createEvent() {
         String methodName = "createPublicEvent";
-        String emailTrim = hostEmail.substring(0,hostEmail.indexOf("@"));
+        String emailTrim = hostEmail;
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
@@ -74,6 +73,7 @@ public class PublicEvent extends Event implements Serializable{
         contentValues.put("Longitude",Float.toString(location.longitude));
         contentValues.put("Radius",Float.toString(radius));
         contentValues.put("Host",emailTrim);
+
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -120,15 +120,17 @@ public class PublicEvent extends Event implements Serializable{
                 }
             }
         }).start();
-    }
 
-    public ArrayList<PublicEvent> getEvents() {
+
+        return false;
+    }
+    public Map.Entry<Boolean, Map.Entry<ArrayList<PublicEvent>, String>> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
-        return threadGetEvents.getReturnResult();
+        return null;
     }
 
-    public void deleteEvent(int eventID) {
+    public boolean deleteEvent(int eventID) {
         String methodName = "deleteEvent";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
@@ -180,52 +182,63 @@ public class PublicEvent extends Event implements Serializable{
                 }
             }
         }).start();
+
+
+        return false;
     }
 
     @Override
-    public void joinEvent(int eventID) {
+    public boolean joinEvent(int eventID) {
 
+        return false;
     }
 
     @Override
-    public void leaveEvent(int eventID) {
+    public boolean leaveEvent(int eventID) {
 
+        return false;
     }
 
     @Override
-    public void addUser(int eventID, String email) {
-
-    }
-
-    @Override
-    public void removeUser(int eventID, String email) {
-
-    }
-
-    @Override
-    public void banUser(int eventID, String email) {
+    public boolean addUser(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void makeOwner(int eventID, String email) {
+    public boolean removeUser(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void makeHost(int eventID, String email) {
+    public boolean banUser(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void makeUser(int eventID, String email) {
+    public boolean makeOwner(int eventID, String email) {
+        return false;
 
     }
 
-    public void modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+    @Override
+    public boolean makeHost(int eventID, String email) {
+        return false;
+
+    }
+
+    @Override
+    public boolean makeUser(int eventID, String email) {
+
+        return false;
+    }
+
+    public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
                             float latitude, float longitude, float radius, String hostEmail) {
         String methodName = "modifyEvent";
-        String emailTrim = hostEmail.substring(0,hostEmail.indexOf("@"));
+        String emailTrim = hostEmail;
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
@@ -285,6 +298,9 @@ public class PublicEvent extends Event implements Serializable{
                 }
             }
         }).start();
+
+
+        return false;
     }
 
 }
