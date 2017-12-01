@@ -5,6 +5,7 @@ import android.util.Pair;
 import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadDeleteEvent;
 import com.example.chambe41.masevo.ThreadJoinEvent;
+import com.example.chambe41.masevo.ThreadMakeHost;
 import com.example.chambe41.masevo.ThreadModifyEvent;
 import com.example.chambe41.masevo.ThreadRemoveFromActive;
 import com.example.chambe41.masevo.ThreadRemoveUser;
@@ -225,8 +226,61 @@ public class MasevoTesting {
     }
 
     @Test
-    public void makeOwnerServerTest() {
+    public void makeOwnerServerTest() throws InterruptedException {
+        String eventName = "Sample Event";
+        String eventDesc = "This is an Event Description";
+        java.sql.Date startDate = new java.sql.Date(1543622400000l);
+        java.sql.Date endDate = new java.sql.Date(1543626000000l);
+        Location location = new Location(0,0);
+        float radius = 10;
+        int eventId = 0;
+        String hostEmail = "testing.masevo";
+        boolean pub = true;
+        ThreadCreateEvent threadCreate = new ThreadCreateEvent(eventName, eventDesc, startDate, endDate, location, radius, eventId, hostEmail, pub);
+        Thread createEventThread = new Thread(threadCreate);
+        createEventThread.start();
+        PublicEvent publicEvent = new PublicEvent(eventName,eventDesc,startDate,endDate,location.latitude,location.longitude,radius,hostEmail);
+        Pair<PublicEvent, Integer> expected = new Pair<>(publicEvent,0);
+        createEventThread.join();
 
+        ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(0,"user", true);
+        Thread joinEventThread = new Thread(threadJoinEvent);
+        joinEventThread.start();
+        joinEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent2 = new ThreadJoinEvent(0,"user2", true);
+        Thread joinEventThread2 = new Thread(threadJoinEvent2);
+        joinEventThread2.start();
+        joinEventThread2.join();
+
+        ThreadMakeHost threadMakeHost = new ThreadMakeHost(eventId, hostEmail, hostEmail,true);
+        Thread makeHostThread = new Thread(threadMakeHost);
+        makeHostThread.start();
+        makeHostThread.join();
+        Pair<Boolean, Integer> actual = threadMakeHost.getReturnResult();
+
+        Assert.assertEquals((Integer) 10, actual.second); //checks if owner tries to make themself owner, should fail
+
+        ThreadMakeHost threadMakeHost2 = new ThreadMakeHost(eventId, "user", "user2",true);
+        Thread makeHostThread2 = new Thread(threadMakeHost2);
+        makeHostThread2.start();
+        makeHostThread2.join();
+        Pair<Boolean, Integer> actual2 = threadMakeHost2.getReturnResult();
+
+        Assert.assertEquals((Integer) 2, actual2.second); //checks if user tries to make someone owner, should fail
+
+        ThreadMakeHost threadMakeHost3 = new ThreadMakeHost(eventId, hostEmail, "user",true);
+        Thread makeHostThread3 = new Thread(threadMakeHost3);
+        makeHostThread2.start();
+        makeHostThread2.join();
+        Pair<Boolean, Integer> actual3 = threadMakeHost3.getReturnResult();
+
+        Assert.assertEquals((Integer) 0, actual3.second); //checks if creator promotes user, should succeed
+
+        ThreadDeleteEvent threadDelete = new ThreadDeleteEvent(0,hostEmail,true); //remove test event
+        Thread deleteEventThread = new Thread(threadDelete);
+        deleteEventThread.start();
+        deleteEventThread.join();
     }
 
     @Test
