@@ -113,6 +113,7 @@ public class PrivateEvent extends Event {
     }
 
 
+
     @Override
     public Pair<Boolean, Integer> joinEvent(int eventID, String senderEmail) {
         ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(eventID, senderEmail, false);

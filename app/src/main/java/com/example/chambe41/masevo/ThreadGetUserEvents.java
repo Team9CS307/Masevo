@@ -8,6 +8,7 @@ import android.util.Pair;
 import com.example.brianduffy.masevo.Event;
 import com.example.brianduffy.masevo.PrivateEvent;
 import com.example.brianduffy.masevo.PublicEvent;
+import com.example.brianduffy.masevo.Users;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -41,9 +42,11 @@ public class ThreadGetUserEvents implements Runnable {
 
         this.email = email;
     }
+    ArrayList<Event> events = new ArrayList<>();
+    ArrayList<Users> users = new ArrayList<>();
     ArrayList<PublicEvent> pubevents = new ArrayList<>();
     ArrayList<PrivateEvent> privevents = new ArrayList<>();
-    Pair<ArrayList<? extends Event>, Integer> returnResult;
+    Pair<ArrayList<? extends Event>, ArrayList<Users>> returnResult;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
@@ -131,7 +134,7 @@ public class ThreadGetUserEvents implements Runnable {
                             Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
                             Float.parseFloat(aTrtd[7]), aTrtd[8]);
 
-                    pubevents.add(p);
+                    events.add(p);
                 }
             }
         } catch (MalformedURLException murle) {
@@ -141,7 +144,7 @@ public class ThreadGetUserEvents implements Runnable {
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
         }
-        returnResult = new Pair<ArrayList<? extends Event>, Integer>(pubevents,errno);
+        returnResult = new Pair<ArrayList<? extends Event>, ArrayList<Users>>(events,users);
 
     }
 
