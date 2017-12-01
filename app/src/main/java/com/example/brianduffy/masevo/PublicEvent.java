@@ -251,10 +251,11 @@ public class PublicEvent extends Event implements Serializable{
         return false;
     }
 
-    @Override
-    public boolean leaveEvent(int eventID) {
-
-        return false;
+    //@Override
+    public Pair<Boolean, Integer> leaveEvent(int eventID, String senderEmail) {
+        ThreadLeaveEvent threadLeaveEvent = new ThreadLeaveEvent(eventID, senderEmail, true);
+        new Thread(threadLeaveEvent).start();
+        return threadLeaveEvent.getReturnResult();
     }
 
     @Override
