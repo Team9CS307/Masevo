@@ -3,6 +3,8 @@ package com.example.chambe41.masevo;
 import android.content.ContentValues;
 import android.util.Pair;
 
+import com.example.brianduffy.masevo.PublicEvent;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -99,6 +102,9 @@ public class ThreadAddUser implements Runnable {
                 }
                 errno = Integer.parseInt(trtd[0][0]);
             }
+
+
+
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
@@ -106,8 +112,11 @@ public class ThreadAddUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        errno = 0;
         returnResult = new Pair<>(true,errno);
 
+
+    }
+    public Pair<Boolean, Integer> getReturnResult() {
+        return returnResult;
     }
 }

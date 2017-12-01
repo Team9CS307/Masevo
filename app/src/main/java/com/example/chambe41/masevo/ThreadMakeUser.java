@@ -3,6 +3,8 @@ package com.example.chambe41.masevo;
 import android.content.ContentValues;
 import android.util.Pair;
 
+import com.example.brianduffy.masevo.PublicEvent;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -111,6 +114,9 @@ public class ThreadMakeUser implements Runnable {
         }
         returnResult = new Pair<>(true,errno);
 
+    }
+    public Pair<Boolean, Integer> getReturnResult() {
+        return returnResult;
     }
 }
 

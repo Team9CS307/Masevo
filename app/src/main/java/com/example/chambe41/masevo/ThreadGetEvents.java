@@ -87,6 +87,8 @@ public class ThreadGetEvents implements Runnable {
                     for (int j = 0; j < tds.size(); j++) {
                         trtd[i][j] = tds.get(j).text();
                     }
+                    errno = Integer.parseInt(trtd[0][0]);
+
                 }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
@@ -108,7 +110,6 @@ public class ThreadGetEvents implements Runnable {
                             Float.parseFloat(aTrtd[7]), aTrtd[8]);
                     pubevents.add(p);
                 }
-                returnResult = new Pair<>(pubevents,0);
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -117,6 +118,8 @@ public class ThreadGetEvents implements Runnable {
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
         }
+        returnResult = new Pair<>(pubevents,errno);
+
     }
 
     public Pair<ArrayList<PublicEvent>, Integer> getReturnResult() {

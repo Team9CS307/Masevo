@@ -137,22 +137,20 @@ public class ThreadCreateEvent implements Runnable {
                  errno = Integer.parseInt(trtd[0][0]);
             }
 
-            {
-            if (pub) {
-                returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
-                        startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
-            } else {
-                returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
-                        startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
-            }
-
-            }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return;
+        }
+
+        if (pub) {
+            returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
+                    startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+        } else {
+            returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
+                    startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
         }
 
     }
