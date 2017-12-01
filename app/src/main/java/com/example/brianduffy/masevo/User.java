@@ -1,5 +1,9 @@
 package com.example.brianduffy.masevo;
 
+import android.util.Pair;
+
+import com.example.chambe41.masevo.ThreadGetLocation;
+
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +86,11 @@ public class User {
         }
     }
 
+    public Pair<Location,Integer> getLocation(String email, float latitude, float longitude) {
+        ThreadGetLocation threadGetLocation = new ThreadGetLocation(email,latitude,longitude);
+        new Thread(threadGetLocation).start();
+        return threadGetLocation.getReturnResult();
+    }
     // Allows a user to join a given PublicEvent
     public void joinEvent(PublicEvent eventToJoin) {
 

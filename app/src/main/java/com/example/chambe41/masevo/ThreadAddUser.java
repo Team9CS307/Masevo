@@ -48,7 +48,7 @@ public class ThreadAddUser implements Runnable {
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("Priv",userPriv);
+        contentValues.put("TargetEmail",TargetEmail);
         contentValues.put("isPub",isPublic);
 
         String query = "";
@@ -112,6 +112,7 @@ public class ThreadAddUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
+        // TODO will change
         returnResult = new Pair<>(true,errno);
 
 

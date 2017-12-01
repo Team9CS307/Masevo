@@ -20,12 +20,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadGetLocation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -190,7 +192,7 @@ public class MainActivity extends AppCompatActivity
         // inexact. You may not receive updates at all if no location sources are available, or
         // you may receive them slower than requested. You may also receive updates faster than
         // requested if other applications are requesting location at a faster interval.
-        mLocationRequest.setInterval(1000 * 60 * 2); // five minutes
+        mLocationRequest.setInterval(1000 * 60 * 5); // five minutes
 
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
@@ -219,6 +221,18 @@ public class MainActivity extends AppCompatActivity
     }
     public void onLocationChanged(Location location) {
 
+        Pair<com.example.brianduffy.masevo.Location,Integer> ret =
+                MainActivity.user.getLocation(MainActivity.user.emailAddress,(float)location.getLatitude(),
+                (float)location.getLongitude());
+
+        if (ret.second != 0 ) {
+            Toast.makeText(this,"errno",Toast.LENGTH_LONG).show();
+            return;
+        } else  {
+            // update mylocation locally
+            MainActivity.user.myLocation = ret.first;
+
+        }
         //************************** DEBUG *****************************
         Toast.makeText(this,"Lat: " + location.getLatitude() +
                 " Lon: " + location.getLongitude(),Toast.LENGTH_SHORT).show();

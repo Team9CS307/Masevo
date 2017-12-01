@@ -3,6 +3,11 @@ package com.example.chambe41.masevo;
 import android.content.ContentValues;
 import android.util.Pair;
 
+import com.example.brianduffy.masevo.Event;
+import com.example.brianduffy.masevo.Location;
+import com.example.brianduffy.masevo.PrivateEvent;
+import com.example.brianduffy.masevo.PublicEvent;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,31 +27,34 @@ import java.util.Map;
  * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadRemoveUser implements Runnable {
-    int eventID;
-    String SenderEmail;
-    Boolean isPublic;
+public class ThreadGetLocation implements Runnable {
+    float latitude;
+    float longitude;
+    String email;
     Integer errno;
-    int userPriv;
-    Pair<Boolean,Integer> returnResult;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    String TargetEmail;
-    public ThreadRemoveUser(int eventID, String SenderEmail,String TargetEmail, Boolean isPublic) {
-        this.eventID = eventID;
-        this.SenderEmail = SenderEmail;
-        this.TargetEmail = TargetEmail;
-        this.isPublic = isPublic;
-    }
 
+    Pair<Location,Integer> returnResult;
+    public ThreadGetLocation(String email, float latitude, float longitude) {
+        this.email = email;
+        this.latitude = latitude;
+        this.longitude = longitude;
+
+    }
     @Override
     public void run() {
-        String methodName = "removeUser";
+
+        String methodName;
+        methodName = "getLocation";
+
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
-        contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("TargetEmail",TargetEmail);
-        contentValues.put("isPub",isPublic);
+       contentValues.put("Username",email);
+        contentValues.put("Latitude",Float.toString(latitude));
+        contentValues.put("Longitude",Float.toString(longitude));
+
+        //TODO create the actual event
 
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
@@ -72,13 +80,11 @@ public class ThreadRemoveUser implements Runnable {
             }
             int responseCode = httpURLConnection.getResponseCode();
             String result = "";
-
             if (responseCode == 200) {
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(httpURLConnection.getInputStream()));
                 String output;
-                while((output = br.readLine()) != null)
-                {
+                while ((output = br.readLine()) != null) {
                     result += output;
                 }
                 System.out.println("Response message: " + result);
@@ -86,7 +92,6 @@ public class ThreadRemoveUser implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
-            //TODO do this
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -99,6 +104,7 @@ public class ThreadRemoveUser implements Runnable {
                 }
                 errno = Integer.parseInt(trtd[0][0]);
             }
+
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
@@ -106,13 +112,16 @@ public class ThreadRemoveUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        //TODO will change
-        returnResult = new Pair<>(true,errno);
+
+        // maybe change
+        returnResult = new Pair<>(new Location(latitude,longitude),errno);
+
 
     }
-    public Pair<Boolean, Integer> getReturnResult() {
+
+    public Pair<Location, Integer> getReturnResult() {
+
         return returnResult;
     }
 
 }
-

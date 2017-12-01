@@ -37,7 +37,6 @@ public class ThreadMakeUser implements Runnable {
         SenderEmail = senderEmail;
         this.targetEmail = targetEmail;
         this.eventID = eventID;
-        this.priv = priv;
         this.isPub = isPub;
     }
 
@@ -111,6 +110,7 @@ public class ThreadMakeUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
+        //TODO will change
         returnResult = new Pair<>(true,errno);
 
     }
