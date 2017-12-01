@@ -22,16 +22,15 @@ import java.util.Map;
  * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadRemoveUser implements Runnable {
+public class ThreadBanUser implements Runnable {
     int eventID;
     String SenderEmail;
     Boolean isPublic;
     Integer errno;
-    int userPriv;
     Pair<Boolean,Integer> returnResult;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
     String TargetEmail;
-    public ThreadRemoveUser(int eventID, String SenderEmail,String TargetEmail, Boolean isPublic) {
+    public ThreadBanUser(int eventID, String SenderEmail,String TargetEmail, Boolean isPublic) {
         this.eventID = eventID;
         this.SenderEmail = SenderEmail;
         this.TargetEmail = TargetEmail;
@@ -40,7 +39,7 @@ public class ThreadRemoveUser implements Runnable {
 
     @Override
     public void run() {
-        String methodName = "removeUser";
+        String methodName = "banUser";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
