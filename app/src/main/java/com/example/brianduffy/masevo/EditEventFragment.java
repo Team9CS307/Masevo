@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadModifyEvent;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -231,6 +233,26 @@ Switch.OnCheckedChangeListener{
 
                         Event temp = new PublicEvent(eventName,eventDesc,jud1,jud2,
                                 latitude,longitude,event.radius,event.hostEmail);
+
+                        ThreadModifyEvent threadModifyEvent = new ThreadModifyEvent(temp.eventID,eventName,
+                                eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail,true);
+                        Thread thread = new Thread(threadModifyEvent);
+                        Pair<Event,Integer> ret;
+                        thread.start();
+                        try {
+                            thread.join();
+                            ret = threadModifyEvent.getReturnResult();
+
+                            if (ret.second != 0) {
+                                Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                            } else {
+                                //TODO
+
+
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         Event p = new PrivateEvent();
                         MainActivity.user.myevents.clear();
 //                        MainActivity.user.myevents.addAll(temp.getEvents());
@@ -269,9 +291,31 @@ Switch.OnCheckedChangeListener{
                     } else {
                         Event temp = new PrivateEvent(eventName,eventDesc,jud1,jud2,
                                 latitude,longitude,event.radius,event.hostEmail);
+
+                        ThreadModifyEvent threadModifyEvent = new ThreadModifyEvent(temp.eventID,eventName,
+                                eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail,false);
+                        Thread thread = new Thread(threadModifyEvent);
+                        Pair<Event,Integer> ret;
+                        thread.start();
+                        try {
+                            thread.join();
+                            ret = threadModifyEvent.getReturnResult();
+
+                            if (ret.second != 0) {
+                                Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                            } else {
+                                //TODO
+
+
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //TODO may not need
                         temp.eventUsers = event.eventUsers;
                         MainActivity.user.myevents.add(temp);
                         event = temp;
+
                         NotificationManager notifManager=(NotificationManager)getActivity()
                                 .getSystemService(Context.NOTIFICATION_SERVICE);
                         String eventData = "Event: " + event.eventName + "\n" +

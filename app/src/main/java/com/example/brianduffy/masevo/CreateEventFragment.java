@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApi;
@@ -192,17 +194,24 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     pubEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     pubEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
-                    //TODO server call
-//                    if (!pubEvent.createEvent()) {
-//                        Toast.makeText(getContext(),"error",Toast.LENGTH_SHORT).show();
-//
-//                        // TODO parse server output and add locally
-//
-//
-//                    }
 
+                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
+                            jud2,pubEvent.location,pubEvent.radius,pubEvent.eventID,pubEvent.hostEmail,true);
 
-                    MainActivity.user.myevents.add(pubEvent);
+                    Thread thread = new Thread(threadCreateEvent);
+                    thread.start();
+                    Pair<Event,Integer> ret;
+                    try {
+                        thread.join();
+                        ret = threadCreateEvent.getReturnResult();
+                        if (ret.second != 0) {
+                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        } else {
+                            MainActivity.user.myevents.add(ret.first);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     MainActivity.mGeofenceList.add(new Geofence.Builder()
                             // Set the request ID of the geofence. This is a string to identify this
@@ -246,17 +255,23 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
 
-//                    if (!privEvent.createEvent()) {
-//
-//                        Toast.makeText(getContext(),"error",Toast.LENGTH_SHORT).show();
-//
-//
-//                        // TODO parse server output and add locally
-//
-//                    }
+                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
+                            jud2,privEvent.location,privEvent.radius,privEvent.eventID,privEvent.hostEmail,false);
 
-                    MainActivity.user.myevents.add(privEvent);
-
+                    Thread thread = new Thread(threadCreateEvent);
+                    thread.start();
+                    Pair<Event,Integer> ret;
+                    try {
+                        thread.join();
+                        ret = threadCreateEvent.getReturnResult();
+                        if (ret.second != 0) {
+                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        } else {
+                            MainActivity.user.myevents.add(ret.first);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
