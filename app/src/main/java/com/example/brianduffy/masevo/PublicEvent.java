@@ -1,8 +1,11 @@
 package com.example.brianduffy.masevo;
 
+import com.example.chambe41.masevo.*;
+
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -18,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Gabriel on 9/24/2017.
@@ -57,9 +59,9 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void createEvent() {
+    public Pair createEvent() {
         String methodName = "createPublicEvent";
-        String emailTrim = hostEmail.substring(0,hostEmail.indexOf("@"));
+        String emailTrim = hostEmail;
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
@@ -72,6 +74,7 @@ public class PublicEvent extends Event implements Serializable{
         contentValues.put("Longitude",Float.toString(location.longitude));
         contentValues.put("Radius",Float.toString(radius));
         contentValues.put("Host",emailTrim);
+
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -118,15 +121,17 @@ public class PublicEvent extends Event implements Serializable{
                 }
             }
         }).start();
-    }
 
-    public ArrayList<PublicEvent> getEvents() {
+
+        return null;
+    }
+    public Pair<ArrayList<PublicEvent>, Integer> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();
     }
 
-    public void deleteEvent(int eventID) {
+    public boolean deleteEvent(int eventID) {
         String methodName = "deleteEvent";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
@@ -178,52 +183,120 @@ public class PublicEvent extends Event implements Serializable{
                 }
             }
         }).start();
+
+
+        return false;
+    }
+
+    public void poop(){
+        //
+        //MainActivity.user.emailAddress
+        //
+        String methodName = "deleteEvent"; //POP
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("method",methodName); // Myabe Pop
+        contentValues.put("ID",Integer.toString(eventID)); //Maybe Pop
+        String query = "";
+        for (Map.Entry e: contentValues.valueSet()) {
+            query += (e.getKey() + "=" + e.getValue() + "&");
+        }
+        query = query.substring(0, query.length() - 1);
+        final String fQuery = query;
+        new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void run() {
+                try {
+                    byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
+                    int postDataLength = postData.length;
+                    URL url = new URL(server_url);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+                    httpURLConnection.setDoOutput(true);
+                    httpURLConnection.setInstanceFollowRedirects(false);
+                    httpURLConnection.setRequestMethod("POST");
+                    httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    httpURLConnection.setRequestProperty("charset", "utf-8");
+                    httpURLConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                    httpURLConnection.setUseCaches(false);
+                    try (DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream())) {
+                        dataOutputStream.write(postData);
+                        dataOutputStream.flush();
+                    }
+                    int responseCode = httpURLConnection.getResponseCode();
+                    if (responseCode == 200) {
+                        String result = "";
+                        BufferedReader br = new BufferedReader(
+                                new InputStreamReader(httpURLConnection.getInputStream()));
+                        String output;
+                        while((output = br.readLine()) != null)
+                        {
+                            result += output;
+                        }
+                        System.out.println("Response message: " + result);
+                    }
+                } catch (MalformedURLException murle) {
+                    murle.printStackTrace();
+                    return;
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                    return;
+                }
+            }
+        }).start();
     }
 
     @Override
-    public void joinEvent(int eventID) {
+    public boolean joinEvent(int eventID) {
+
+        return false;
+    }
+
+    @Override
+    public boolean leaveEvent(int eventID) {
+
+        return false;
+    }
+
+    @Override
+    public boolean addUser(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void leaveEvent(int eventID) {
+    public boolean removeUser(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void addUser(int eventID, String email) {
+    public boolean banUser(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void removeUser(int eventID, String email) {
+    public boolean makeOwner(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void banUser(int eventID, String email) {
+    public boolean makeHost(int eventID, String email) {
+        return false;
 
     }
 
     @Override
-    public void makeOwner(int eventID, String email) {
+    public boolean makeUser(int eventID, String email) {
 
+        return false;
     }
 
-    @Override
-    public void makeHost(int eventID, String email) {
-
-    }
-
-    @Override
-    public void makeUser(int eventID, String email) {
-
-    }
-
-    public void modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+    public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
                             float latitude, float longitude, float radius, String hostEmail) {
         String methodName = "modifyEvent";
-        String emailTrim = hostEmail.substring(0,hostEmail.indexOf("@"));
+        String emailTrim = hostEmail;
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
@@ -283,6 +356,9 @@ public class PublicEvent extends Event implements Serializable{
                 }
             }
         }).start();
+
+
+        return false;
     }
 
 }

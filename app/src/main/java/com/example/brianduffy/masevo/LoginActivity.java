@@ -204,6 +204,9 @@ public class LoginActivity extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             emailAddress = result.getSignInAccount().getEmail();
+            int at = emailAddress.indexOf("@");
+            emailAddress = emailAddress.substring(0,at);
+
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
         } else {
