@@ -44,9 +44,33 @@ public class ThreadGetUserEvents implements Runnable {
     }
     ArrayList<Event> events = new ArrayList<>();
     ArrayList<Users> users = new ArrayList<>();
-    ArrayList<PublicEvent> pubevents = new ArrayList<>();
-    ArrayList<PrivateEvent> privevents = new ArrayList<>();
     Pair<ArrayList<? extends Event>, ArrayList<Users>> returnResult;
+
+    private static int hexToBin( char ch ) {
+        if( '0'<=ch && ch<='9' )    return ch-'0';
+        if( 'A'<=ch && ch<='F' )    return ch-'A'+10;
+        if( 'a'<=ch && ch<='f' )    return ch-'a'+10;
+        return -1;
+    }
+
+    public byte[] parseHexBinary(String s) {
+        final int len = s.length();
+        // "111" is not a valid hex encoding.
+        if( len%2 != 0 )
+            throw new IllegalArgumentException("hexBinary needs to be even-length: "+s);
+
+        byte[] out = new byte[len/2];
+
+        for( int i=0; i<len; i+=2 ) {
+            int h = hexToBin(s.charAt(i  ));
+            int l = hexToBin(s.charAt(i+1));
+            if( h==-1 || l==-1 )
+                throw new IllegalArgumentException("contains illegal character for hexBinary: "+s);
+
+            out[i/2] = (byte)(h*16+l);
+        }
+        return out;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
@@ -103,6 +127,7 @@ public class ThreadGetUserEvents implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
+            int count = 0;
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -112,8 +137,9 @@ public class ThreadGetUserEvents implements Runnable {
                     for (int j = 0; j < tds.size(); j++) {
                         trtd[i][j] = tds.get(j).text();
                     }
-                    errno = Integer.parseInt(trtd[0][0]);
-
+                    if (count == 0) {
+                        errno = Integer.parseInt(trtd[0][0]);
+                    }
                 }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
@@ -130,12 +156,20 @@ public class ThreadGetUserEvents implements Runnable {
                         returnResult = new Pair<>(null,null);
                         return;
                     }
-                    PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
-                            Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
-                            Float.parseFloat(aTrtd[7]), aTrtd[8]);
-
-                    events.add(p);
+                    if (count == 1) {
+                        PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
+                                Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
+                                Float.parseFloat(aTrtd[7]), aTrtd[8]);
+                        events.add(p);
+                    } else {
+                        PrivateEvent p = new PrivateEvent(aTrtd[1], aTrtd[2], d3, d4,
+                                Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
+                                Float.parseFloat(aTrtd[7]), aTrtd[8]);
+                        events.add(p);
+                    }
+                    users.add((Users)deserialize(parseHexBinary(aTrtd[9])));
                 }
+                count++;
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -143,9 +177,10 @@ public class ThreadGetUserEvents implements Runnable {
             ioe.printStackTrace();
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
         }
         returnResult = new Pair<ArrayList<? extends Event>, ArrayList<Users>>(events,users);
-
     }
 
     public Pair<ArrayList<? extends Event>, ArrayList<Users>> getReturnResult() {
