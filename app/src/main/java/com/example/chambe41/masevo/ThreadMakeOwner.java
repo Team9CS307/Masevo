@@ -1,15 +1,7 @@
 package com.example.chambe41.masevo;
 
 import android.content.ContentValues;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.Pair;
-
-import com.example.brianduffy.masevo.DatePickerFragment;
-import com.example.brianduffy.masevo.Event;
-import com.example.brianduffy.masevo.Location;
-import com.example.brianduffy.masevo.PrivateEvent;
-import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,70 +16,41 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 11/30/2017.
+ * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadCreateEvent implements Runnable {
-    private final String properties = "ID,Name,Description,StartTime,EndTime," +
-            "Latitude,Longitude,Radius,Host,List";
-
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-
-    Event event;
-    boolean pub;
-    java.sql.Date startDate;
-    java.sql.Date endDate;
-    String hostEmail;
+public class ThreadMakeOwner implements Runnable {
+    String SenderEmail;
+    String targetEmail;
     int eventID;
-    String eventName;
-    String eventDesc;
-    Location location;
-    float radius;
-    private Pair<Event, Integer> returnResult;
-    Integer errno;
-    public ThreadCreateEvent(String eventName,String eventDesc,java.sql.Date startDate,java.sql.Date endDate,
-                             Location location, float radius,int eventID, String hostEmail,boolean pub) {
-        this.eventName = eventName;
-        this.eventDesc = eventDesc;
-        this.eventID = eventID;
-        this.hostEmail = hostEmail;
-        this.location = location;
-        this.radius = radius;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.pub = pub;
+    Boolean isPub;
+    int priv;
+    private Integer errno;
 
+    public ThreadMakeOwner(String senderEmail, String targetEmail, int eventID, int priv, Boolean isPub) {
+        SenderEmail = senderEmail;
+        this.targetEmail = targetEmail;
+        this.eventID = eventID;
+        this.priv = priv;
+        this.isPub = isPub;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+    private Pair<Boolean, Integer> returnResult;
+
     @Override
     public void run() {
-        //TODO maybe?
-        String methodName;
-            methodName = "createPublicEvent";
-
-        String emailTrim = hostEmail;
-
+        String methodName = "makeOwner";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("Name",eventName);
-        contentValues.put("Description",eventDesc);
-        contentValues.put("StartTime",Long.toString(startDate.getTime()));
-        contentValues.put("EndTime",Long.toString(endDate.getTime()));
-        contentValues.put("Latitude",Float.toString(location.latitude));
-        contentValues.put("Longitude",Float.toString(location.longitude));
-        contentValues.put("Radius",Float.toString(radius));
-        contentValues.put("Host",emailTrim);
-        contentValues.put("isPub",pub);
-
-        //TODO create the actual event
-
+        contentValues.put("SenderEmail",SenderEmail);
+        contentValues.put("TargetEmail",targetEmail);
+        contentValues.put("Priv",priv);
+        contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -112,11 +75,13 @@ public class ThreadCreateEvent implements Runnable {
             }
             int responseCode = httpURLConnection.getResponseCode();
             String result = "";
+
             if (responseCode == 200) {
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(httpURLConnection.getInputStream()));
                 String output;
-                while ((output = br.readLine()) != null) {
+                while((output = br.readLine()) != null)
+                {
                     result += output;
                 }
                 System.out.println("Response message: " + result);
@@ -124,6 +89,7 @@ public class ThreadCreateEvent implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
+            //TODO do this
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -134,18 +100,7 @@ public class ThreadCreateEvent implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
-                 errno = Integer.parseInt(trtd[0][0]);
-            }
-
-            {
-            if (pub) {
-                returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
-                        startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
-            } else {
-                returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
-                        startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
-            }
-
+                errno = Integer.parseInt(trtd[0][0]);
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -154,11 +109,7 @@ public class ThreadCreateEvent implements Runnable {
             ioe.printStackTrace();
             return;
         }
+        returnResult = new Pair<>(true,errno);
 
-    }
-
-    public Pair<Event, Integer> getReturnResult() {
-
-        return returnResult;
     }
 }

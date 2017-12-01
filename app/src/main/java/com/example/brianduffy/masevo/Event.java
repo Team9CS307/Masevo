@@ -44,14 +44,14 @@ public abstract class Event implements Serializable{
     public EventUsers eventUsers = new EventUsers(new ArrayList<String>(),new ArrayList<Permission>(),new ArrayList<Boolean>());
 
     abstract public Pair<? extends Event,Integer> createEvent();
-    abstract public boolean deleteEvent(int eventID);
+    abstract public Pair<Boolean,Integer> deleteEvent(int eventID);
     abstract public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
                             float latitude, float longitude, float radius, String hostEmail);
-    abstract public boolean joinEvent(int eventID);
-    abstract public boolean leaveEvent(int eventID);
+    abstract public Pair<Boolean,Integer> joinEvent(int eventID);
+    abstract public Pair<Boolean, Integer> leaveEvent(int eventID, String senderEmail);
     abstract public Pair<ArrayList<PublicEvent>, Integer> getEvents();
 
-    abstract public boolean addUser (int eventID, String email);
+    abstract public Pair<Boolean,Integer> addUser (int eventID, String email);
     abstract public boolean removeUser (int eventID, String email);
     abstract public boolean banUser (int eventID, String email);
     abstract public boolean makeOwner(int eventID, String email);

@@ -46,15 +46,15 @@ public class PrivateEvent extends Event {
         //        latitude, longitude, radius, creatorEmail);
     }
 
-    public boolean createEvent() {
+    public Pair<PrivateEvent,Integer> createEvent() {
 
-        return false;
+        return null;
 
     }
 
-    public boolean deleteEvent(int eventID) {
+    public Pair<Boolean,Integer> deleteEvent(int eventID) {
 
-        return false;
+        return null;
     }
 
     @Override
@@ -69,25 +69,25 @@ public class PrivateEvent extends Event {
     }
 
     @Override
-    public boolean joinEvent(int eventID) {
+    public Pair<Boolean,Integer> joinEvent(int eventID) {
 
-        return false;
-    }
-
-    @Override
-    public boolean leaveEvent(int eventID) {
-
-        return false;
-    }
-
-    Pair<ArrayList<PublicEvent>, Integer> getEvents() {
         return null;
     }
 
     @Override
-    public boolean addUser(int eventID, String email) {
+    public Pair<Boolean,Integer> leaveEvent(int eventID,String senderEmail) {
 
-        return false;
+        return null;
+    }
+
+    public Pair<ArrayList<PublicEvent>, Integer> getEvents() {
+        return null;
+    }
+
+    @Override
+    public Pair<Boolean,Integer> addUser(int eventID, String email) {
+
+        return null;
     }
 
     @Override

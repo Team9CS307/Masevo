@@ -31,14 +31,13 @@ import java.util.Map;
 
 public class ThreadGetEvents implements Runnable {
     Integer errno;
-    Boolean isTrue;
+    Boolean isPublic;
     ArrayList<PublicEvent> pubevents = new ArrayList<>();
     Pair<ArrayList<PublicEvent>, Integer> returnResult;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-
         String methodName;
         methodName = "getEvents";
         ContentValues contentValues = new ContentValues();
