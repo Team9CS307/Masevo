@@ -2,7 +2,6 @@ package com.example.brianduffy.masevo;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -24,10 +22,8 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.chambe41.masevo.ThreadGetLocation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,7 +34,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -48,9 +43,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -59,9 +51,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashSet;
+
 //TODO *********************************************************************************************
 /*TODO
     need to implement arraylist of geofences for every event. Upon entry of the current user,
@@ -222,7 +213,7 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
 
         Pair<com.example.brianduffy.masevo.Location,Integer> ret =
-                MainActivity.user.getLocation(MainActivity.user.emailAddress,(float)location.getLatitude(),
+                MainActivity.user.updateLocation(MainActivity.user.emailAddress,(float)location.getLatitude(),
                 (float)location.getLongitude());
 
         if (ret.second != 0 ) {

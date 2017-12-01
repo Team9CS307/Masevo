@@ -3,10 +3,7 @@ package com.example.chambe41.masevo;
 import android.content.ContentValues;
 import android.util.Pair;
 
-import com.example.brianduffy.masevo.Event;
 import com.example.brianduffy.masevo.Location;
-import com.example.brianduffy.masevo.PrivateEvent;
-import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,40 +18,37 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
  * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadGetLocation implements Runnable {
-    float latitude;
-    float longitude;
-    String email;
+public class ThreadGetActiveLoc implements Runnable {
+    int eventID;
+    String SenderEmail;
+    Boolean isPublic;
     Integer errno;
+    int userPriv;
+    ArrayList<Location> locations = new ArrayList<>();
+    Pair<ArrayList<Location>,Integer> returnResult;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-
-    Pair<Location,Integer> returnResult;
-    public ThreadGetLocation(String email, float latitude, float longitude) {
-        this.email = email;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    String TargetEmail;
+    public ThreadGetActiveLoc(int eventID, String SenderEmail) {
+        this.eventID = eventID;
+        this.SenderEmail = SenderEmail;
 
     }
+
     @Override
     public void run() {
-
-        String methodName;
-        methodName = "getLocation";
-
-
+        String methodName = "getActiveLoc";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
-       contentValues.put("Username",email);
-        contentValues.put("Latitude",Float.toString(latitude));
-        contentValues.put("Longitude",Float.toString(longitude));
+        contentValues.put("ID",Integer.toString(eventID));
+        contentValues.put("SenderEmail",SenderEmail);
 
-        //TODO create the actual event
 
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
@@ -80,11 +74,13 @@ public class ThreadGetLocation implements Runnable {
             }
             int responseCode = httpURLConnection.getResponseCode();
             String result = "";
+
             if (responseCode == 200) {
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(httpURLConnection.getInputStream()));
                 String output;
-                while ((output = br.readLine()) != null) {
+                while((output = br.readLine()) != null)
+                {
                     result += output;
                 }
                 System.out.println("Response message: " + result);
@@ -92,6 +88,8 @@ public class ThreadGetLocation implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
+            //TODO do this
+            int count = 0;
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -102,8 +100,27 @@ public class ThreadGetLocation implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
-                errno = Integer.parseInt(trtd[0][0]);
+
+                if (count == 0)  {
+                    errno = Integer.parseInt(trtd[0][0]);
+                } else {
+
+                    for (int i = 0; i < trtd.length; i++) {
+                        Location loc = new Location(0,0);
+                        for (int j = 0; j < trtd[i].length; j++) {
+                            if (j == 0) {
+                                loc.latitude = Float.parseFloat(trtd[i][j]);
+                            } else {
+                                loc.longitude = Float.parseFloat(trtd[i][j]);
+                            }
+                        }
+                        locations.add(loc);
+                    }
+                }
+                count++;
             }
+
+            returnResult = new Pair<>(locations,errno);
 
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -113,15 +130,10 @@ public class ThreadGetLocation implements Runnable {
             return;
         }
 
-        // maybe change
-        returnResult = new Pair<>(new Location(latitude,longitude),errno);
-
 
     }
-
-    public Pair<Location, Integer> getReturnResult() {
-
+    public Pair<ArrayList<Location>, Integer> getReturnResult() {
         return returnResult;
     }
-
 }
+

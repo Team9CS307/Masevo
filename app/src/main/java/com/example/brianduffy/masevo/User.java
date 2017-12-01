@@ -2,12 +2,10 @@ package com.example.brianduffy.masevo;
 
 import android.util.Pair;
 
-import com.example.chambe41.masevo.ThreadGetLocation;
+import com.example.chambe41.masevo.ThreadUpdateLocation;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Created by Brian Duffy on 9/14/2017.
@@ -86,10 +84,10 @@ public class User {
         }
     }
 
-    public Pair<Location,Integer> getLocation(String email, float latitude, float longitude) {
-        ThreadGetLocation threadGetLocation = new ThreadGetLocation(email,latitude,longitude);
-        new Thread(threadGetLocation).start();
-        return threadGetLocation.getReturnResult();
+    public Pair<Location,Integer> updateLocation(String email, float latitude, float longitude) {
+        ThreadUpdateLocation threadUpdateLocation = new ThreadUpdateLocation(email,latitude,longitude);
+        new Thread(threadUpdateLocation).start();
+        return threadUpdateLocation.getReturnResult();
     }
     // Allows a user to join a given PublicEvent
     public void joinEvent(PublicEvent eventToJoin) {
