@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class ThreadGetEvents implements Runnable {
     Integer errno;
-    Boolean isTrue;
+    Boolean isPublic;
     ArrayList<PublicEvent> pubevents = new ArrayList<>();
     Pair<ArrayList<PublicEvent>, Integer> returnResult;
 

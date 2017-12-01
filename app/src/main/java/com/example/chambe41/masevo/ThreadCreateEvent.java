@@ -63,6 +63,7 @@ public class ThreadCreateEvent implements Runnable {
         this.pub = pub;
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
@@ -117,8 +118,7 @@ public class ThreadCreateEvent implements Runnable {
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(httpURLConnection.getInputStream()));
                 String output;
-                while((output = br.readLine()) != null)
-                {
+                while ((output = br.readLine()) != null) {
                     result += output;
                 }
                 System.out.println("Response message: " + result);
