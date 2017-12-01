@@ -1,10 +1,13 @@
 package com.example.chambe41.masevo;
-import com.example.brianduffy.masevo.*;
 
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
+
+import com.example.brianduffy.masevo.Event;
+import com.example.brianduffy.masevo.PrivateEvent;
+import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,14 +29,16 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Josh on 11/3/2017.
+ * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadGetEvents implements Runnable {
+public class ThreadGetMyEvents implements Runnable {
     Integer errno;
-    Boolean isPublic;
     String email;
+    public ThreadGetMyEvents(String email) {
 
+        this.email = email;
+    }
     ArrayList<PublicEvent> pubevents = new ArrayList<>();
     ArrayList<PrivateEvent> privevents = new ArrayList<>();
     Pair<ArrayList<? extends Event>, Integer> returnResult;
@@ -42,9 +47,11 @@ public class ThreadGetEvents implements Runnable {
     @Override
     public void run() {
         String methodName;
-        methodName = "getEvents";
+        methodName = "getMyEvents";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method", methodName);
+        contentValues.put("SenderEmail",email);
+
 
         String query = "";
         for (Map.Entry<String, Object> e : contentValues.valueSet()) {

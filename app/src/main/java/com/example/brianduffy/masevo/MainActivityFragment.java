@@ -80,7 +80,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
                 if (isValidID(priv_edit.getText().toString())) {
 
-                    //TODO TODO fsaldfjweoigjwe;gji
+                    //TODO TODO fsaldfjweoigjwe;gji *********************************
                     ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(Integer.parseInt(priv_edit.getText().toString()),
                             MainActivity.user.emailAddress,eventType);
                     Thread thread = new Thread(threadJoinEvent);
@@ -91,7 +91,8 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
                         ret = threadJoinEvent.getReturnResult();
 
                         if (ret.second != 0) {
-                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                    .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
                         } else {
                             //TODO implement success
 

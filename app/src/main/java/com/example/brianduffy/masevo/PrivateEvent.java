@@ -10,6 +10,7 @@ import com.example.chambe41.masevo.ThreadBanUser;
 import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadDeleteEvent;
 import com.example.chambe41.masevo.ThreadGetEvents;
+import com.example.chambe41.masevo.ThreadGetMyEvents;
 import com.example.chambe41.masevo.ThreadJoinEvent;
 import com.example.chambe41.masevo.ThreadLeaveEvent;
 import com.example.chambe41.masevo.ThreadMakeHost;
@@ -93,6 +94,13 @@ public class PrivateEvent extends Event {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();
+    }
+
+    @Override
+    public Pair<ArrayList<? extends Event>, Integer> getMyEvents(String email) {
+        ThreadGetMyEvents myEvents = new ThreadGetMyEvents(email);
+        new Thread(myEvents).start();
+        return myEvents.getReturnResult();
     }
 
     @Override

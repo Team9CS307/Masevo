@@ -69,7 +69,7 @@ public class ThreadCreateEvent implements Runnable {
     public void run() {
         //TODO maybe?
         String methodName;
-            methodName = "createPublicEvent";
+            methodName = "createEvent";
 
         String emailTrim = hostEmail;
 
@@ -83,7 +83,7 @@ public class ThreadCreateEvent implements Runnable {
         contentValues.put("Latitude",Float.toString(location.latitude));
         contentValues.put("Longitude",Float.toString(location.longitude));
         contentValues.put("Radius",Float.toString(radius));
-        contentValues.put("Host",emailTrim);
+        contentValues.put("SenderEmail",hostEmail);
         contentValues.put("isPub",pub);
 
         //TODO create the actual event
@@ -135,6 +135,13 @@ public class ThreadCreateEvent implements Runnable {
                     }
                 }
                  errno = Integer.parseInt(trtd[0][0]);
+                if (pub) {
+                    returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
+                            startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                } else {
+                    returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
+                            startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                }
             }
 
         } catch (MalformedURLException murle) {
@@ -145,18 +152,12 @@ public class ThreadCreateEvent implements Runnable {
             return;
         }
 
-        if (pub) {
-            returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
-                    startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
-        } else {
-            returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
-                    startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
-        }
+
 
     }
 
     public Pair<Event, Integer> getReturnResult() {
-
+        System.out.println(errno);
         return returnResult;
     }
 }

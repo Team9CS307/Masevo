@@ -100,6 +100,8 @@ public class ThreadBanUser implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
+
+                returnResult = null;
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -108,7 +110,6 @@ public class ThreadBanUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        returnResult = new Pair<>(true,errno);
 
     }
     public Pair<Boolean, Integer> getReturnResult() {

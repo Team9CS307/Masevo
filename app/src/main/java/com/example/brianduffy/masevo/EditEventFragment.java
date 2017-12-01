@@ -238,7 +238,8 @@ Switch.OnCheckedChangeListener{
                         Pair<Event,Integer> ret = temp.modifyEvent(temp.eventID,eventName,eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail);
 
                         if (ret.second != 0) {
-                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                    .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
                             return;
                         }else {
                             //todo success
@@ -289,7 +290,8 @@ Switch.OnCheckedChangeListener{
                         Pair<Event,Integer> ret1 = temp.modifyEvent(temp.eventID,eventName,eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail);
 
                         if (ret1.second != 0) {
-                            Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                    .getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
                             return;
                         } else {
                             //success todo

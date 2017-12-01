@@ -201,22 +201,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/location_but" />
 
+
         <EditText
             android:id="@+id/eventradius"
-            style="@android:style/Widget.DeviceDefault.EditText"
             android:layout_width="142dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="32dp"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="number|numberSigned"
-            android:text="Event Radius"
+            android:inputType="number"
             android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@+id/event_type_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/end_date"
             app:layout_constraintVertical_bias="0.888" />
+
+        <TextView
+            android:id="@+id/radiustext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Event Radius"
+            app:layout_constraintBottom_toTopOf="@+id/eventradius"
+            app:layout_constraintEnd_toEndOf="@+id/eventradius"
+            app:layout_constraintTop_toBottomOf="@+id/end_date" />
 
     </android.support.constraint.ConstraintLayout>
 </RelativeLayout>

@@ -101,6 +101,8 @@ public class ThreadAddUser implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
+
+                returnResult = null;
             }
 
 

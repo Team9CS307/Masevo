@@ -31,6 +31,8 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
 
+import java.lang.*;
+import java.lang.Error;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,6 +65,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     Button getLoc;
     Boolean eventType = true; // true is public, false is private
     TextView eventTypeText;
+    EditText eventradius;
+    TextView eventradiustext;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,6 +92,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         getLoc = getView().findViewById(R.id.location_but);
         eventTypeText = getView().findViewById(R.id.event_type_text);
         createButton = getView().findViewById(R.id.create_event);
+        eventradius = getView().findViewById(R.id.eventradius);
+        eventradiustext = getView().findViewById(R.id.radiustext);
 
         // Set onclick listeners to buttons
         eventSwitch.setOnCheckedChangeListener(this);
@@ -153,7 +159,13 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 //TODO add stuff here maybe
                 String eventName = title.getText().toString();
                 String eventDesc = desc.getText().toString();
-                float radius;
+                float radius = 0;
+                try {
+                    radius = Float.parseFloat(eventradius.getText().toString());
+
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
@@ -174,6 +186,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
 //                    break;
 //                }
                 int count = 0;
+                if (validateRadius(radius)) count++;
                 if (validateEventName(eventName)) count++;
                 if (validateEventDesc(eventDesc)) count++;
                 if (validateDateText(start_text.getText().toString(),true)) count++;
@@ -181,7 +194,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 if (validateLocation(new Location(latitude,longitude))) count++;
                 else Toast.makeText(getContext(),"Please choose a location!",Toast.LENGTH_LONG).show();
 
-                if (count != 5) {
+                if (count != 6) {
                     Toast.makeText(getContext(),"Invalid input. Try again.",Toast.LENGTH_LONG).show();
 
                     break;
@@ -190,7 +203,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                          // todo change the radius or something
 
                     PublicEvent pubEvent = new PublicEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,100f,MainActivity.user.emailAddress);
+                            latitude,longitude,radius,MainActivity.user.emailAddress);
                     pubEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     pubEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
@@ -200,7 +213,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             pubEvent.eventID,MainActivity.user.emailAddress,true);
 
                     if (ret1.second != 0) {
-                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error.
+                                getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
                         return;
                     } else {
                         //success
@@ -244,7 +258,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
 
                     //TODO should private events have geofences?
                     PrivateEvent privEvent = new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,100f,MainActivity.user.emailAddress);
+                            latitude,longitude,radius,MainActivity.user.emailAddress);
                     privEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
                     privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
@@ -254,7 +268,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             privEvent.eventID,MainActivity.user.emailAddress,false);
 
                     if (ret.second != 0) {
-                        Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
                         return;
                     } else {
                         //TODO success
@@ -273,6 +288,13 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 break;
 
         }
+    }
+    private boolean validateRadius(float radius) {
+        if (radius < 10.0) {
+            eventradiustext.setText("Radius must be > 10 and positive");
+            return false;
+        }
+        return true;
     }
 
     private boolean validateEventName(String eventname) {

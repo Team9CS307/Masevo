@@ -100,7 +100,8 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
                 Pair<Boolean,Integer> ret1 = toJoin.joinEvent(toJoin.eventID,MainActivity.user.emailAddress);
 
                 if (ret1.second != 0 ) {
-                    Toast.makeText(getContext(),"errno",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                            .getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
                     return false;
                 }else {
                     //todo success

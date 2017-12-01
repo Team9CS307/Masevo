@@ -216,18 +216,18 @@ public class MainActivity extends AppCompatActivity
     }
     public void onLocationChanged(Location location) {
 
-        Pair<com.example.brianduffy.masevo.Location,Integer> ret =
-                MainActivity.user.updateLocation(MainActivity.user.emailAddress,(float)location.getLatitude(),
-                (float)location.getLongitude());
-
-        if (ret.second != 0 ) {
-            Toast.makeText(this,"errno",Toast.LENGTH_LONG).show();
-            return;
-        } else  {
-            // update mylocation locally
-            MainActivity.user.myLocation = ret.first;
-
-        }
+//        Pair<com.example.brianduffy.masevo.Location,Integer> ret =
+//                MainActivity.user.updateLocation(MainActivity.user.emailAddress,(float)location.getLatitude(),
+//                (float)location.getLongitude());
+//
+//        if (ret.second != 0 ) {
+//            Toast.makeText(this,"errno",Toast.LENGTH_LONG).show();
+//            return;
+//        } else  {
+//            // update mylocation locally
+//            MainActivity.user.myLocation = ret.first;
+//
+//        }
         //************************** DEBUG *****************************
         Toast.makeText(this,"Lat: " + location.getLatitude() +
                 " Lon: " + location.getLongitude(),Toast.LENGTH_SHORT).show();

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chambe41.masevo.ThreadDeleteEvent;
+import com.example.chambe41.masevo.ThreadGetEvents;
 import com.example.chambe41.masevo.ThreadLeaveEvent;
 
 import java.sql.Date;
@@ -123,7 +124,8 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 Pair<Boolean,Integer> ret = temp.leaveEvent(temp.eventID,MainActivity.user.emailAddress);
 
                 if (ret.second != 0) {
-                    Toast.makeText(getContext(),"err",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                            .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
                     return false;
                 } else {
                     //TODO success
@@ -165,20 +167,21 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                     } else {
                         isPub = false;
                     }
+
                 Pair<Boolean,Integer> ret1 = event.deleteEvent(event.eventID,MainActivity.user.emailAddress);
 
                 if (ret1.second != 0) {
-                    Toast.makeText(getContext(),"err",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                            .getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
                     return false;
                 } else {
                     //TODO success
-
                 }
-                if (MainActivity.user.myevents.get((info).position).eventUsers.userPerm.
-                        get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
-                    MainActivity.user.myevents.remove((info).position);
-
-                }
+//                if (MainActivity.user.myevents.get((info).position).eventUsers.userPerm.
+//                        get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
+//                    MainActivity.user.myevents.remove((info).position);
+//
+//                }
                 updateList();
                 //TODO remove event from database **********************
 

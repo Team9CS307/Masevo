@@ -84,24 +84,25 @@ public class GeofenceTransitionsIntentService extends IntentService
             // Get the geofences that were triggered. A single event can trigger
             // multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-            Location l = geofencingEvent.getTriggeringLocation();
-            Pair<Boolean,Integer> ret;
-            for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
-                Location a = new Location("cancer");
-                a.setLatitude(MainActivity.location.getLatitude());
-                a.setLongitude(MainActivity.location.getLongitude());
-                Event event = MainActivity.user.myevents.get(i);
-                if (l.distanceTo(a) < event.radius) {
-                   ret = event.addToActive(event.eventID,MainActivity.user.emailAddress);
-
-                   if (ret.second != 0) {
-                       Toast.makeText(this,"errno",Toast.LENGTH_LONG).show();
-                   }else {
-                       //TODO shit pants if fekin worked
-                   }
-                }
-
-            }
+//            Location l = geofencingEvent.getTriggeringLocation();
+//            Pair<Boolean,Integer> ret;
+//            for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
+//                Location a = new Location("cancer");
+//                a.setLatitude(MainActivity.location.getLatitude());
+//                a.setLongitude(MainActivity.location.getLongitude());
+//                Event event = MainActivity.user.myevents.get(i);
+//                if (l.distanceTo(a) < event.radius) {
+//                   ret = event.addToActive(event.eventID,MainActivity.user.emailAddress);
+//
+//                   if (ret.second != 0) {
+            //Toast.makeText(MainActivity.class, com.example.brianduffy.masevo.Error
+            // .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
+//                   }else {
+//                       //TODO shit pants if fekin worked
+//                   }
+//                }
+//
+//            }
 
             // Get the transition details as a String.
 
