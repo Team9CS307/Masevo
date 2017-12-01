@@ -1,5 +1,7 @@
 package com.example.brianduffy.masevo;
 
+import android.util.Pair;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public abstract class Event implements Serializable{
                             float latitude, float longitude, float radius, String hostEmail);
     abstract public boolean joinEvent(int eventID);
     abstract public boolean leaveEvent(int eventID);
-    abstract public Map.Entry<Boolean, Map.Entry<ArrayList<PublicEvent>, String>> getEvents();
+    abstract public Pair<Boolean,Pair<ArrayList<PublicEvent>,Integer>> getEvents();
 
     abstract public boolean addUser (int eventID, String email);
     abstract public boolean removeUser (int eventID, String email);

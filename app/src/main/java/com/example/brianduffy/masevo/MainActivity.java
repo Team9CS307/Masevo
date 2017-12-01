@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        user.events = new PublicEvent().getEvents();
+        //user.events = new PublicEvent().getEvents();
 
         //TODO get data from databse call to populate events variable
 

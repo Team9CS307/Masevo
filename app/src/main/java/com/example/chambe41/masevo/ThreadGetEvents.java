@@ -33,7 +33,7 @@ public class ThreadGetEvents implements Runnable {
     Integer errno;
     Boolean isTrue;
     ArrayList<PublicEvent> pubevents = new ArrayList<>();
-    Pair<Boolean, Pair<ArrayList<PublicEvent>, Integer>> returnResult;
+    Pair<ArrayList<PublicEvent>, Integer> returnResult;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -101,7 +101,7 @@ public class ThreadGetEvents implements Runnable {
                         d4 = new Date(d2.getTime());
                     } catch (ParseException pe) {
 
-                        returnResult = new Pair<>(false,new Pair<ArrayList<PublicEvent>, Integer>(null,1));
+                        returnResult = new Pair<ArrayList<PublicEvent>, Integer>(null,1);
                         return;
                     }
                     PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
@@ -109,7 +109,7 @@ public class ThreadGetEvents implements Runnable {
                             Float.parseFloat(aTrtd[7]), aTrtd[8]);
                     pubevents.add(p);
                 }
-                returnResult = new Pair<>(true,new Pair<>(pubevents,0));
+                returnResult = new Pair<>(pubevents,0);
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -120,7 +120,7 @@ public class ThreadGetEvents implements Runnable {
         }
     }
 
-    public Pair<Boolean, Pair<ArrayList<PublicEvent>, Integer>> getReturnResult() {
+    public Pair<ArrayList<PublicEvent>, Integer> getReturnResult() {
         return returnResult;
     }
 }

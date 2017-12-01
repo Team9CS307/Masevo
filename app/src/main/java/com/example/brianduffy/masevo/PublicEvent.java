@@ -5,6 +5,7 @@ import com.example.chambe41.masevo.*;
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -124,10 +125,10 @@ public class PublicEvent extends Event implements Serializable{
 
         return false;
     }
-    public Map.Entry<Boolean, Map.Entry<ArrayList<PublicEvent>, String>> getEvents() {
+    public Pair<Boolean,Pair<ArrayList<PublicEvent>,Integer>> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
-        return null;
+        return threadGetEvents.getReturnResult();
     }
 
     public boolean deleteEvent(int eventID) {

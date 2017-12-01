@@ -1,12 +1,8 @@
 package com.example.chambe41.masevo;
 
 import android.content.ContentValues;
-import android.util.Pair;
-
-import com.example.brianduffy.masevo.DatePickerFragment;
-import com.example.brianduffy.masevo.Event;
-import com.example.brianduffy.masevo.Location;
-import com.example.brianduffy.masevo.PublicEvent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -16,52 +12,30 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.Map;
 
 /**
  * Created by Brian Duffy on 11/30/2017.
  */
 
-public class ThreadCreateEvent implements Runnable {
-    private final String properties = "ID,Name,Description,StartTime,EndTime," +
-            "Latitude,Longitude,Radius,Host,List";
-
+public class ThreadModifyEvent implements Runnable {
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-
-    Event event;
-    boolean pub;
-    Date startDate;
-    Date endDate;
-    String hostEmail;
     int eventID;
     String eventName;
     String eventDesc;
-    Location location;
+    Date startDate;
+    Date endDate;
+    float latitude;
+    float longitude;
     float radius;
-    private Pair<Event, Integer> returnResult;
-
-    public ThreadCreateEvent(String eventName,String eventDesc,Date startDate,Date endDate,
-                             Location location, float radius,int eventID, String hostEmail,boolean pub) {
-        this.eventName = eventName;
-        this.eventDesc = eventDesc;
-        this.eventID = eventID;
-        this.hostEmail = hostEmail;
-        this.location = location;
-        this.radius = radius;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.pub = pub;
+    String hostEmail;
+    public ThreadModifyEvent() {
 
     }
-    public boolean createEvent() {
-        String methodName;
-        if (pub) {
-             methodName = "createPublicEvent";
-        } else {
-            methodName = "createPrivateEvent";
-        }
+    public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+                               float latitude, float longitude, float radius, String hostEmail) {
+        String methodName = "modifyEvent";
         String emailTrim = hostEmail;
 
         ContentValues contentValues = new ContentValues();
@@ -71,13 +45,10 @@ public class ThreadCreateEvent implements Runnable {
         contentValues.put("Description",eventDesc);
         contentValues.put("StartTime",Long.toString(startDate.getTime()));
         contentValues.put("EndTime",Long.toString(endDate.getTime()));
-        contentValues.put("Latitude",Float.toString(location.latitude));
-        contentValues.put("Longitude",Float.toString(location.longitude));
+        contentValues.put("Latitude",Float.toString(latitude));
+        contentValues.put("Longitude",Float.toString(longitude));
         contentValues.put("Radius",Float.toString(radius));
         contentValues.put("Host",emailTrim);
-
-        //TODO create the actual event
-
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -85,6 +56,7 @@ public class ThreadCreateEvent implements Runnable {
         query = query.substring(0, query.length() - 1);
         final String fQuery = query;
         new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void run() {
                 try {
@@ -128,13 +100,8 @@ public class ThreadCreateEvent implements Runnable {
 
         return false;
     }
-    public Pair<Event, Integer> getReturnResult() {
-
-        return returnResult;
-    }
     @Override
     public void run() {
-        //TODO maybe?
-        createEvent();
+
     }
 }
