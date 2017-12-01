@@ -47,7 +47,7 @@ ERRNO
 */
 
 public class MasevoTesting {
-    Calendar temp = Calendar.getInstance();
+
     @Test
     public void createEventDeleteEventServerTest() throws InterruptedException {
         String eventName = "Sample Event";
