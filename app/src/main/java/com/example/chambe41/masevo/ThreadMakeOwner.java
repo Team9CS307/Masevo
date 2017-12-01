@@ -85,6 +85,7 @@ public class ThreadMakeOwner implements Runnable {
                 String output;
                 while((output = br.readLine()) != null)
                 {
+
                     result += output;
                 }
                 System.out.println("Response message: " + result);
