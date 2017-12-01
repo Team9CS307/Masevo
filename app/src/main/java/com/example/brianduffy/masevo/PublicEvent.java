@@ -125,7 +125,7 @@ public class PublicEvent extends Event implements Serializable{
 
         return false;
     }
-    public Pair<Boolean,Pair<ArrayList<PublicEvent>,Integer>> getEvents() {
+    public Pair<ArrayList<PublicEvent>,Integer> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();

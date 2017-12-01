@@ -50,7 +50,7 @@ public abstract class Event implements Serializable{
                             float latitude, float longitude, float radius, String hostEmail);
     abstract public boolean joinEvent(int eventID);
     abstract public boolean leaveEvent(int eventID);
-    abstract public Pair<Boolean,Pair<ArrayList<PublicEvent>,Integer>> getEvents();
+    abstract public Pair<ArrayList<PublicEvent>,Integer> getEvents();
 
     abstract public boolean addUser (int eventID, String email);
     abstract public boolean removeUser (int eventID, String email);
