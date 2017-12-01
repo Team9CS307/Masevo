@@ -50,10 +50,15 @@ public class PublicEvent extends Event implements Serializable{
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public Pair<Event, Integer> createEvent(String eventName,String eventDesc,Date startDate,Date endDate,
+    public Pair<? extends Event, Integer> createEvent(String eventName,String eventDesc,Date startDate,Date endDate,
                 Location location, float radius,int eventID, String hostEmail,boolean pub) {
         ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,startDate,
                 endDate,location,radius,eventID,hostEmail,true);
+        Thread thread = new Thread(threadCreateEvent);
+        thread.start();
+        return threadCreateEvent.getReturnResult();
+
+        /*
         Thread thread = new Thread(threadCreateEvent);
         thread.start();
         try {
@@ -62,7 +67,7 @@ public class PublicEvent extends Event implements Serializable{
             e.printStackTrace();
         }
 
-        return threadCreateEvent.getReturnResult();
+        return threadCreateEvent.getReturnResult();*/
     }
     @Override
     public Pair<ArrayList<? extends Event>, Integer> getEvents() {
@@ -71,7 +76,7 @@ public class PublicEvent extends Event implements Serializable{
         return threadGetEvents.getReturnResult();
     }
     @Override
-    public Pair<ArrayList<? extends Event>, Integer> getMyEvents(String email) {
+    public Pair<ArrayList<? extends Event>, ArrayList<Users>> getMyEvents(String email) {
         ThreadGetUserEvents myEvents = new ThreadGetUserEvents(email);
         new Thread(myEvents).start();
         return myEvents.getReturnResult();

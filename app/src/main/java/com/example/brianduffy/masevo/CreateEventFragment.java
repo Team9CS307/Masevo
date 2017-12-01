@@ -209,16 +209,14 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             new Permission(2));
 
                     //Server call
-                    Pair<Event,Integer> ret1 = pubEvent.createEvent(eventName,eventDesc,jud1,jud2,pubEvent.location,pubEvent.radius,
+                    Pair<? extends Event,Integer> ret1 = pubEvent.createEvent(eventName,eventDesc,jud1,jud2,pubEvent.location,pubEvent.radius,
                             pubEvent.eventID,MainActivity.user.emailAddress,true);
 
-                    if (ret1.second != 0) {
-                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error.
-                                getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
-                        return;
-                    } else {
-                        //success
+                    if (ret1== null) {
                         MainActivity.user.myevents.add(pubEvent);
+
+                    } else {
+                        Toast.makeText(getContext(),"hello",Toast.LENGTH_SHORT).show();
                     }
 
                     MainActivity.mGeofenceList.add(new Geofence.Builder()
@@ -264,18 +262,21 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             new Permission(2));
 
                     //Server call
-                    Pair<Event,Integer> ret = privEvent.createEvent(eventName,eventDesc,jud1,jud2,privEvent.location,privEvent.radius,
-                            privEvent.eventID,MainActivity.user.emailAddress,false);
+                    Pair<? extends Event,Integer> ret = privEvent.createEvent(eventName,eventDesc,jud1,jud2,privEvent.location,privEvent.radius,
+                            privEvent.eventID,MainActivity.user.emailAddress,true);
 
-                    if (ret.second != 0) {
-                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-                                .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
-                        return;
-                    } else {
-                        //TODO success
+
+                    if (ret == null) {
                         MainActivity.user.myevents.add(privEvent);
-
                     }
+//                    if (ret.second != 0) {
+//                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+//                                .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
+//                        return;
+//                    } else {
+//                        //TODO success
+//
+//                    }
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();

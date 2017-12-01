@@ -128,18 +128,18 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
         // used to mark events from the nearby arraylist of the given user. This will be defined
         // populated in Oncreate of the MainActivity
         //TODO
-        for (int i = 0; i < MainActivity.user.nearby.size(); i++) {
+        for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
 
             // only show public events that are nearby
-            if (MainActivity.user.nearby.get(i) instanceof PublicEvent) {
+            if (MainActivity.user.myevents.get(i) instanceof PublicEvent) {
 
                 // get the lat and lon
-                LatLng eventloc = new LatLng(MainActivity.user.nearby.get(i).location.latitude,
-                        MainActivity.user.nearby.get(i).location.longitude);
+                LatLng eventloc = new LatLng(MainActivity.user.myevents.get(i).location.latitude,
+                        MainActivity.user.myevents.get(i).location.longitude);
 
                 // mark their location on the google map
                 googleMap.addMarker(new MarkerOptions().position(eventloc)
-                        .title(MainActivity.user.nearby.get(i).eventName));
+                        .title(MainActivity.user.myevents.get(i).eventName));
             }
         }
     }

@@ -43,7 +43,7 @@ public class ThreadJoinEvent implements Runnable {
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("isPub",isPub.toString());
+        contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");

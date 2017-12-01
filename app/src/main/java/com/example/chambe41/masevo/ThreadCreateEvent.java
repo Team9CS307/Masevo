@@ -48,7 +48,7 @@ public class ThreadCreateEvent implements Runnable {
     String eventDesc;
     Location location;
     float radius;
-    private Pair<Event, Integer> returnResult;
+    private Pair<? extends Event, Integer> returnResult;
     Integer errno;
     public ThreadCreateEvent(String eventName,String eventDesc,java.sql.Date startDate,java.sql.Date endDate,
                              Location location, float radius,int eventID, String hostEmail,boolean pub) {
@@ -139,10 +139,10 @@ public class ThreadCreateEvent implements Runnable {
                     errno = Integer.parseInt(trtd[0][0]);
                 } else {
                     if (pub) {
-                        returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
+                        returnResult = new Pair<>(new PublicEvent(eventName,eventDesc,
                                 startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
                     } else {
-                        returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
+                        returnResult = new Pair<>(new PrivateEvent(eventName,eventDesc,
                                 startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
                     }
                 }
@@ -160,7 +160,7 @@ public class ThreadCreateEvent implements Runnable {
 
     }
 
-    public Pair<Event, Integer> getReturnResult() {
+    public Pair<? extends Event, Integer> getReturnResult() {
         System.out.println(errno);
         return returnResult;
     }
