@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.example.brianduffy.masevo.DatePickerFragment;
 import com.example.brianduffy.masevo.Event;
 import com.example.brianduffy.masevo.Location;
+import com.example.brianduffy.masevo.PrivateEvent;
 import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
@@ -37,8 +38,8 @@ public class ThreadCreateEvent implements Runnable {
 
     Event event;
     boolean pub;
-    Date startDate;
-    Date endDate;
+    java.sql.Date startDate;
+    java.sql.Date endDate;
     String hostEmail;
     int eventID;
     String eventName;
@@ -46,8 +47,8 @@ public class ThreadCreateEvent implements Runnable {
     Location location;
     float radius;
     private Pair<Event, Integer> returnResult;
-
-    public ThreadCreateEvent(String eventName,String eventDesc,Date startDate,Date endDate,
+    Integer errno;
+    public ThreadCreateEvent(String eventName,String eventDesc,java.sql.Date startDate,java.sql.Date endDate,
                              Location location, float radius,int eventID, String hostEmail,boolean pub) {
         this.eventName = eventName;
         this.eventDesc = eventDesc;
@@ -132,7 +133,18 @@ public class ThreadCreateEvent implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
-                int errno = Integer.parseInt(trtd[0][0]);
+                 errno = Integer.parseInt(trtd[0][0]);
+            }
+
+            {
+            if (pub) {
+                returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
+                        startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+            } else {
+                returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
+                        startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+            }
+
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();

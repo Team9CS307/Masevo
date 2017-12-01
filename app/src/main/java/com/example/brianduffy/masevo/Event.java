@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Created by Brian Duffy on 9/14/2017.
@@ -44,13 +43,13 @@ public abstract class Event implements Serializable{
         // HashMap relating a given email to a display name
     public EventUsers eventUsers = new EventUsers(new ArrayList<String>(),new ArrayList<Permission>(),new ArrayList<Boolean>());
 
-    abstract public boolean createEvent();
+    abstract public Pair<? extends Event,Integer> createEvent();
     abstract public boolean deleteEvent(int eventID);
     abstract public boolean modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
                             float latitude, float longitude, float radius, String hostEmail);
     abstract public boolean joinEvent(int eventID);
     abstract public boolean leaveEvent(int eventID);
-    abstract public Pair<ArrayList<? extends Event>,Integer> getEvents();
+    abstract public Pair<ArrayList<PublicEvent>, Integer> getEvents();
 
     abstract public boolean addUser (int eventID, String email);
     abstract public boolean removeUser (int eventID, String email);

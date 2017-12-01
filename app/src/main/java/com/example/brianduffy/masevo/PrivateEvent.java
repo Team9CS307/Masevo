@@ -1,10 +1,11 @@
 package com.example.brianduffy.masevo;
 
+import android.util.Pair;
+
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Created by Gabriel on 9/24/2017.
@@ -79,7 +80,7 @@ public class PrivateEvent extends Event {
         return false;
     }
 
-    Map.Entry<Boolean, Map.Entry<ArrayList<PublicEvent>, String>> getEvents() {
+    Pair<ArrayList<PublicEvent>, Integer> getEvents() {
         return null;
     }
 

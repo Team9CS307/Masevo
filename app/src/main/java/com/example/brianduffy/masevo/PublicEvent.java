@@ -59,7 +59,7 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public boolean createEvent() {
+    public Pair createEvent() {
         String methodName = "createPublicEvent";
         String emailTrim = hostEmail;
 
@@ -123,9 +123,9 @@ public class PublicEvent extends Event implements Serializable{
         }).start();
 
 
-        return false;
+        return null;
     }
-    public Pair<ArrayList<PublicEvent>,Integer> getEvents() {
+    public Pair<ArrayList<PublicEvent>, Integer> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();
