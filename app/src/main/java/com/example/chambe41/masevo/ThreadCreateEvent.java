@@ -123,6 +123,7 @@ public class ThreadCreateEvent implements Runnable {
             }
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
+            int count = 0;
             //This will only run once, fool
             for (Element table : tables) {
                 Elements trs = table.select("tr");
@@ -134,13 +135,16 @@ public class ThreadCreateEvent implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
-                 errno = Integer.parseInt(trtd[0][0]);
-                if (pub) {
-                    returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
-                            startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                if (count == 0) {
+                    errno = Integer.parseInt(trtd[0][0]);
                 } else {
-                    returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
-                            startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                    if (pub) {
+                        returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,
+                                startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                    } else {
+                        returnResult = new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,
+                                startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                    }
                 }
             }
 
