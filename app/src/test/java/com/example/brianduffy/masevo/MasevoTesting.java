@@ -7,6 +7,7 @@ import com.example.chambe41.masevo.ThreadDeleteEvent;
 import com.example.chambe41.masevo.ThreadJoinEvent;
 import com.example.chambe41.masevo.ThreadMakeHost;
 import com.example.chambe41.masevo.ThreadMakeOwner;
+import com.example.chambe41.masevo.ThreadMakeUser;
 import com.example.chambe41.masevo.ThreadModifyEvent;
 import com.example.chambe41.masevo.ThreadRemoveFromActive;
 import com.example.chambe41.masevo.ThreadRemoveUser;
@@ -357,7 +358,62 @@ public class MasevoTesting {
     }
 
     @Test
-    public void makeUserServerTest() {
+    public void makeUserServerTest() throws InterruptedException {
+        String eventName = "Sample Event";
+        String eventDesc = "This is an Event Description";
+        java.sql.Date startDate = new java.sql.Date(1543622400000l);
+        java.sql.Date endDate = new java.sql.Date(1543626000000l);
+        Location location = new Location(0,0);
+        float radius = 10;
+        int eventId = 0;
+        String hostEmail = "testing.masevo";
+        boolean pub = true;
+        ThreadCreateEvent threadCreate = new ThreadCreateEvent(eventName, eventDesc, startDate, endDate, location, radius, eventId, hostEmail, pub);
+        Thread createEventThread = new Thread(threadCreate);
+        createEventThread.start();
+        PublicEvent publicEvent = new PublicEvent(eventName,eventDesc,startDate,endDate,location.latitude,location.longitude,radius,hostEmail);
+        Pair<PublicEvent, Integer> expected = new Pair<>(publicEvent,0);
+        createEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(0,"user", true);
+        Thread joinEventThread = new Thread(threadJoinEvent);
+        joinEventThread.start();
+        joinEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent2 = new ThreadJoinEvent(0,"user2", true);
+        Thread joinEventThread2 = new Thread(threadJoinEvent2);
+        joinEventThread2.start();
+        joinEventThread2.join();
+
+        ThreadMakeHost threadMakeHost = new ThreadMakeHost(eventId, hostEmail, "user",true);
+        Thread makeHostThread = new Thread(threadMakeHost);
+        makeHostThread.start();
+        makeHostThread.join();
+
+        ThreadMakeUser threadMakeUser = new ThreadMakeUser(eventId,"user2", "user", true);
+        Thread makeUserThread = new Thread(threadMakeUser);
+        makeUserThread.start();
+        makeUserThread.join();
+        Pair<Boolean, Integer> actual = threadMakeUser.getReturnResult();
+
+        Assert.assertEquals((Integer) 2, actual.second); //checks if host tries demoting someone to user, should fail
+
+        ThreadMakeUser threadMakeUser2 = new ThreadMakeUser(eventId,"user", "user2", true);
+        Thread makeUserThread2 = new Thread(threadMakeUser2);
+        makeUserThread2.start();
+        makeUserThread2.join();
+        Pair<Boolean, Integer> actual2 = threadMakeUser2.getReturnResult();
+
+        Assert.assertEquals((Integer) 2, actual2.second); //cannot demote a user to user
+
+        ThreadMakeUser threadMakeUser3 = new ThreadMakeUser(eventId,hostEmail, "user", true);
+        Thread makeUserThread3 = new Thread(threadMakeUser3);
+        makeUserThread3.start();
+        makeUserThread3.join();
+        Pair<Boolean, Integer> actual3 = threadMakeUser3.getReturnResult();
+
+        Assert.assertEquals((Integer) 0, actual3.second); //owner successully demotes a host to user
+
 
     }
 }
