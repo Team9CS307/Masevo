@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadDeleteEvent;
+import com.example.chambe41.masevo.ThreadJoinEvent;
 
 import junit.framework.Assert;
 
@@ -67,7 +68,35 @@ public class MasevoTesting {
     }
 
     @Test
-    public void deleteEventServerTest() {
+    public void deleteEventPermissionsServerTest() throws InterruptedException {
+        String eventName = "Sample Event";
+        String eventDesc = "This is an Event Description";
+        java.sql.Date startDate = new java.sql.Date(1543622400000l);
+        java.sql.Date endDate = new java.sql.Date(1543626000000l);
+        Location location = new Location(0,0);
+        float radius = 10;
+        int eventId = 0;
+        String hostEmail = "testing.masevo";
+        boolean pub = true;
+        ThreadCreateEvent threadCreate = new ThreadCreateEvent(eventName, eventDesc, startDate, endDate, location, radius, eventId, hostEmail, pub);
+        Thread createEventThread = new Thread(threadCreate);
+        createEventThread.start();
+        PublicEvent publicEvent = new PublicEvent(eventName,eventDesc,startDate,endDate,location.latitude,location.longitude,radius,hostEmail);
+        Pair<PublicEvent, Integer> expected = new Pair<>(publicEvent,0);
+        createEventThread.join();
+
+        ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(0,"user", true);
+        Thread joinEventThread = new Thread(threadJoinEvent);
+        joinEventThread.start();
+        joinEventThread.join();
+
+        ThreadDeleteEvent threadDelete = new ThreadDeleteEvent(0,"user",true);
+        Thread deleteEventThread = new Thread(threadDelete);
+        deleteEventThread.start();
+        deleteEventThread.join();
+        Pair<Boolean, Integer> expectedDel = threadDelete.getReturnResult();
+
+        Assert.assertEquals((Integer) 2,expectedDel.second); //checks if permissions error is thrown because normal users should not be able to delete events.
 
     }
 
