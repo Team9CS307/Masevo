@@ -107,8 +107,8 @@ public class ThreadLeaveEvent implements Runnable{
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
-                if (errno == 1) {
-                    returnResult = new Pair<>(true, 0);
+                if (errno == 0) {
+                    returnResult = new Pair<>(true, errno);
                 }
                 else {
                     returnResult = new Pair<>(false, errno);

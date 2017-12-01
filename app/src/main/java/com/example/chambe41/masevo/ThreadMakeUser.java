@@ -102,6 +102,11 @@ public class ThreadMakeUser implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
+                if (errno != 0) {
+                    returnResult = new Pair<>(false,errno);
+                }else {
+                    returnResult = new Pair<>(true,errno);
+                }
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -110,8 +115,7 @@ public class ThreadMakeUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        //TODO will change
-        returnResult = new Pair<>(true,errno);
+
 
     }
     public Pair<Boolean, Integer> getReturnResult() {

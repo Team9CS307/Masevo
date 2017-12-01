@@ -93,6 +93,11 @@ public class ThreadJoinEvent implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
+                if (errno != 0) {
+                    returnResult = new Pair<>(false,errno);
+                }else {
+                    returnResult = new Pair<>(true,errno);
+                }
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -104,7 +109,6 @@ public class ThreadJoinEvent implements Runnable {
 
         //TODO insert a user from the user table to the eventUser tables
 
-        returnResult = new Pair<>(true,errno);
 
 
     }
