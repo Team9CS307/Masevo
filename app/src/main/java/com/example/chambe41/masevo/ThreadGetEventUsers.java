@@ -32,25 +32,26 @@ import java.util.Map;
  * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadGetMyEvents implements Runnable {
+public class ThreadGetEventUsers implements Runnable {
     Integer errno;
+    Boolean isPublic;
     String email;
-    public ThreadGetMyEvents(String email) {
 
+    public ThreadGetEventUsers(String email) {
         this.email = email;
     }
+
     ArrayList<PublicEvent> pubevents = new ArrayList<>();
     ArrayList<PrivateEvent> privevents = new ArrayList<>();
-    Pair<ArrayList<? extends Event>, Integer> returnResult;
+    Pair<ArrayList<Event>,ArrayList<Users>> returnResult;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
         String methodName;
-        methodName = "getMyEvents";
+        methodName = "getEventUsers";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method", methodName);
-        contentValues.put("SenderEmail",email);
 
 
         String query = "";
@@ -113,7 +114,7 @@ public class ThreadGetMyEvents implements Runnable {
                         d4 = new Date(d2.getTime());
                     } catch (ParseException pe) {
 
-                        returnResult = new Pair<>(null,1);
+                        returnResult = new Pair<>(,null);
                         return;
                     }
                     PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
@@ -129,11 +130,11 @@ public class ThreadGetMyEvents implements Runnable {
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
         }
-        returnResult = new Pair<ArrayList<? extends Event>, Integer>(pubevents,errno);
+        returnResult = new Pair<ArrayList<Event>, ArrayList<Users>>();
 
     }
 
-    public Pair<ArrayList<? extends Event>, Integer> getReturnResult() {
+    public Pair<ArrayList<Event>,ArrayList<Users>> getReturnResult() {
         return returnResult;
     }
 }

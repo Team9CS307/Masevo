@@ -2,25 +2,15 @@ package com.example.brianduffy.masevo;
 
 import com.example.chambe41.masevo.*;
 
-import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Created by Gabriel on 9/24/2017.
@@ -82,7 +72,7 @@ public class PublicEvent extends Event implements Serializable{
     }
     @Override
     public Pair<ArrayList<? extends Event>, Integer> getMyEvents(String email) {
-        ThreadGetMyEvents myEvents = new ThreadGetMyEvents(email);
+        ThreadGetUserEvents myEvents = new ThreadGetUserEvents(email);
         new Thread(myEvents).start();
         return myEvents.getReturnResult();
     }
