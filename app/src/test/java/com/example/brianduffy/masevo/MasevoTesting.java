@@ -157,7 +157,6 @@ public class MasevoTesting {
         deleteEventThread.start();
         deleteEventThread.join();
 
-        //TODO: PUBLIC PRIVATE TESTING
     }
 
     @Test

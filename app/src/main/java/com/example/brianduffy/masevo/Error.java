@@ -13,37 +13,37 @@ public class Error {
        String errmessage = "";
        switch (errno) {
            case 1:
-               errmessage = "";
+               errmessage = "EVENT ID NOT FOUND ERROR\n";
                break;
            case 2:
-               errmessage = "";
+               errmessage = "WRONG PERMISSIONS ERROR\n";
                break;
            case 3:
-               errmessage = "";
+               errmessage = "SET PUBLIC/PRIVATE ERROR\n";
                break;
            case 4:
-               errmessage = "";
+               errmessage = "NOT IN LIST ERROR\n";
                break;
            case 5:
-               errmessage = "";
+               errmessage = "ATTEMPT TO ADD A BANNED USER ERROR";
                break;
            case 6:
-               errmessage = "";
+               errmessage = " BANNED\n";
                break;
            case 7:
-               errmessage = "";
+               errmessage = "ALREADY IN EVENT\n";
                break;
            case 8:
-               errmessage = "";
+               errmessage = "NOT IN EVENT\n";
                break;
            case 9:
-               errmessage = "";
+               errmessage = "NOT OWNER\n";
                break;
            case 10:
-               errmessage = "";
+               errmessage = "LEAVE AS OWNER";
                break;
            case 11:
-               errmessage = "";
+               errmessage = "SELF ERROR (remove, add)\n";
                break;
        }
        return errmessage;
