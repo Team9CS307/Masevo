@@ -19,37 +19,40 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 11/30/2017.
+ * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadAddUser implements Runnable {
-    int eventID;
+public class ThreadMakeHost implements Runnable {
     String SenderEmail;
-    Boolean isPublic;
-    Integer errno;
-    int userPriv;
-    Pair<Boolean,Integer> returnResult;
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    String TargetEmail;
-    public ThreadAddUser(int eventID, String SenderEmail, String TargetEmail, Boolean isPublic) {
+    String targetEmail;
+    int eventID;
+    Boolean isPub;
+    int priv;
+    private Integer errno;
+
+    public ThreadMakeHost(String senderEmail, String targetEmail, int eventID, int priv, Boolean isPub) {
+        SenderEmail = senderEmail;
+        this.targetEmail = targetEmail;
         this.eventID = eventID;
-        this.SenderEmail = SenderEmail;
-        this.isPublic = isPublic;
-        this.TargetEmail = TargetEmail;
+        this.priv = priv;
+        this.isPub = isPub;
     }
+
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+    private Pair<Boolean, Integer> returnResult;
 
     @Override
     public void run() {
-        String methodName = "addUser";
+        String methodName = "makeHost";
         ContentValues contentValues = new ContentValues();
-        contentValues.put("method",methodName);
-        contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("Priv",userPriv);
-        contentValues.put("isPub",isPublic);
-
+        contentValues.put("method", methodName);
+        contentValues.put("ID", Integer.toString(eventID));
+        contentValues.put("SenderEmail", SenderEmail);
+        contentValues.put("TargetEmail", targetEmail);
+        contentValues.put("Priv", priv);
+        contentValues.put("isPub", isPub);
         String query = "";
-        for (Map.Entry e: contentValues.valueSet()) {
+        for (Map.Entry e : contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
         }
         query = query.substring(0, query.length() - 1);
@@ -58,7 +61,7 @@ public class ThreadAddUser implements Runnable {
             byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
             URL url = new URL(server_url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setInstanceFollowRedirects(false);
             httpURLConnection.setRequestMethod("POST");
@@ -77,8 +80,7 @@ public class ThreadAddUser implements Runnable {
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(httpURLConnection.getInputStream()));
                 String output;
-                while((output = br.readLine()) != null)
-                {
+                while ((output = br.readLine()) != null) {
                     result += output;
                 }
                 System.out.println("Response message: " + result);
@@ -106,8 +108,7 @@ public class ThreadAddUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        errno = 0;
-        returnResult = new Pair<>(true,errno);
+        returnResult = new Pair<>(true, errno);
 
     }
 }

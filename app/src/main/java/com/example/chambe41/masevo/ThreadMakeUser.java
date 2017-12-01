@@ -19,35 +19,38 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 11/30/2017.
+ * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadAddUser implements Runnable {
-    int eventID;
+public class ThreadMakeUser implements Runnable {
     String SenderEmail;
-    Boolean isPublic;
-    Integer errno;
-    int userPriv;
-    Pair<Boolean,Integer> returnResult;
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    String TargetEmail;
-    public ThreadAddUser(int eventID, String SenderEmail, String TargetEmail, Boolean isPublic) {
+    String targetEmail;
+    int eventID;
+    Boolean isPub;
+    int priv;
+    private Integer errno;
+
+    public ThreadMakeUser(String senderEmail, String targetEmail, int eventID, int priv, Boolean isPub) {
+        SenderEmail = senderEmail;
+        this.targetEmail = targetEmail;
         this.eventID = eventID;
-        this.SenderEmail = SenderEmail;
-        this.isPublic = isPublic;
-        this.TargetEmail = TargetEmail;
+        this.priv = priv;
+        this.isPub = isPub;
     }
+
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+    private Pair<Boolean, Integer> returnResult;
 
     @Override
     public void run() {
-        String methodName = "addUser";
+        String methodName = "makeUser";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("Priv",userPriv);
-        contentValues.put("isPub",isPublic);
-
+        contentValues.put("TargetEmail",targetEmail);
+        contentValues.put("Priv",priv);
+        contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -106,8 +109,8 @@ public class ThreadAddUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        errno = 0;
         returnResult = new Pair<>(true,errno);
 
     }
 }
+
