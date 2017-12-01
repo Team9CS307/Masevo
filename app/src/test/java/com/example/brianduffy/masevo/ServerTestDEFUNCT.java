@@ -3,30 +3,32 @@ package com.example.brianduffy.masevo;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
 import org.junit.Assert;
 import org.junit.Test;
-import org.w3c.dom.Document;
 //import org.jsoup.nodes.Document;
 
 import java.io.*;
-import java.math.BigDecimal;
 
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.DriverManager;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+/* ***************************************************
+ * THESE TESTS ARE DEFUNCT, KEPT ONLY FOR ARCHIVE
+ * **************************************************
+ * */
+
+
+
+
+
 
 /*
 * Masevo Server Test Cases
@@ -64,7 +66,7 @@ $-_.!*'(),"
  */
 
 
-public class ServerTest {
+public class ServerTestDEFUNCT {
 
     private URL masevoURL;
     private HttpURLConnection masevoWebsite;
@@ -73,7 +75,7 @@ public class ServerTest {
     /*
         Constructor connects to website
      */
-    public ServerTest() throws Exception {
+    public ServerTestDEFUNCT() throws Exception {
         masevoURL = new URL("http://webapp-171031005244.azurewebsites.net");
         masevoWebsite = (HttpURLConnection) masevoURL.openConnection();
         masevoWebsite.setRequestMethod("POST");
@@ -88,7 +90,7 @@ public class ServerTest {
 //    NO LONGER NEEDED BECAUSE COMPARING HTML RESPONSES
 //    Currently being used for debugging
 //    -------------------------------------------------------------------------
-    private String getHtmlString(ServerTest st) throws IOException {
+    private String getHtmlString(ServerTestDEFUNCT st) throws IOException {
 
         InputStreamReader isr = new InputStreamReader(st.masevoWebsite.getInputStream());
         BufferedReader br = new BufferedReader(isr);
@@ -170,7 +172,7 @@ public class ServerTest {
 
     @Test
     public void test1_OnePost() throws Exception {
-        ServerTest st1 = new ServerTest();
+        ServerTestDEFUNCT st1 = new ServerTestDEFUNCT();
         st1.testParams = "ID=1";
         st1.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st1.masevoWebsite.getOutputStream());
@@ -190,7 +192,7 @@ public class ServerTest {
 
     @Test
     public void test2_LargePost() throws Exception {
-        ServerTest st2 = new ServerTest();
+        ServerTestDEFUNCT st2 = new ServerTestDEFUNCT();
 
         st2.testParams = "ID=0";
 
@@ -223,7 +225,7 @@ public class ServerTest {
 
     @Test
     public void test3_NullValuePost() throws Exception {
-        ServerTest st3 = new ServerTest();
+        ServerTestDEFUNCT st3 = new ServerTestDEFUNCT();
         st3.testParams = "ID="+null+"&Name="+null+"&StartTime="+null+"&EndTime="+null+"&Latitude="+null+"&Longitude="+null+
                 "&Radius="+null+"&Host="+null+"&List="+null;
         st3.masevoWebsite.setDoOutput(true);
@@ -243,7 +245,7 @@ public class ServerTest {
 
     @Test
     public void test4_DescNullValuePost() throws Exception {
-        ServerTest st4 = new ServerTest();
+        ServerTestDEFUNCT st4 = new ServerTestDEFUNCT();
         st4.testParams = "Description="+null;
         st4.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st4.masevoWebsite.getOutputStream());
@@ -262,7 +264,7 @@ public class ServerTest {
 
     @Test
     public void test5_NameLengthPost() throws Exception {
-        ServerTest st5 = new ServerTest();
+        ServerTestDEFUNCT st5 = new ServerTestDEFUNCT();
         st5.testParams = "Name=ThisNameisLonger+Than24Characters";
         st5.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st5.masevoWebsite.getOutputStream());
@@ -281,7 +283,7 @@ public class ServerTest {
 
     @Test
     public void test6_DescLengthPost() throws Exception {
-        ServerTest st6 = new ServerTest();
+        ServerTestDEFUNCT st6 = new ServerTestDEFUNCT();
         st6.testParams = "Description=ThisDescriptionIsOver300CharacterThisDescriptionIsOver300Character" +
                 "ThisDescriptionIsOver300CharacterThisDescriptionIsOver300CharacterThisDescriptionIsOver300Character" +
                 "ThisDescriptionIsOver300CharacterThisDescriptionIsOver300CharacterThisDescriptionIsOver300Character" +
@@ -303,7 +305,7 @@ public class ServerTest {
 
     @Test
     public void test7_HostLengthPost() throws Exception {
-        ServerTest st7 = new ServerTest();
+        ServerTestDEFUNCT st7 = new ServerTestDEFUNCT();
         st7.testParams = "Host=ThisHostisLonger+Than64CharactersThisHostisLonger+Than64Characters";
         st7.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st7.masevoWebsite.getOutputStream());
@@ -322,7 +324,7 @@ public class ServerTest {
 
     @Test
     public void test8_CorrectNameLengthPost() throws Exception {
-        ServerTest st8 = new ServerTest();
+        ServerTestDEFUNCT st8 = new ServerTestDEFUNCT();
         st8.testParams = "Name=This+NameIs+24Characters";
         st8.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st8.masevoWebsite.getOutputStream());
@@ -341,7 +343,7 @@ public class ServerTest {
 
     @Test
     public void test9_CorrectDescLengthPost() throws Exception {
-        ServerTest st9 = new ServerTest();
+        ServerTestDEFUNCT st9 = new ServerTestDEFUNCT();
         st9.testParams = "Description=ThisDescriptionIs300CharactersThisDescriptionIs300CharactersThisDescription" +
                 "Is300CharactersThisDescriptionIs300CharactersThisDescriptionIs300CharactersThisDescriptionIs300" +
                 "CharactersThisDescriptionIs300CharactersThisDescriptionIs300CharactersThisDescriptionIs300Characters" +
@@ -363,7 +365,7 @@ public class ServerTest {
 
     @Test
     public void test10_CorrectHostLengthPost() throws Exception {
-        ServerTest st10 = new ServerTest();
+        ServerTestDEFUNCT st10 = new ServerTestDEFUNCT();
         st10.testParams = "Host=ThisHostIs+64Characters+ThisHostIs+64Characters+ThisHostIs64Char";
         st10.masevoWebsite.setDoOutput(true);
         DataOutputStream dos = new DataOutputStream(st10.masevoWebsite.getOutputStream());
@@ -382,7 +384,7 @@ public class ServerTest {
 
     @Test
     public void test11_VerifyIDintTypePost() throws Exception {
-        ServerTest st11 = new ServerTest();
+        ServerTestDEFUNCT st11 = new ServerTestDEFUNCT();
         double IDnum = 1.5;
         st11.testParams = "ID="+IDnum;
         st11.masevoWebsite.setDoOutput(true);
@@ -402,7 +404,7 @@ public class ServerTest {
 
     @Test
     public void test12_VerifyIDintTypeNotANumberPost() throws Exception {
-        ServerTest st12 = new ServerTest();
+        ServerTestDEFUNCT st12 = new ServerTestDEFUNCT();
         String IDnum = "this+is+not+a+number";
         st12.testParams = "ID="+IDnum;
         st12.masevoWebsite.setDoOutput(true);
@@ -422,7 +424,7 @@ public class ServerTest {
 
     @Test
     public void test13_VerifyLongStartTimePost() throws Exception {
-        ServerTest st13 = new ServerTest();
+        ServerTestDEFUNCT st13 = new ServerTestDEFUNCT();
         BigInteger notALong = new BigInteger("9223372036854775808");
         st13.testParams = "StartTime=" + notALong;
         st13.masevoWebsite.setDoOutput(true);
@@ -442,7 +444,7 @@ public class ServerTest {
 
     @Test
     public void test14_VerifyLongEndTimePost() throws Exception {
-        ServerTest st14 = new ServerTest();
+        ServerTestDEFUNCT st14 = new ServerTestDEFUNCT();
         BigInteger notALong = new BigInteger("9223372036854775808");
         st14.testParams = "EndTime=" + notALong;
         st14.masevoWebsite.setDoOutput(true);
@@ -462,7 +464,7 @@ public class ServerTest {
 
     @Test
     public void test15_VerifyFloatValuesPost() throws Exception {
-        ServerTest st15 = new ServerTest();
+        ServerTestDEFUNCT st15 = new ServerTestDEFUNCT();
         double maxDouble = Double.MAX_VALUE;
         st15.testParams = "Longitude=" + maxDouble + "&Latitude=" + maxDouble +"&Radius=" + maxDouble;
         st15.masevoWebsite.setDoOutput(true);
@@ -482,7 +484,7 @@ public class ServerTest {
     //$-_.!*'(),"
     @Test
     public void test16_VerifyInputCharsPost() throws Exception {
-        ServerTest st16 = new ServerTest();
+        ServerTestDEFUNCT st16 = new ServerTestDEFUNCT();
         String invalidCharacters = "@#%^&=\\|[]<>?/`~:;{}";
         st16.testParams = "Name="+invalidCharacters;
         st16.masevoWebsite.setDoOutput(true);
@@ -503,7 +505,7 @@ public class ServerTest {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Test
     public void test17_VerifyDatabaseServerCommunication() throws Exception {
-        ServerTest st17 = new ServerTest();
+        ServerTestDEFUNCT st17 = new ServerTestDEFUNCT();
         String xmlString = "<Users><User><Name>NameOfUser</Name><Permission>1</Permission><Active>1</Active></User></Users>";
         int ID = 0;
         String name = "NameofEvent";
