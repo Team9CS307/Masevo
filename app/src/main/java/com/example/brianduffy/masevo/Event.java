@@ -48,6 +48,8 @@ public abstract class Event implements Serializable{
                                                               java.sql.Date startDate,java.sql.Date endDate,
                                                               Location location, float radius,int eventID,
                                                               String hostEmail,boolean pub);
+    abstract public Pair<Boolean,Integer> removeFromActive(int eventID, String email);
+    abstract public Pair<Boolean,Integer> addToActive(int eventID, String email);
     abstract public Pair<Boolean,Integer> deleteEvent(int eventID, String email);
     abstract public Pair<Event, Integer> modifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
                                                      float latitude, float longitude, float radius, String hostEmail);
@@ -61,4 +63,5 @@ public abstract class Event implements Serializable{
     abstract public Pair<Boolean,Integer> makeOwner(int eventID, String email, String target);
     abstract public Pair<Boolean,Integer> makeHost(int eventID, String email, String target);
     abstract public Pair<Boolean,Integer> makeUser(int eventID, String email, String target);
+
 }

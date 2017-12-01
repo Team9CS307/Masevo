@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -65,6 +66,7 @@ public class GeofenceTransitionsIntentService extends IntentService
     protected void onHandleIntent(Intent intent) {
 
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+
         if (geofencingEvent.hasError()) {
 
             System.err.println("error");
@@ -82,6 +84,24 @@ public class GeofenceTransitionsIntentService extends IntentService
             // Get the geofences that were triggered. A single event can trigger
             // multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+            Location l = geofencingEvent.getTriggeringLocation();
+            Pair<Boolean,Integer> ret;
+            for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
+                Location a = new Location("cancer");
+                a.setLatitude(MainActivity.location.getLatitude());
+                a.setLongitude(MainActivity.location.getLongitude());
+                Event event = MainActivity.user.myevents.get(i);
+                if (l.distanceTo(a) < event.radius) {
+                   ret = event.addToActive(event.eventID,MainActivity.user.emailAddress);
+
+                   if (ret.second != 0) {
+                       Toast.makeText(this,"errno",Toast.LENGTH_LONG).show();
+                   }else {
+                       //TODO shit pants if fekin worked
+                   }
+                }
+
+            }
 
             // Get the transition details as a String.
 
@@ -109,8 +129,11 @@ public class GeofenceTransitionsIntentService extends IntentService
 
         // Get the Ids of each geofence that was triggered.
         ArrayList<String> triggeringGeofencesIdsList = new ArrayList<>();
+        int count = 0;
         for (Geofence geofence : triggeringGeofences) {
             triggeringGeofencesIdsList.add(geofence.getRequestId());
+
+            count++;
         }
         int i = 0;
         for (Geofence geo : MainActivity.mGeofenceList) {

@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity
     private LocationCallback mLocationCallback;
     private boolean mRequestingLocationUpdates;
     private Location mCurrentLocation;
+    static ArrayList<Integer> geoIDs;
+    private ArrayList<Geofence> mTriggeredGeofences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         if (LoginActivity.emailAddress == null) {
             LoginActivity.emailAddress = "bduffy2019@gmail.com";
         }
+
         user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new ArrayList<Integer>(), new ArrayList<Integer>());
         //TODO determine what to do with this. Are we doing it or not? read in from file my events id's
         File file = new File(getFilesDir(), save_loc);
@@ -156,7 +159,8 @@ public class MainActivity extends AppCompatActivity
         mGoogleApiClient.connect();
 
         mGeofenceList = new ArrayList<>();
-        populateGeofenceList();
+        mTriggeredGeofences = new ArrayList<>();
+        geoIDs = populateGeofenceList();
 
         // initilize location services to get users location over time
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this); // NULL pointer here maybe
@@ -340,10 +344,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void populateGeofenceList() {
-
+    private ArrayList<Integer> populateGeofenceList() {
+        ArrayList<Integer> geofenceList = new ArrayList<>();
         for (Event e: user.myevents) {
-
+            geofenceList.add(e.eventID);
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
                     // geofence.
@@ -367,6 +371,7 @@ public class MainActivity extends AppCompatActivity
                     // Create the geofence.
                     .build());
         }
+        return geofenceList;
     }
 
 

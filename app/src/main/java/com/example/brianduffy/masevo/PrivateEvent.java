@@ -4,6 +4,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
+import com.example.chambe41.masevo.ThreadAddToActive;
 import com.example.chambe41.masevo.ThreadAddUser;
 import com.example.chambe41.masevo.ThreadBanUser;
 import com.example.chambe41.masevo.ThreadCreateEvent;
@@ -15,6 +16,7 @@ import com.example.chambe41.masevo.ThreadMakeHost;
 import com.example.chambe41.masevo.ThreadMakeOwner;
 import com.example.chambe41.masevo.ThreadMakeUser;
 import com.example.chambe41.masevo.ThreadModifyEvent;
+import com.example.chambe41.masevo.ThreadRemoveFromActive;
 import com.example.chambe41.masevo.ThreadRemoveUser;
 
 import java.sql.Date;
@@ -71,6 +73,21 @@ public class PrivateEvent extends Event {
 
         return threadCreateEvent.getReturnResult();
     }
+
+    @Override
+    public Pair<Boolean, Integer> removeFromActive(int eventID, String email) {
+        ThreadRemoveFromActive threadRemoveFromActive = new ThreadRemoveFromActive(eventID,email,false);
+        new Thread(threadRemoveFromActive).start();
+        return threadRemoveFromActive.getReturnResult();
+    }
+
+    @Override
+    public Pair<Boolean, Integer> addToActive(int eventID, String email) {
+        ThreadAddToActive threadAddToActive = new ThreadAddToActive(eventID,email,false);
+        new Thread(threadAddToActive).start();
+        return threadAddToActive.getReturnResult();
+    }
+
     @Override
     public Pair<ArrayList<? extends Event>, Integer> getEvents() {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
