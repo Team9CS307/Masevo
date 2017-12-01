@@ -19,10 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 11/30/2017.
+ * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadAddUser implements Runnable {
+public class ThreadRemoveUser implements Runnable {
     int eventID;
     String SenderEmail;
     Boolean isPublic;
@@ -31,21 +31,21 @@ public class ThreadAddUser implements Runnable {
     Pair<Boolean,Integer> returnResult;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
     String TargetEmail;
-    public ThreadAddUser(int eventID, String SenderEmail, String TargetEmail, Boolean isPublic) {
+    public ThreadRemoveUser(int eventID, String SenderEmail,String TargetEmail, Boolean isPublic) {
         this.eventID = eventID;
         this.SenderEmail = SenderEmail;
-        this.isPublic = isPublic;
         this.TargetEmail = TargetEmail;
+        this.isPublic = isPublic;
     }
 
     @Override
     public void run() {
-        String methodName = "addUser";
+        String methodName = "removeUser";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("Priv",userPriv);
+        contentValues.put("TargetEmail",TargetEmail);
         contentValues.put("isPub",isPublic);
 
         String query = "";
@@ -111,3 +111,4 @@ public class ThreadAddUser implements Runnable {
 
     }
 }
+

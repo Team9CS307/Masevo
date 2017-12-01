@@ -233,8 +233,8 @@ Switch.OnCheckedChangeListener{
                                 latitude,longitude,event.radius,event.hostEmail);
                         Event p = new PrivateEvent();
                         MainActivity.user.myevents.clear();
-                        MainActivity.user.myevents.addAll(temp.getEvents());
-                        MainActivity.user.myevents.addAll(p.getEvents());
+//                        MainActivity.user.myevents.addAll(temp.getEvents());
+//                        MainActivity.user.myevents.addAll(p.getEvents());
 
 
                         temp.eventUsers = event.eventUsers;
