@@ -170,13 +170,16 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
 
                 Pair<Boolean,Integer> ret1 = event.deleteEvent(event.eventID,MainActivity.user.emailAddress);
 
-                if (ret1.second != 0) {
-                    Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-                            .getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
-                    return false;
-                } else {
-                    //TODO success
-                }
+                    if (ret1 == null) {
+                        MainActivity.user.myevents.remove((info).position);
+                    }
+//                if (ret1.second != 0) {
+//                    Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+//                            .getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
+//                    return false;
+//                } else {
+//                    //TODO success
+//                }
 //                if (MainActivity.user.myevents.get((info).position).eventUsers.userPerm.
 //                        get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
 //                    MainActivity.user.myevents.remove((info).position);

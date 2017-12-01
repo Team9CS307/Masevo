@@ -208,20 +208,8 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
                 return true;
             case R.id.kick:
-                 perm = event.eventUsers.userPerm.get(MainActivity.user.emailAddress);
-                 for (Map.Entry<String,Permission> entry: event.eventUsers.userPerm.entrySet()) {
-                     if (entry.getKey().equals(userList.getItemAtPosition((info).position))) {
-                         if (perm.getPermissionLevel() > entry.getValue().getPermissionLevel()) {
-                             //TODO remove the user from the event
 
 
-                             //TODO server call update the event users
-                             // maybe let user know they have been kicked
-
-                            break;
-                         }
-                     }
-                 }
 
 
                     // TODO do nothing, maybe send a toast message error

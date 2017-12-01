@@ -112,9 +112,8 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        //user.events = new PublicEvent().getEvents();
 
-        //TODO get data from databse call to populate events variable
+        //TODO get data from database call to populate events variable
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -82,13 +82,11 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
                     //TODO TODO fsaldfjweoigjwe;gji *********************************
                     ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(Integer.parseInt(priv_edit.getText().toString()),
-                            MainActivity.user.emailAddress,eventType);
+                            MainActivity.user.emailAddress,!eventType);
                     Thread thread = new Thread(threadJoinEvent);
-                    Pair<Boolean,Integer> ret;
                     thread.start();
-                    try {
-                        thread.join();
-                        ret = threadJoinEvent.getReturnResult();
+                    Pair<Boolean,Integer> ret = threadJoinEvent.getReturnResult();
+
 
                         if (ret.second != 0) {
                             Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
@@ -98,9 +96,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
 
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
 
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
