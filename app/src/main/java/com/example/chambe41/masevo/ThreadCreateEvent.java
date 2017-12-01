@@ -1,6 +1,8 @@
 package com.example.chambe41.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
 import com.example.brianduffy.masevo.DatePickerFragment;
@@ -61,6 +63,7 @@ public class ThreadCreateEvent implements Runnable {
         this.pub = pub;
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
         //TODO maybe?

@@ -38,7 +38,6 @@ public class ThreadGetEvents implements Runnable {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-
         String methodName;
         methodName = "getEvents";
         ContentValues contentValues = new ContentValues();
