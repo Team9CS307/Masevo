@@ -7,6 +7,11 @@ import android.util.Pair;
 
 import com.example.brianduffy.masevo.Event;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -26,8 +31,12 @@ public class ThreadDeleteEvent implements Runnable {
     int eventID;
     public Pair<Boolean,Integer> returnResult;
     Integer errno;
-    public ThreadDeleteEvent(int eventID) {
+    String SenderEmail;
+    Boolean isPub;
+    public ThreadDeleteEvent(int eventID, String SenderEmail, Boolean isPub) {
         this.eventID = eventID;
+        this.SenderEmail = SenderEmail;
+        this.isPub = isPub;
     }
 
     @Override
@@ -36,6 +45,8 @@ public class ThreadDeleteEvent implements Runnable {
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
+        contentValues.put("SenderEmail",SenderEmail);
+        contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -71,6 +82,22 @@ public class ThreadDeleteEvent implements Runnable {
                 }
                 System.out.println("Response message: " + result);
             }
+            Document doc = Jsoup.parse(result);
+            Elements tables = doc.select("table");
+            //This will only run once, fool
+            //TODO do this
+            for (Element table : tables) {
+                Elements trs = table.select("tr");
+                String[][] trtd = new String[trs.size()][];
+                for (int i = 0; i < trs.size(); i++) {
+                    Elements tds = trs.get(i).select("td");
+                    trtd[i] = new String[tds.size()];
+                    for (int j = 0; j < tds.size(); j++) {
+                        trtd[i][j] = tds.get(j).text();
+                    }
+                }
+                errno = Integer.parseInt(trtd[0][0]);
+            }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
@@ -78,7 +105,6 @@ public class ThreadDeleteEvent implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        errno = 0;
         returnResult = new Pair<>(true,errno);
 
     }

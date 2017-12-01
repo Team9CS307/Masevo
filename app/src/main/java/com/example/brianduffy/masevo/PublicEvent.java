@@ -131,7 +131,7 @@ public class PublicEvent extends Event implements Serializable{
         return threadGetEvents.getReturnResult();
     }
 
-    public boolean deleteEvent(int eventID) {
+    public Pair<Boolean,Integer> deleteEvent(int eventID) {
         String methodName = "deleteEvent";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
@@ -185,7 +185,7 @@ public class PublicEvent extends Event implements Serializable{
         }).start();
 
 
-        return false;
+        return null;
     }
 
     public void poop(){
@@ -246,9 +246,9 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @Override
-    public boolean joinEvent(int eventID) {
+    public Pair<Boolean,Integer> joinEvent(int eventID) {
 
-        return false;
+        return null;
     }
 
     //@Override
@@ -259,8 +259,8 @@ public class PublicEvent extends Event implements Serializable{
     }
 
     @Override
-    public boolean addUser(int eventID, String email) {
-        return false;
+    public Pair<Boolean,Integer> addUser(int eventID, String email) {
+        return null;
 
     }
 
