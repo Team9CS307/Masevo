@@ -18,9 +18,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadDeleteEvent;
 import com.example.chambe41.masevo.ThreadGetEvents;
 import com.example.chambe41.masevo.ThreadLeaveEvent;
+import com.example.chambe41.masevo.ThreadModifyEvent;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -100,6 +102,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
 
                 event = MainActivity.user.myevents.get((info).position);
 
+
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 EditEventFragment editFragment = new EditEventFragment();
@@ -121,40 +124,24 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                 } else {
                     isPub = false;
                 }
-                Pair<Boolean,Integer> ret = temp.leaveEvent(temp.eventID,MainActivity.user.emailAddress);
 
-                if (ret.second != 0) {
-                    Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-                            .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
-                    return false;
-                } else {
-                    //TODO success
+                ThreadLeaveEvent leaveEvent = new ThreadLeaveEvent(event.eventID,MainActivity.user.emailAddress,isPub);
+                Thread thread = new Thread(leaveEvent);
+                thread.start();
+                try {
 
-                }
-
-                // check to see if user has creator permissions
-                if (temp.eventUsers.userPerm.get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
-                    for (Map.Entry<String,Permission> entry: temp.eventUsers.userPerm.entrySet()) {
-                        // find user who has host privlages and set them to creator
-                        if (entry.getValue().hasHostPermissions()) {
-                            entry.setValue(new Permission(2));
-                            del = false;
-                            break;
-                        }
+                    thread.join();
+                    Pair<Boolean,Integer> ret1 =leaveEvent.getReturnResult();
+                    if (ret1.second != 0) {
+                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+                        return false;
+                    } else {
+                        MainActivity.user.myevents.remove((info).position);
                     }
-                    //remove leaver from eventUsers
-                    temp.eventUsers.userPerm.remove(MainActivity.user.emailAddress);
-                    temp.eventUsers.userActive.remove(MainActivity.user.emailAddress);
-
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                if (temp instanceof PublicEvent && !del) {
-
-                    //TODO figure out for nearby events
-                    MainActivity.user.nearby.add(MainActivity.user.myevents.
-                            get((info).position));
-                }
-
-                MainActivity.user.myevents.remove((info).position);
 
                 updateList();
                 return true;
@@ -167,24 +154,25 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                     } else {
                         isPub = false;
                     }
+                ThreadDeleteEvent deleteEvent = new ThreadDeleteEvent(event.eventID,MainActivity.user.emailAddress,isPub);
+                Thread thread1 = new Thread(deleteEvent);
+                thread1.start();
+                try {
 
-                Pair<Boolean,Integer> ret1 = event.deleteEvent(event.eventID,MainActivity.user.emailAddress);
-
-                    if (ret1 == null) {
+                    thread1.join();
+                    Pair<Boolean,Integer> ret1 =deleteEvent.getReturnResult();
+                    if (ret1.second != 0) {
+                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+                        return false;
+                    } else {
                         MainActivity.user.myevents.remove((info).position);
                     }
-//                if (ret1.second != 0) {
-//                    Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-//                            .getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
-//                    return false;
-//                } else {
-//                    //TODO success
-//                }
-//                if (MainActivity.user.myevents.get((info).position).eventUsers.userPerm.
-//                        get(MainActivity.user.emailAddress).hasCreatorPermissions()) {
-//                    MainActivity.user.myevents.remove((info).position);
-//
-//                }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
                 updateList();
                 //TODO remove event from database **********************
 

@@ -278,22 +278,25 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
                             new Permission(2));
 
-                    //Server call
-                    Pair<? extends Event,Integer> ret = privEvent.createEvent(eventName,eventDesc,jud1,jud2,privEvent.location,privEvent.radius,
-                            privEvent.eventID,MainActivity.user.emailAddress,true);
+                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
+                            jud2,privEvent.location,radius,privEvent.eventID,MainActivity.user.emailAddress,false);
+                    Thread thread = new Thread(threadCreateEvent);
+                    thread.start();
+                    try {
 
-
-                    if (ret == null) {
-                        MainActivity.user.myevents.add(privEvent);
+                        thread.join();
+                        Pair<? extends Event,Integer> ret1 =threadCreateEvent.getReturnResult();
+                        if (ret1.second != 0) {
+                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                    .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            MainActivity.user.myevents.add(privEvent);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-//                    if (ret.second != 0) {
-//                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-//                                .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
-//                        return;
-//                    } else {
-//                        //TODO success
-//
-//                    }
+
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     MyEventsFragment myEventsFragment = new MyEventsFragment();

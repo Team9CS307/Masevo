@@ -235,29 +235,44 @@ Switch.OnCheckedChangeListener{
                                 latitude,longitude,event.radius,event.hostEmail);
 
                         //Server call
-                        Pair<Event,Integer> ret = temp.modifyEvent(temp.eventID,eventName,eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail);
+                        ThreadModifyEvent modifyEvent = new ThreadModifyEvent(event.eventID,temp.eventName,temp.eventDesc,
+                                temp.startDate,temp.endDate,temp.location.latitude,temp.location.longitude,temp.radius,event.hostEmail,eventType);
+                        Thread thread = new Thread(modifyEvent);
+                        thread.start();
+                        try {
+                            thread.join();
+                            Pair<Event,Integer> ret = modifyEvent.getReturnResult();
+                            if (ret.second != 0) {
+                                Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                        .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
+                                return;
+                            }else {
+                                //todo success
+                                int id = event.eventID;
+                                event = temp;
+                                event.eventID = id;
 
-                        if (ret.second != 0) {
-                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-                                    .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
-                            return;
-                        }else {
-                            //todo success
+                                int index = 0;
+                                // find and remove old event put new in
+                                for (Event e : MainActivity.user.myevents) {
+                                    if (e.eventID == event.eventID) {
+                                        MainActivity.user.myevents.remove(index);
+                                        MainActivity.user.myevents.add(index,event);
+                                        break;
+                                    }
+                                    index++;
+                                }
 
 
 
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                        Event p = new PrivateEvent();
-                        MainActivity.user.myevents.clear();
-//                        MainActivity.user.myevents.addAll(temp.getEvents());
-//                        MainActivity.user.myevents.addAll(p.getEvents());
 
 
-                        temp.eventUsers = event.eventUsers;
+                      //  temp.eventUsers = event.eventUsers;
 
-                        //TODO remove later
-                        MainActivity.user.myevents.add(temp);
-                        event = temp;
                         NotificationManager notifManager=(NotificationManager)getActivity()
                                 .getSystemService(Context.NOTIFICATION_SERVICE);
                         String eventData = "Event: " + event.eventName + "\n" +
@@ -286,21 +301,39 @@ Switch.OnCheckedChangeListener{
                         Event temp = new PrivateEvent(eventName,eventDesc,jud1,jud2,
                                 latitude,longitude,event.radius,event.hostEmail);
 
-                        //Server call
-                        Pair<Event,Integer> ret1 = temp.modifyEvent(temp.eventID,eventName,eventDesc,jud1,jud2,latitude,longitude,temp.radius,temp.hostEmail);
+                        ThreadModifyEvent modifyEvent = new ThreadModifyEvent(event.eventID,temp.eventName,temp.eventDesc,
+                                temp.startDate,temp.endDate,temp.location.latitude,temp.location.longitude,temp.radius,event.hostEmail,eventType);
+                        Thread thread = new Thread(modifyEvent);
+                        thread.start();
+                        try {
+                            thread.join();
+                            Pair<Event,Integer> ret = modifyEvent.getReturnResult();
+                            if (ret.second != 0) {
+                                Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                        .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
+                                return;
+                            }else {
+                                //todo success
+                                int id = event.eventID;
+                                event = temp;
+                                event.eventID = id;
+                                int index = 0;
+                                // find and remove old event put new in
+                                for (Event e : MainActivity.user.myevents) {
+                                    if (e.eventID == event.eventID) {
+                                        MainActivity.user.myevents.remove(index);
+                                        MainActivity.user.myevents.add(index,event);
+                                        break;
+                                    }
+                                    index++;
+                                }
 
-                        if (ret1.second != 0) {
-                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-                                    .getErrorMessage(ret1.second),Toast.LENGTH_LONG).show();
-                            return;
-                        } else {
-                            //success todo
 
 
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                        temp.eventUsers = event.eventUsers;
-                        MainActivity.user.myevents.add(temp);
-                        event = temp;
 
                         NotificationManager notifManager=(NotificationManager)getActivity()
                                 .getSystemService(Context.NOTIFICATION_SERVICE);
