@@ -1,6 +1,8 @@
 package com.example.brianduffy.masevo;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -48,7 +51,16 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        AccountManager accountManager = AccountManager.get(this);
+        Account[] accounts = accountManager.getAccounts();
+        for (Account account : accounts) {
+            if (account.name.endsWith("@gmail.com")) {
+                emailAddress = account.name;
+                int at = emailAddress.indexOf("@");
+                emailAddress = emailAddress.substring(0,at);
+            }
 
+        }
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
 
@@ -190,8 +202,8 @@ public class LoginActivity extends AppCompatActivity implements
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            String dater = data.getDataString();
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-
             handleSignInResult(result);
         }
     }
@@ -210,6 +222,7 @@ public class LoginActivity extends AppCompatActivity implements
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
         } else {
+
             // Signed out, show unauthenticated UI.
             updateUI(true);
         }
@@ -283,6 +296,8 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void updateUI(boolean signedIn) {
+        mStatusTextView.setText(getString(R.string.signed_in_fmt,emailAddress));
+
         if (signedIn) {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
