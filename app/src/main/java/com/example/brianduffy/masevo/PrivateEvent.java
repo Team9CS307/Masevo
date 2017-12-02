@@ -66,12 +66,17 @@ public class PrivateEvent extends Event {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public Pair<? extends Event, Integer> createEvent(String eventName,String eventDesc,java.sql.Date startDate,java.sql.Date endDate,
-                                            Location location, float radius,int eventID, String hostEmail,boolean pub) {
+    public Pair<? extends Event, Integer> createEvent(String eventName, String eventDesc, Date startDate, Date endDate,
+                                                      Location location, float radius, int eventID, String hostEmail, boolean pub) {
         ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,startDate,
                 endDate,location,radius,eventID,hostEmail,false);
-        new Thread(threadCreateEvent).start();
-
+       Thread thread = new Thread(threadCreateEvent);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return threadCreateEvent.getReturnResult();
     }
 

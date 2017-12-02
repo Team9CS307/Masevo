@@ -48,7 +48,8 @@ public class ThreadCreateEvent implements Runnable {
     String eventDesc;
     Location location;
     float radius;
-    private Pair<? extends Event, Integer> returnResult;
+    String result;
+    private   Pair<? extends Event, Integer> returnResult;
     Integer errno;
     public ThreadCreateEvent(String eventName,String eventDesc,java.sql.Date startDate,java.sql.Date endDate,
                              Location location, float radius,int eventID, String hostEmail,boolean pub) {
@@ -66,7 +67,7 @@ public class ThreadCreateEvent implements Runnable {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void run() {
+    public  void run() {
         //TODO maybe?
         String methodName;
             methodName = "createEvent";
@@ -111,13 +112,14 @@ public class ThreadCreateEvent implements Runnable {
                 dataOutputStream.flush();
             }
             int responseCode = httpURLConnection.getResponseCode();
-            String result = "";
+             result = "";
             if (responseCode == 200) {
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(httpURLConnection.getInputStream()));
-                String output;
+                Object j = httpURLConnection.getContent();
+                String output = httpURLConnection.getResponseMessage();
                 while ((output = br.readLine()) != null) {
-                    result += output;
+                    result = result + output;
                 }
                 System.out.println("Response message: " + result);
             }
@@ -135,18 +137,28 @@ public class ThreadCreateEvent implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
-                if (count == 0) {
                     errno = Integer.parseInt(trtd[0][0]);
-                } else {
-                    if (pub) {
-                        returnResult = new Pair<>(new PublicEvent(eventName,eventDesc,
-                                startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                    if (errno != 0) {
+                        if (pub) {
+                            returnResult = new Pair<>(new PublicEvent(eventName,eventDesc,startDate
+                                    ,endDate,location.latitude,location.longitude,radius,hostEmail), errno);
+                        } else {
+                            returnResult = new Pair<>(new PrivateEvent(eventName,eventDesc,startDate
+                                    ,endDate,location.latitude,location.longitude,radius,hostEmail), errno);
+                        }
                     } else {
-                        returnResult = new Pair<>(new PrivateEvent(eventName,eventDesc,
-                                startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+                        returnResult = new Pair<>(null,errno);
                     }
+//                    if (pub) {
+//                        returnResult = new Pair<>(new PublicEvent(eventName,eventDesc,
+//                                startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+//                    }
+//                    else {
+//                        returnResult = new Pair<>(new PrivateEvent(eventName,eventDesc,
+//                                startDate,endDate,location.latitude,location.longitude,radius,hostEmail),errno);
+//                    }
                 }
-            }
+
 
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -161,7 +173,7 @@ public class ThreadCreateEvent implements Runnable {
     }
 
     public Pair<? extends Event, Integer> getReturnResult() {
-        System.out.println(errno);
+
         return returnResult;
     }
 }

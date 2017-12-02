@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Pair;
@@ -37,6 +38,7 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.locks.Lock;
 
 import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.makeText;
@@ -209,15 +211,30 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             new Permission(2));
 
                     //Server call
-                    Pair<? extends Event,Integer> ret1 = pubEvent.createEvent(eventName,eventDesc,jud1,jud2,pubEvent.location,pubEvent.radius,
-                            pubEvent.eventID,MainActivity.user.emailAddress,true);
 
-                    if (ret1== null) {
-                        MainActivity.user.myevents.add(pubEvent);
+                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
+                            jud2,pubEvent.location,radius,pubEvent.eventID,MainActivity.user.emailAddress,true);
+                    Thread thread = new Thread(threadCreateEvent);
+                    thread.start();
+                    try {
 
-                    } else {
-                        Toast.makeText(getContext(),"hello",Toast.LENGTH_SHORT).show();
+                        thread.join();
+                        Pair<? extends Event,Integer> ret1 =threadCreateEvent.getReturnResult();
+                        if (ret1.second != 0) {
+                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                    .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            MainActivity.user.myevents.add(pubEvent);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+
+
+
+
+
 
                     MainActivity.mGeofenceList.add(new Geofence.Builder()
                             // Set the request ID of the geofence. This is a string to identify this
