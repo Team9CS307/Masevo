@@ -44,7 +44,7 @@ public class ThreadGetUserEvents implements Runnable {
     }
     ArrayList<Event> events = new ArrayList<>();
     ArrayList<Users> users = new ArrayList<>();
-    Pair<ArrayList<? extends Event>, ArrayList<Users>> returnResult;
+    Pair<ArrayList<Event>, ArrayList<Users>> returnResult;
 
     private static int hexToBin( char ch ) {
         if( '0'<=ch && ch<='9' )    return ch-'0';
@@ -180,10 +180,10 @@ public class ThreadGetUserEvents implements Runnable {
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         }
-        returnResult = new Pair<ArrayList<? extends Event>, ArrayList<Users>>(events,users);
+        returnResult = new Pair<ArrayList<Event>, ArrayList<Users>>(events,users);
     }
 
-    public Pair<ArrayList<? extends Event>, ArrayList<Users>> getReturnResult() {
+    public Pair<ArrayList<Event>, ArrayList<Users>> getReturnResult() {
         return returnResult;
     }
 }

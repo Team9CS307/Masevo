@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     TextView eventTypeText;
     EditText eventradius;
     TextView eventradiustext;
+    ProgressBar spinner;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,6 +98,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         createButton = getView().findViewById(R.id.create_event);
         eventradius = getView().findViewById(R.id.eventradius);
         eventradiustext = getView().findViewById(R.id.radiustext);
+        spinner = getView().findViewById(R.id.spinner);
 
         // Set onclick listeners to buttons
         eventSwitch.setOnCheckedChangeListener(this);
@@ -103,6 +106,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         end_time.setOnClickListener(this);
         getLoc.setOnClickListener(this);
         createButton.setOnClickListener(this);
+
 
 
     }
@@ -211,7 +215,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             new Permission(2));
 
                     //Server call
-
+                    spinner.setVisibility(View.VISIBLE);
+                    spinner.animate();
                     ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
                             jud2,pubEvent.location,radius,pubEvent.eventID,MainActivity.user.emailAddress,true);
                     Thread thread = new Thread(threadCreateEvent);
@@ -219,6 +224,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     try {
 
                         thread.join();
+                        spinner.setVisibility(View.INVISIBLE);
                         Pair<? extends Event,Integer> ret1 =threadCreateEvent.getReturnResult();
                         if (ret1.second != 0) {
                             Toast.makeText(getContext(), com.example.brianduffy.masevo.Error

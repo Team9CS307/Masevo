@@ -125,7 +125,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
                     isPub = false;
                 }
 
-                ThreadLeaveEvent leaveEvent = new ThreadLeaveEvent(event.eventID,MainActivity.user.emailAddress,isPub);
+                ThreadLeaveEvent leaveEvent = new ThreadLeaveEvent(temp.eventID,MainActivity.user.emailAddress,isPub);
                 Thread thread = new Thread(leaveEvent);
                 thread.start();
                 try {

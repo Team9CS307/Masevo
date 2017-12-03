@@ -24,6 +24,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadGetUserEvents;
+import com.example.chambe41.masevo.ThreadLeaveEvent;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -130,6 +132,24 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+//        ThreadGetUserEvents getUserEvents = new ThreadGetUserEvents(MainActivity.user.emailAddress);
+//        Thread thread = new Thread(getUserEvents);
+//        thread.start();
+//        try {
+//            thread.join();
+//            Pair<ArrayList<Event>,ArrayList<Users>> ret1 =getUserEvents.getReturnResult();
+//            if (ret1.first == null) {
+//                //error
+//                Toast.makeText(this,"Failed to get your events!",Toast.LENGTH_SHORT).show();
+//
+//            } else {
+//                MainActivity.user.myevents.addAll(ret1.first);
+//            }
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
 
         // show the create event fragment on start up

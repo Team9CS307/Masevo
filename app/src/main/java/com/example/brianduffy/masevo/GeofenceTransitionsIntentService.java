@@ -26,6 +26,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadAddToActive;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
@@ -85,25 +86,36 @@ public class GeofenceTransitionsIntentService extends IntentService
             // multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 //            Location l = geofencingEvent.getTriggeringLocation();
-//            Pair<Boolean,Integer> ret;
 //            for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
 //                Location a = new Location("cancer");
 //                a.setLatitude(MainActivity.location.getLatitude());
 //                a.setLongitude(MainActivity.location.getLongitude());
 //                Event event = MainActivity.user.myevents.get(i);
-//                if (l.distanceTo(a) < event.radius) {
-//                   ret = event.addToActive(event.eventID,MainActivity.user.emailAddress);
-//
-//                   if (ret.second != 0) {
-            //Toast.makeText(MainActivity.class, com.example.brianduffy.masevo.Error
-            // .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
-//                   }else {
-//                       //TODO shit pants if fekin worked
-//                   }
+//                Boolean isPub = false;
+//                if (event instanceof PublicEvent) {
+//                    isPub = true;
 //                }
+//                if (l.distanceTo(a) < event.radius) {
+//                    ThreadAddToActive addToActive = new ThreadAddToActive(event.eventID, MainActivity.user.emailAddress, isPub);
+//                    Thread thread = new Thread(addToActive);
+//                    thread.start();
+//                    try {
+//                        thread.join();
+//                        Pair<Boolean,Integer> ret =addToActive.getReturnResult();
 //
+//                        if (ret.second != 0) {
+//                            Toast.makeText(getApplicationContext(), Error.getErrorMessage(ret.second), Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            //TODO shit pants if fekin worked
+//                        }
+//
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//
+//                }
 //            }
-
             // Get the transition details as a String.
 
 

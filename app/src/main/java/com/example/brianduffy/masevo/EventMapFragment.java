@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -27,6 +28,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.example.chambe41.masevo.ThreadBanUser;
+import com.example.chambe41.masevo.ThreadCreateEvent;
+import com.example.chambe41.masevo.ThreadGetActiveLoc;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
@@ -60,8 +64,8 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
     private FusedLocationProviderClient mFusedLocationClient;
     ListView userList;
     private GoogleMap mMap;
-    ArrayList<User> activeUsers;
-    ArrayList<Permission> perms = new ArrayList<>();
+    ArrayList<Location> userlocs = new ArrayList<>();
+    ArrayList<User> users = new ArrayList<>();
     private LocationManager locationManager;
     private android.location.Location loc;
     private Geofence geofence;
@@ -98,34 +102,41 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         mapFragment.getMapAsync(this);
         userList = view.findViewById(R.id.userview);
         //userList.setOnItemClickListener(this);
-        showUsers(event.eventUsers.userPerm); // list view
+        showUsers(users); // list view
         swipe = view.findViewById(R.id.swiperef);
         swipe.setOnRefreshListener(this);
 
         //updateList(event.eventUsers.userPerm);
 
+//        ThreadGetActiveLoc threadGetActiveLoc = new ThreadGetActiveLoc(event.eventID,MainActivity.user.emailAddress);
+//        Thread thread = new Thread(threadGetActiveLoc);
+//        thread.start();
+//        try {
+//
+//            thread.join();
+//            Pair<ArrayList<Location>,Integer> ret1 =threadGetActiveLoc.getReturnResult();
+//            if (ret1.second != 0) {
+//                Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+//                        .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+//
+//            } else {
+//
+//                userlocs.addAll(ret1.first);
+//
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         // May not need...........
-        for (Map.Entry<String,Permission> entry: event.eventUsers.userPerm.entrySet()) {
-            userlisting.add(entry.getKey());
-            perms.add(entry.getValue());
 
-        }
         registerForContextMenu(userList);
 
 
         return view;
     }
-    public void showUsers(Map<String, Permission> active) {
-        UserListAdapter adapter = new UserListAdapter(active);
+    public void showUsers(ArrayList<User> active) {
+        UserListAdapter adapter = new UserListAdapter(getContext(),active);
         userList.setAdapter(adapter);
-
-    }
-    private void updateList(Map<String,Permission> permUser) {
-        //TODO maybe need to delete the old UserListAdapter
-        UserListAdapter adapter = new UserListAdapter(permUser);
-        userList.setAdapter(adapter);
-        swipe.setRefreshing(false);
-
 
     }
 
@@ -185,26 +196,33 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Permission perm;
+        Boolean isPub = false;
+        if (event instanceof PublicEvent) {
+            isPub = true;
+        }
         switch(item.getItemId()) {
 
             case R.id.ban:
-                perm = event.eventUsers.userPerm.get(MainActivity.user.emailAddress);
-                for (Map.Entry<String,Permission> entry: event.eventUsers.userPerm.entrySet()) {
-                    if (entry.getKey().equals(userList.getItemAtPosition((info).position))) {
-                        if (perm.getPermissionLevel() > entry.getValue().getPermissionLevel()) {
-                            //TODO remove the user from the event
+               ThreadBanUser banUser = new ThreadBanUser(event.eventID,MainActivity.user.emailAddress
+                       , users.get((info).position).emailAddress,isPub);
+               Thread thread = new Thread(banUser);
+               thread.start();
+                try {
+                    thread.join();
 
+                    Pair<Boolean,Integer> ret1 =banUser.getReturnResult();
+                    if (ret1.second != 0) {
+                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+                        return false;
 
+                    } else {
+                       //TODO do stuff
 
-                            //TODO server call update the event users
-                            // maybe let user know they have been kicked
-
-                            break;
-                        }
                     }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                // TODO do nothing, maybe send a toast message error
-
 
                 return true;
             case R.id.kick:
@@ -212,7 +230,6 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
 
 
-                    // TODO do nothing, maybe send a toast message error
 
 
 
@@ -239,6 +256,28 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         // get the lat and lon from the serialized data sent from MainActivity and set locaiton to that
         // this data is the location of the event that they clicked from the listview fragments
         // fragment
+       // displayUsers();
+        LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
+//        mMap.addCircle(new CircleOptions()
+//                .center(eventloc)
+//                .radius(event.radius)
+//                .strokeColor(Color.BLUE));
+//        mMap.addMarker(new MarkerOptions().position(eventloc).title(event.eventName));
+//
+        //displayUsers();
+        //TODO travers
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(eventloc, 15);
+        mMap.moveCamera(cameraUpdate);
+
+
+    }
+
+    // TODO get users from a specific event via server call.
+    // TODO build new users with only coordinates and the user email address.
+    // may not need to build list. just keep using event.eventUsers.active HashMap
+    public void displayUsers() {
+        mMap.clear();
         LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
         mMap.addCircle(new CircleOptions()
                 .center(eventloc)
@@ -246,44 +285,13 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
                 .strokeColor(Color.BLUE));
         mMap.addMarker(new MarkerOptions().position(eventloc).title(event.eventName));
 
-        //displayUsers();
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(eventloc, 15);
-        mMap.moveCamera(cameraUpdate);
-
-
-    }
-    //TODO server call Implement this for real
-    public Location getUserLoc(String email) {
-
-        //TODO update lat and lon to users location
-        float lat = 0.0f;
-        float lon = 0.0f;
-
-
-        return new Location(lat,lon);
-    }
-    // TODO get users from a specific event via server call.
-    // TODO build new users with only coordinates and the user email address.
-    // may not need to build list. just keep using event.eventUsers.active HashMap
-    public void displayUsers() {
-
-        for (Map.Entry<String,Boolean> entry: event.eventUsers.userActive.entrySet()) {
-
-            // if the user is active, meaning they are in radius of event
-            if (entry.getValue()) {
-                Location userLoc = getUserLoc(entry.getKey());
-
-                mMap.addCircle(new CircleOptions()
-                        .center(new LatLng(userLoc.latitude,userLoc.longitude))
-                        .radius(2)
-                        .fillColor(Color.GREEN)
-                        .strokeColor(Color.GREEN));
-
-            }
-            // TODO  the users location can be their last known location in the database
-
+        for (Location loc: userlocs) {
+            mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(loc.latitude,loc.longitude))
+                    .radius(2)
+                    .strokeColor(Color.GREEN));
         }
+
 
     }
 

@@ -15,44 +15,51 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-public class UserListAdapter extends BaseAdapter {
-    private final ArrayList mData;
+    public class UserListAdapter extends ArrayAdapter<User> {
+        Context context;
+        ArrayList<User> data;
+        private static LayoutInflater inflater = null;
 
-    public UserListAdapter(Map<String, Permission> map) {
-        mData = new ArrayList();
-        mData.addAll(map.entrySet());
-    }
+        public UserListAdapter(Context context, ArrayList<User> data) {
+            super(context, R.layout.fragment_event_map,data );
 
-    @Override
-    public int getCount() {
-        return mData.size();
-    }
-
-    @Override
-    public Map.Entry<String, Permission> getItem(int position) {
-        return (Map.Entry) mData.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final View result;
-
-        if (convertView == null) {
-            result = LayoutInflater.from(parent.getContext()).inflate(R.layout.curr_event_row, parent, false);
-        } else {
-            result = convertView;
+//        Event[] s = (Event[])data.toArray();
+//        String g = s[0].eventName;
+            this.context = context;
+            this.data = data;
+            inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        Map.Entry<String, Permission> item = getItem(position);
+        @Override
+        public int getCount() {
+            return data.size();
+        }
 
-        ((TextView) result.findViewById(R.id.username)).setText(item.getKey());
-        ((TextView) result.findViewById(R.id.perm_level)).setText(item.getValue().getPermissionLevel() + "");
+        @Override
+        public User getItem(int position) {
+            return data.get(position);
+        }
 
-        return result;
-    }
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //View vi = convertView;
+            User e = getItem(position);
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.curr_event_row, parent, false);
+            }
+            // Lookup view for data population
+            TextView tvName = (TextView) convertView.findViewById(R.id.username);
+
+            tvName.setText(e.emailAddress);
+
+            // Return the completed view to render on screen
+            return convertView;
+        }
 }

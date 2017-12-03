@@ -85,6 +85,11 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
                             MainActivity.user.emailAddress,!eventType);
                     Thread thread = new Thread(threadJoinEvent);
                     thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     Pair<Boolean,Integer> ret = threadJoinEvent.getReturnResult();
 
 

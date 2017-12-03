@@ -59,6 +59,8 @@ Switch.OnCheckedChangeListener{
     Event event;
     Button editButton;
     Permission userPerm;
+    EditText eventradius;
+    TextView eventradiustext;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -92,7 +94,8 @@ Switch.OnCheckedChangeListener{
         getLoc = getView().findViewById(R.id.location_but);
         eventTypeText = getView().findViewById(R.id.event_type_text);
         editButton = getView().findViewById(R.id.create_event);
-
+        eventradius = getView().findViewById(R.id.eventradius);
+        eventradiustext = getView().findViewById(R.id.radiustext);
         // Set onclick listeners to buttons
         eventSwitch.setOnCheckedChangeListener(this);
         start_time.setOnClickListener(this);
@@ -100,7 +103,7 @@ Switch.OnCheckedChangeListener{
         getLoc.setOnClickListener(this);
         editButton.setOnClickListener(this);
         editButton.setText("Edit Event");
-
+        eventradius.setText(event.radius + "");
         //repopulate fields with event data
         title.setText(event.eventName);
         desc.setText(event.eventDesc);
@@ -118,13 +121,7 @@ Switch.OnCheckedChangeListener{
             eventSwitch.setChecked(true);
         }
 
-        // Get the user perm of person changing the event
-        for(Map.Entry<String,Permission> entry: event.eventUsers.userPerm.entrySet()) {
-            if (MainActivity.user.emailAddress.equals(entry.getKey())) {
-                userPerm = entry.getValue();
-                break;
-            }
-        }
+
 
     }
 
@@ -180,11 +177,6 @@ Switch.OnCheckedChangeListener{
                 break;
             case R.id.create_event: // create event button id
 
-                for (int i = 0 ; i < MainActivity.user.myevents.size(); i++) {
-                    if (MainActivity.user.myevents.get(i) == event) {
-                        MainActivity.user.myevents.remove(i);
-                    }
-                }
 
                 String eventName = title.getText().toString();
                 String eventDesc = desc.getText().toString();
@@ -257,6 +249,7 @@ Switch.OnCheckedChangeListener{
                                 for (Event e : MainActivity.user.myevents) {
                                     if (e.eventID == event.eventID) {
                                         MainActivity.user.myevents.remove(index);
+
                                         MainActivity.user.myevents.add(index,event);
                                         break;
                                     }
@@ -322,7 +315,9 @@ Switch.OnCheckedChangeListener{
                                 for (Event e : MainActivity.user.myevents) {
                                     if (e.eventID == event.eventID) {
                                         MainActivity.user.myevents.remove(index);
+//                                        MainActivity.user.myevents.add(index,event);
                                         MainActivity.user.myevents.add(index,event);
+
                                         break;
                                     }
                                     index++;
