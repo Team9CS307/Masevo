@@ -6,12 +6,18 @@
     <item android:id="@+id/kick"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="Kick User" />
-
     <item android:id="@+id/ban"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Ban User" />
-    <item android:id="@+id/priv"
+    <item android:id="@+id/makeuser"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Change Privileges" />
+        android:title="Make User" />
+    <item android:id="@+id/makehost"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Make Host" />
+    <item android:id="@+id/makeowner"
+        android:icon="@android:drawable/ic_menu_delete"
+    android:title="Make Owner" />
+
 
 </menu>

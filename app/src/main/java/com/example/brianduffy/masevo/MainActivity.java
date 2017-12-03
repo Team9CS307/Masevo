@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.chambe41.masevo.ThreadGetUserEvents;
 import com.example.chambe41.masevo.ThreadLeaveEvent;
+import com.example.chambe41.masevo.ThreadUpdateLocation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -235,18 +236,24 @@ public class MainActivity extends AppCompatActivity
     }
     public void onLocationChanged(Location location) {
 
-//        Pair<com.example.brianduffy.masevo.Location,Integer> ret =
-//                MainActivity.user.updateLocation(MainActivity.user.emailAddress,(float)location.getLatitude(),
-//                (float)location.getLongitude());
-//
-//        if (ret.second != 0 ) {
-//            Toast.makeText(this,"errno",Toast.LENGTH_LONG).show();
-//            return;
-//        } else  {
-//            // update mylocation locally
-//            MainActivity.user.myLocation = ret.first;
-//
-//        }
+        ThreadUpdateLocation updateLocation = new ThreadUpdateLocation(MainActivity.user.emailAddress,
+                MainActivity.user.myLocation.latitude,MainActivity.user.myLocation.longitude);
+        Thread t = new Thread(updateLocation);
+        t.start();
+        try {
+            t.join();
+            Pair<com.example.brianduffy.masevo.Location,Integer> ret = updateLocation.getReturnResult();
+
+            if (ret.second !=0) {
+                Toast.makeText(this,Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+            } else {
+                MainActivity.user.myLocation = new com.example.brianduffy.masevo.Location(
+                        (float)location.getLatitude(),(float)location.getLongitude());
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         //************************** DEBUG *****************************
         Toast.makeText(this,"Lat: " + location.getLatitude() +
                 " Lon: " + location.getLongitude(),Toast.LENGTH_SHORT).show();

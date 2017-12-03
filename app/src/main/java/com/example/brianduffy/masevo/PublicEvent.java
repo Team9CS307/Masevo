@@ -82,7 +82,7 @@ public class PublicEvent extends Event implements Serializable{
         return threadGetEvents.getReturnResult();
     }
     @Override
-    public Pair<ArrayList<? extends Event>, ArrayList<Users>> getMyEvents(String email) {
+    public Pair<ArrayList<Event>, ArrayList<Users>> getMyEvents(String email) {
         ThreadGetUserEvents myEvents = new ThreadGetUserEvents(email);
         new Thread(myEvents).start();
         return myEvents.getReturnResult();

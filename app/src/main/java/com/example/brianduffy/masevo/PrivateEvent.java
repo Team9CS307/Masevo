@@ -102,7 +102,7 @@ public class PrivateEvent extends Event {
     }
 
     @Override
-    public Pair<ArrayList<? extends Event>, ArrayList<Users>> getMyEvents(String email) {
+    public Pair<ArrayList<Event>, ArrayList<Users>> getMyEvents(String email) {
         ThreadGetUserEvents myEvents = new ThreadGetUserEvents(email);
         new Thread(myEvents).start();
         return myEvents.getReturnResult();

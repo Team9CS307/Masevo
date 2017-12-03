@@ -50,7 +50,7 @@ public class LeaveEventTest {
             new ActivityTestRule<MainActivity>(MainActivity.class);
 
     @Test
-    public void testLeaveSuccess() {
+    public void testLeaveFailure() {
         onView(withId(R.id.event_name)).perform(typeText("event name"));
         onView(withId(R.id.event_desc)).perform(typeText("description"));
         onView(withId(R.id.start_date)).perform(click());
@@ -74,7 +74,7 @@ public class LeaveEventTest {
         onView(withId(R.id.text)).check(matches(withText("description")));
         onView(withText("event name")).perform(longClick());
         onView(withText("Leave")).perform(click());
-        onView(withText("event name")).check(doesNotExist());
+        onView(withText("event name")).check(matches(withText("event name")));
 
     }
 }

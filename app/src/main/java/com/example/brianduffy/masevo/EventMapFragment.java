@@ -31,6 +31,9 @@ import android.widget.Toast;
 import com.example.chambe41.masevo.ThreadBanUser;
 import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadGetActiveLoc;
+import com.example.chambe41.masevo.ThreadMakeHost;
+import com.example.chambe41.masevo.ThreadMakeOwner;
+import com.example.chambe41.masevo.ThreadMakeUser;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
@@ -234,14 +237,62 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
 
                 return true;
-            case R.id.priv:
-                /*TODO get privilege level sorted out ie can host set user to host?
-                also if creator sets thier perm level to a lower value, maybe find first user
-                who has host permissions. If none, then set a user to creator or delete the event...
-                */
+            case R.id.makeuser:
 
+                ThreadMakeUser makeUser = new ThreadMakeUser(event.eventID,MainActivity.user.emailAddress,
+                        users.get((info).position).emailAddress,isPub);
+                Thread thread1 = new Thread(makeUser);
+                thread1.start();
+                try {
+                    thread1.join();
+                    Pair<Boolean,Integer> ret = makeUser.getReturnResult();
 
+                    if (ret.second != 0) {
+                        Toast.makeText(getContext(),Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(),"Success!",Toast.LENGTH_SHORT).show();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
+                return true;
+            case R.id.makehost:
+                ThreadMakeHost makeHost = new ThreadMakeHost(event.eventID,MainActivity.user.emailAddress,
+                        users.get((info).position).emailAddress,isPub);
+                Thread thread2 = new Thread(makeHost);
+                thread2.start();
+                try {
+                    thread2.join();
+                    Pair<Boolean,Integer> ret = makeHost.getReturnResult();
+
+                    if (ret.second != 0) {
+                        Toast.makeText(getContext(),Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(),"Success!",Toast.LENGTH_SHORT).show();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                return true;
+            case R.id.makeowner:
+                ThreadMakeOwner makeOwner = new ThreadMakeOwner(event.eventID,MainActivity.user.emailAddress,
+                        users.get((info).position).emailAddress,isPub);
+                Thread thread3 = new Thread(makeOwner);
+                thread3.start();
+                try {
+                    thread3.join();
+                    Pair<Boolean,Integer> ret = makeOwner.getReturnResult();
+
+                    if (ret.second != 0) {
+                        Toast.makeText(getContext(),Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(),"Success!",Toast.LENGTH_SHORT).show();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 return true;
             default:
@@ -264,7 +315,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 //                .strokeColor(Color.BLUE));
 //        mMap.addMarker(new MarkerOptions().position(eventloc).title(event.eventName));
 //
-        //displayUsers();
+        displayUsers();
         //TODO travers
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(eventloc, 15);
