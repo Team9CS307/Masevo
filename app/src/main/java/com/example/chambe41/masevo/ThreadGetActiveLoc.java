@@ -28,16 +28,17 @@ import java.util.Map;
 public class ThreadGetActiveLoc implements Runnable {
     int eventID;
     String SenderEmail;
-    Boolean isPublic;
+    Boolean isPub;
     Integer errno;
     int userPriv;
     ArrayList<Location> locations = new ArrayList<>();
     Pair<ArrayList<Location>,Integer> returnResult;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
     String TargetEmail;
-    public ThreadGetActiveLoc(int eventID, String SenderEmail) {
+    public ThreadGetActiveLoc(int eventID, String SenderEmail,Boolean isPub) {
         this.eventID = eventID;
         this.SenderEmail = SenderEmail;
+        this.isPub = isPub;
 
     }
 
@@ -48,6 +49,7 @@ public class ThreadGetActiveLoc implements Runnable {
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
+        contentValues.put("isPub",isPub);
 
 
         String query = "";

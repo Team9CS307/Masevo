@@ -236,23 +236,23 @@ public class MainActivity extends AppCompatActivity
     }
     public void onLocationChanged(Location location) {
 
-        ThreadUpdateLocation updateLocation = new ThreadUpdateLocation(MainActivity.user.emailAddress,
-                MainActivity.user.myLocation.latitude,MainActivity.user.myLocation.longitude);
-        Thread t = new Thread(updateLocation);
-        t.start();
-        try {
-            t.join();
-            Pair<com.example.brianduffy.masevo.Location,Integer> ret = updateLocation.getReturnResult();
-
-            if (ret.second !=0) {
-                Toast.makeText(this,Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
-            } else {
-                MainActivity.user.myLocation = new com.example.brianduffy.masevo.Location(
-                        (float)location.getLatitude(),(float)location.getLongitude());
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        ThreadUpdateLocation updateLocation = new ThreadUpdateLocation(MainActivity.user.emailAddress,
+//                MainActivity.user.myLocation.latitude,MainActivity.user.myLocation.longitude);
+//        Thread t = new Thread(updateLocation);
+//        t.start();
+//        try {
+//            t.join();
+//            Pair<com.example.brianduffy.masevo.Location,Integer> ret = updateLocation.getReturnResult();
+//
+//            if (ret.second !=0) {
+//                Toast.makeText(this,Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+//            } else {
+//                MainActivity.user.myLocation = new com.example.brianduffy.masevo.Location(
+//                        (float)location.getLatitude(),(float)location.getLongitude());
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         //************************** DEBUG *****************************
         Toast.makeText(this,"Lat: " + location.getLatitude() +

@@ -34,7 +34,7 @@ public class ThreadUpdateLocation implements Runnable {
     Integer errno;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
 
-    Pair<Location,Integer> returnResult;
+    Pair<Boolean,Integer> returnResult;
     public ThreadUpdateLocation(String email, float latitude, float longitude) {
         this.email = email;
         this.latitude = latitude;
@@ -50,7 +50,7 @@ public class ThreadUpdateLocation implements Runnable {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
-       contentValues.put("Username",email);
+       contentValues.put("SenderEmail",email);
         contentValues.put("Latitude",Float.toString(latitude));
         contentValues.put("Longitude",Float.toString(longitude));
 
@@ -106,9 +106,12 @@ public class ThreadUpdateLocation implements Runnable {
 
                     if (count == 0) {
                         errno = Integer.parseInt(trtd[0][0]);
+                         if (errno!= 0){
+                            returnResult = new Pair<>(false, errno);
+                        } else {
+                             returnResult = new Pair<>(true,errno);
+                         }
 
-                    } else {
-                        returnResult = new Pair<>( new Location(Float.parseFloat(trtd[0][0]),Float.parseFloat(trtd[0][1])), errno);
                     }
                     count++;
             }
@@ -127,7 +130,7 @@ public class ThreadUpdateLocation implements Runnable {
 
     }
 
-    public Pair<Location, Integer> getReturnResult() {
+    public Pair<Boolean, Integer> getReturnResult() {
 
         return returnResult;
     }

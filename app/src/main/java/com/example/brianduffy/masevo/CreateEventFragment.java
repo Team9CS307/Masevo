@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -57,6 +60,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     TextView desc_text;
     EditText desc;
     Button start_time;
+    RotateDrawable rotateDrawable;
     TextView start_text;
     TextView end_text;
     int PLACE_PICKER_REQUEST = 1;
@@ -70,7 +74,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     TextView eventTypeText;
     EditText eventradius;
     TextView eventradiustext;
-    ProgressBar spinner;
+    ProgressDialog progress;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,7 +102,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         createButton = getView().findViewById(R.id.create_event);
         eventradius = getView().findViewById(R.id.eventradius);
         eventradiustext = getView().findViewById(R.id.radiustext);
-        spinner = getView().findViewById(R.id.spinner);
+
+
 
         // Set onclick listeners to buttons
         eventSwitch.setOnCheckedChangeListener(this);
@@ -163,6 +168,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 break;
             case R.id.create_event: // create event button id
                 //TODO add stuff here maybe
+
+// To dismiss the dialog
                 String eventName = title.getText().toString();
                 String eventDesc = desc.getText().toString();
                 float radius = 0;
@@ -210,13 +217,10 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
 
                     PublicEvent pubEvent = new PublicEvent(eventName,eventDesc,jud1,jud2,
                             latitude,longitude,radius,MainActivity.user.emailAddress);
-                    pubEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
-                    pubEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
-                            new Permission(2));
+
 
                     //Server call
-                    spinner.setVisibility(View.VISIBLE);
-                    spinner.animate();
+
                     ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
                             jud2,pubEvent.location,radius,pubEvent.eventID,MainActivity.user.emailAddress,true);
                     Thread thread = new Thread(threadCreateEvent);
@@ -224,7 +228,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     try {
 
                         thread.join();
-                        spinner.setVisibility(View.INVISIBLE);
+
                         Pair<? extends Event,Integer> ret1 =threadCreateEvent.getReturnResult();
                         if (ret1.second != 0) {
                             Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
@@ -236,11 +240,6 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-
-
-
-
 
                     MainActivity.mGeofenceList.add(new Geofence.Builder()
                             // Set the request ID of the geofence. This is a string to identify this
@@ -267,7 +266,6 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
 //                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
 //                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
 
-                    //TODO add to the maps in eventUsers Class
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -277,12 +275,9 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     ft.commit();
                 } else {
 
-                    //TODO should private events have geofences?
                     PrivateEvent privEvent = new PrivateEvent(eventName,eventDesc,jud1,jud2,
                             latitude,longitude,radius,MainActivity.user.emailAddress);
-                    privEvent.eventUsers.userActive.put(MainActivity.user.emailAddress,true);
-                    privEvent.eventUsers.userPerm.put(MainActivity.user.emailAddress,
-                            new Permission(2));
+
 
                     ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
                             jud2,privEvent.location,radius,privEvent.eventID,MainActivity.user.emailAddress,false);

@@ -84,7 +84,7 @@ public class User {
         }
     }
 
-    public Pair<Location,Integer> updateLocation(String email, float latitude, float longitude) {
+    public Pair<Boolean,Integer> updateLocation(String email, float latitude, float longitude) {
         ThreadUpdateLocation threadUpdateLocation = new ThreadUpdateLocation(email,latitude,longitude);
         new Thread(threadUpdateLocation).start();
         return threadUpdateLocation.getReturnResult();
