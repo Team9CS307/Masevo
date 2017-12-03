@@ -31,9 +31,11 @@ import android.widget.Toast;
 import com.example.chambe41.masevo.ThreadBanUser;
 import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.example.chambe41.masevo.ThreadGetActiveLoc;
+import com.example.chambe41.masevo.ThreadGetUserEvents;
 import com.example.chambe41.masevo.ThreadMakeHost;
 import com.example.chambe41.masevo.ThreadMakeOwner;
 import com.example.chambe41.masevo.ThreadMakeUser;
+import com.example.chambe41.masevo.ThreadRemoveUser;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
@@ -76,6 +78,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
     private GeofencingRequest mGeofenceRequest;
     private String GeoReqID = "myEvent";
     SwipeRefreshLayout swipe;
+    int pos = 0;
     public static EventMapFragment newInstance() {
         EventMapFragment fragment = new EventMapFragment();
         return fragment;
@@ -105,43 +108,31 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         mapFragment.getMapAsync(this);
         userList = view.findViewById(R.id.userview);
         //userList.setOnItemClickListener(this);
-        showUsers(users); // list view
+         pos = 0;
+        for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
+            if (event.eventID == MainActivity.user.myevents.get(i).eventID) {
+                pos = i;
+                break;
+            }
+        }
+
+
+        Users eventUsers = MainActivity.eventusers.get(pos);
+        for (Map.Entry<String, PermissionActivePair> entry : eventUsers.userPerm.entrySet()) {
+            userlisting.add(entry.getKey());
+        }
+        userList.setAdapter(new UserListAdapter(this.getContext(),userlisting));
         swipe = view.findViewById(R.id.swiperef);
         swipe.setOnRefreshListener(this);
 
-        //updateList(event.eventUsers.userPerm);
 
-//        ThreadGetActiveLoc threadGetActiveLoc = new ThreadGetActiveLoc(event.eventID,MainActivity.user.emailAddress);
-//        Thread thread = new Thread(threadGetActiveLoc);
-//        thread.start();
-//        try {
-//
-//            thread.join();
-//            Pair<ArrayList<Location>,Integer> ret1 =threadGetActiveLoc.getReturnResult();
-//            if (ret1.second != 0) {
-//                Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-//                        .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
-//
-//            } else {
-//
-//                userlocs.addAll(ret1.first);
-//
-//            }
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        // May not need...........
 
         registerForContextMenu(userList);
 
 
         return view;
     }
-    public void showUsers(ArrayList<User> active) {
-        UserListAdapter adapter = new UserListAdapter(getContext(),active);
-        userList.setAdapter(adapter);
 
-    }
 
 
     @Override
@@ -229,11 +220,30 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
                 return true;
             case R.id.kick:
+                ThreadRemoveUser removeUser = new ThreadRemoveUser(event.eventID,MainActivity.user.emailAddress,
+                        users.get((info).position).emailAddress,isPub);
+                Thread t3 = new Thread(removeUser);
+                t3.start();
+                try {
+                    t3.join();
+                    Pair<Boolean,Integer> ret1 =removeUser.getReturnResult();
+                    if (ret1.second != 0) {
+                        Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                                .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+                        return false;
+
+                    } else {
+                        //TODO do stuff
+                        MainActivity.eventusers.get(pos).
+                                userPerm.remove(users.get((info).position).emailAddress);
+                        userlisting.remove((info).position);
 
 
 
-
-
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
 
                 return true;
@@ -304,17 +314,9 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        // get the lat and lon from the serialized data sent from MainActivity and set locaiton to that
-        // this data is the location of the event that they clicked from the listview fragments
-        // fragment
-       // displayUsers();
+
         LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
-//        mMap.addCircle(new CircleOptions()
-//                .center(eventloc)
-//                .radius(event.radius)
-//                .strokeColor(Color.BLUE));
-//        mMap.addMarker(new MarkerOptions().position(eventloc).title(event.eventName));
-//
+
         displayUsers();
         //TODO travers
 
@@ -328,6 +330,28 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
     // TODO build new users with only coordinates and the user email address.
     // may not need to build list. just keep using event.eventUsers.active HashMap
     public void displayUsers() {
+
+        Boolean isPub = false;
+        if (event instanceof PublicEvent) {
+            isPub = true;
+        }
+        ThreadGetActiveLoc getActiveLoc = new ThreadGetActiveLoc(event.eventID,MainActivity.user.emailAddress,isPub);
+
+        Thread thread = new Thread(getActiveLoc);
+        thread.start();
+        try {
+            thread.join();
+            Pair<ArrayList<Location>,Integer> ret = getActiveLoc.getReturnResult();
+
+            if (ret.second != 0) {
+                Toast.makeText(getContext(),Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+            } else {
+                userlocs.clear();
+                userlocs.addAll(ret.first);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         mMap.clear();
         LatLng eventloc = new LatLng(event.location.latitude, event.location.longitude);
         mMap.addCircle(new CircleOptions()
@@ -353,6 +377,27 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
         // on swipe refresh, display the users on map
         displayUsers();
+
+        ThreadGetUserEvents getUserEvents = new ThreadGetUserEvents(MainActivity.user.emailAddress);
+        Thread thread = new Thread(getUserEvents);
+        thread.start();
+        try {
+            thread.join();
+            Pair<ArrayList<Event>,ArrayList<Users>> ret = getUserEvents.getReturnResult();
+            if (ret == null) {
+                Toast.makeText(getContext(),"Unable to connect to server!",Toast.LENGTH_SHORT).show();
+            } else {
+                MainActivity.eventusers = ret.second;
+                MainActivity.user.myevents = ret.first;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+        userList.setAdapter(new UserListAdapter(this.getContext(),userlisting));
+
         swipe.setEnabled(false);
 
     }

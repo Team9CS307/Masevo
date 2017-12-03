@@ -98,18 +98,18 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
                                     .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
                         } else {
                             //TODO implement success
+                            FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                            MyEventsFragment myEventsFragment = new MyEventsFragment();
+                            ft.replace(R.id.content_frame, myEventsFragment);
+                            ft.addToBackStack(null);
+                            ft.commit();
 
 
                         }
 
 
 
-                    FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    MyEventsFragment myEventsFragment = new MyEventsFragment();
-                    ft.replace(R.id.content_frame, myEventsFragment);
-                    ft.addToBackStack(null);
-                    ft.commit();
 
                 } else {
                     priv_text.setText("Error: You entered an invalid ID!");

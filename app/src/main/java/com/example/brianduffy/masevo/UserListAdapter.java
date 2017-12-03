@@ -15,12 +15,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-    public class UserListAdapter extends ArrayAdapter<User> {
+    public class UserListAdapter extends ArrayAdapter<String> {
         Context context;
-        ArrayList<User> data;
+        ArrayList<String> data;
         private static LayoutInflater inflater = null;
 
-        public UserListAdapter(Context context, ArrayList<User> data) {
+        public UserListAdapter(Context context, ArrayList<String> data) {
             super(context, R.layout.fragment_event_map,data );
 
 //        Event[] s = (Event[])data.toArray();
@@ -37,7 +37,7 @@ import java.util.Map;
         }
 
         @Override
-        public User getItem(int position) {
+        public String getItem(int position) {
             return data.get(position);
         }
 
@@ -49,7 +49,7 @@ import java.util.Map;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             //View vi = convertView;
-            User e = getItem(position);
+            String e = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.curr_event_row, parent, false);
@@ -57,7 +57,7 @@ import java.util.Map;
             // Lookup view for data population
             TextView tvName = (TextView) convertView.findViewById(R.id.username);
 
-            tvName.setText(e.emailAddress);
+            tvName.setText(e);
 
             // Return the completed view to render on screen
             return convertView;

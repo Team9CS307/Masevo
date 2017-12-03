@@ -54,11 +54,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 EventMapFragment mapFragment = new EventMapFragment();
-//                EventMapFragment eventMapFragment = new EventMapFragment();
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.content_frame, nearbyEventsFragment)
-//                        .addToBackStack(null)
-//                        .commit();
+
                 Bundle bundle = new Bundle();
 
                 // this event; GET data about event that was chosen

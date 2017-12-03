@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
     static final int REQUEST_LOCATION = 45;
     ArrayList<Event> events = new ArrayList<>();
     MapofEventsFragment mapevents;
+    static ArrayList<Users> eventusers = new ArrayList<>();
     LocationManager lm;
     private static final int REQUEST_CHECK_SETTINGS = 2;
     static User user;
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity
 //
 //            } else {
 //                MainActivity.user.myevents.addAll(ret1.first);
+                   // MainActivity.eventusers.addAll(ret1.second);
 //            }
 //
 //        } catch (InterruptedException e) {
@@ -597,8 +599,6 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
-
-
 
     @Override
     protected void onStop() {
