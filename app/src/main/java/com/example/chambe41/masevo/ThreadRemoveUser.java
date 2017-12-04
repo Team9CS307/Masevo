@@ -40,7 +40,7 @@ public class ThreadRemoveUser implements Runnable {
 
     @Override
     public void run() {
-        String methodName = "removeUser";
+        String methodName = "kickUser";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
