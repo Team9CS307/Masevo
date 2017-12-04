@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.*;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
@@ -96,8 +97,8 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         Thread t = new Thread(getActiveLoc);
         t.start();
         try {
-            Pair<ArrayList<Location>,ArrayList<String>> ret = getActiveLoc.getReturnResult();
             t.join();
+            Pair<ArrayList<Location>,ArrayList<String>> ret = getActiveLoc.getReturnResult();
 
             if (ret == null) {
                 Toast.makeText(getContext(),"unable to connect to server",Toast.LENGTH_SHORT).show();
@@ -350,7 +351,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         for (Location loc: userlocs) {
             mMap.addCircle(new CircleOptions()
                     .center(new LatLng(loc.latitude,loc.longitude))
-                    .radius(2)
+                    .radius(1)
                     .strokeColor(Color.GREEN));
         }
     }

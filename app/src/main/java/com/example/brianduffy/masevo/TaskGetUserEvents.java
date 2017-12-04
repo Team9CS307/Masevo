@@ -130,7 +130,11 @@ public class TaskGetUserEvents extends AsyncTask<String, Integer, Pair<ArrayList
                         p.eventID = Integer.parseInt(aTrtd[0]);
                         events.add(p);
                     }
-                    //users.add((Users)deserialize(parseHexBinary(aTrtd[8])));
+                    try {
+                        users.add((Users)deserialize(parseHexBinary(aTrtd[8])));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
                 count++;
             }

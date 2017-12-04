@@ -13,12 +13,15 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.location.*;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -78,54 +81,53 @@ public class GeofenceTransitionsIntentService extends IntentService
             // Get the geofences that were triggered. A single event can trigger
             // multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-//            Location l = geofencingEvent.getTriggeringLocation();
-//            for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
-//                Location a = new Location("cancer");
-//                a.setLatitude(MainActivity.location.getLatitude());
-//                a.setLongitude(MainActivity.location.getLongitude());
-//                Event event = MainActivity.user.myevents.get(i);
-//                Boolean isPub = false;
-//                if (event instanceof PublicEvent) {
-//                    isPub = true;
-//                }
-//                if (l.distanceTo(a) < event.radius) {
-//                    ThreadAddToActive addToActive = new ThreadAddToActive(event.eventID, MainActivity.user.emailAddress, isPub);
-//                    Thread thread = new Thread(addToActive);
-//                    thread.start();
-//                    try {
-//                        thread.join();
-//                        Pair<Boolean,Integer> ret =addToActive.getReturnResult();
-//
-//                        if (ret.second != 0) {
-//                            Toast.makeText(getApplicationContext(), Error.getErrorMessage(ret.second), Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            //TODO shit pants if fekin worked
-//                        }
-//
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//
-//                } else {
-//                    ThreadRemoveFromActive removeFromActive = new ThreadRemoveFromActive(event.eventID,
-//                            MainActivity.user.emailAddress,isPub);
-//                    Thread t1 = new Thread(removeFromActive);
-//                    t1.start();
-//                    try {
-//                        t1.join();
-//                        Pair<Boolean,Integer> ret =removeFromActive.getReturnResult();
-//
-//                        if (ret.second != 0) {
-//                            Toast.makeText(getApplicationContext(), Error.getErrorMessage(ret.second), Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            //TODO shit pants if fekin worked
-//                        }
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-           // }
+            android.location.Location l = geofencingEvent.getTriggeringLocation();
+            for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
+                android.location.Location a = new Location("cancer");
+                a.setLatitude(MainActivity.location.getLatitude());
+                a.setLongitude(MainActivity.location.getLongitude());
+                Event event = MainActivity.user.myevents.get(i);
+                Boolean isPub = false;
+                if (event instanceof PublicEvent) {
+                    isPub = true;
+                }
+                if (l.distanceTo(a) < event.radius) {
+                    ThreadAddToActive addToActive = new ThreadAddToActive(event.eventID, MainActivity.user.emailAddress, isPub);
+                    Thread thread = new Thread(addToActive);
+                    thread.start();
+                    try {
+                        thread.join();
+                        Pair<Boolean,Integer> ret =addToActive.getReturnResult();
+
+                        if (ret.second != 0) {
+                            Toast.makeText(getApplicationContext(), Error.getErrorMessage(ret.second), Toast.LENGTH_SHORT).show();
+                        } else {
+                            //TODO shit pants if fekin worked
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else {
+                    ThreadRemoveFromActive removeFromActive = new ThreadRemoveFromActive(event.eventID,
+                            MainActivity.user.emailAddress,isPub);
+                    Thread t1 = new Thread(removeFromActive);
+                    t1.start();
+                    try {
+                        t1.join();
+                        Pair<Boolean,Integer> ret =removeFromActive.getReturnResult();
+
+                        if (ret.second != 0) {
+                            Toast.makeText(getApplicationContext(), Error.getErrorMessage(ret.second), Toast.LENGTH_SHORT).show();
+                        } else {
+                            //TODO shit pants if fekin worked
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
             // Get the transition details as a String.
 
 
@@ -137,7 +139,6 @@ public class GeofenceTransitionsIntentService extends IntentService
             // Send notification and log the transition details.
 
             sendNotification(geofenceTransitionDetails);
-            Toast.makeText(this,"afiowe",Toast.LENGTH_LONG).show();
             Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.

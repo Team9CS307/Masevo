@@ -170,6 +170,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
 
         Bundle bundle = new Bundle();
         Event event =  null;
+
         // this event; GET data about event that was chosen
         bundle.putSerializable("event", event);
         mapFragment.setArguments(bundle);

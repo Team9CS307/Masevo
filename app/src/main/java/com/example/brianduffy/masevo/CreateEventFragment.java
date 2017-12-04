@@ -53,7 +53,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     RotateDrawable rotateDrawable;
     TextView start_text;
     TextView end_text;
-    int PLACE_PICKER_REQUEST = 1;
+    int PLACE_PICKER_REQUEST = 5;
     float latitude;
     float longitude;
     Switch eventSwitch;
@@ -212,8 +212,9 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     Thread thread = new Thread(threadCreateEvent);
                     thread.start();
                     try {
-                        Pair<? extends Event, Integer> ret1 = threadCreateEvent.getReturnResult();
                         thread.join();
+                        Pair<? extends Event, Integer> ret1 = threadCreateEvent.getReturnResult();
+
                         if (ret1.second != 0) {
                             Toast.makeText(getContext(), new com.example.brianduffy.masevo.Error()
                                     .getErrorMessage(ret1.second), Toast.LENGTH_SHORT).show();

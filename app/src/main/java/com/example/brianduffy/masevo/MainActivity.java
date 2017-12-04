@@ -93,13 +93,14 @@ public class MainActivity extends AppCompatActivity
     private Location mCurrentLocation;
     static ArrayList<Integer> geoIDs;
     private ArrayList<Geofence> mTriggeredGeofences;
+    AsyncTask<String, Integer, Pair<ArrayList<Event>, ArrayList<Users>>> asyncTask;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (LoginActivity.emailAddress == null) {
-            LoginActivity.emailAddress = "bduffy2019@gmail.com";
+            LoginActivity.emailAddress = "bduffy2019";
         }
 
         user = new User(LoginActivity.emailAddress, 0.0f, 0.0f, new ArrayList<Integer>(), new ArrayList<Integer>());
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mapevents = MapofEventsFragment.newInstance();
+        //mapevents = MapofEventsFragment.newInstance();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        AsyncTask<String, Integer, Pair<ArrayList<Event>, ArrayList<Users>>> asyncTask = new TaskGetUserEvents().execute(MainActivity.user.emailAddress);
+        asyncTask = new TaskGetUserEvents().execute(MainActivity.user.emailAddress);
         try {
             MainActivity.user.myevents = asyncTask.get().first;
             MainActivity.eventusers = asyncTask.get().second;
@@ -146,17 +147,6 @@ public class MainActivity extends AppCompatActivity
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
-        /*Pair<ArrayList<Event>, ArrayList<Users>> ret1 = getUserEvents.getReturnResult();
-        if (ret1 != null) {
-            if (ret1.first == null) {
-                //error
-                Toast.makeText(this, "Failed to get your events!", Toast.LENGTH_SHORT).show();
-
-            } else {
-                MainActivity.user.myevents.addAll(ret1.first);
-                MainActivity.eventusers.addAll(ret1.second);
-            }
-        }*/
 
 
         // show the create event fragment on start up
@@ -201,6 +191,7 @@ public class MainActivity extends AppCompatActivity
 
         startLocationUpdates();
 
+        asyncTask.cancel(true);
     }
 
 
@@ -596,6 +587,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() { // TODO FIGURE out what we are doing with file io
         super.onPause();
+
         stopLocationUpdates();
 
         File f = new File(getFilesDir(), save_loc);

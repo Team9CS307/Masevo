@@ -51,6 +51,7 @@ public class ThreadJoinEvent implements Runnable {
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
         }
+
         query = query.substring(0, query.length() - 1);
         final String fQuery = query;
         try {
