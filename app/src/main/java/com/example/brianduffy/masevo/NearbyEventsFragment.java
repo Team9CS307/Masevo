@@ -16,7 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadGetEvents;
 import com.example.chambe41.masevo.ThreadJoinEvent;
+
+import java.util.ArrayList;
 
 
 /**
@@ -26,6 +29,7 @@ import com.example.chambe41.masevo.ThreadJoinEvent;
 public class NearbyEventsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private ListView listview;
     private Event event;
+    ArrayList<Event> events = new ArrayList<>();
     private SwipeRefreshLayout swipe;
 
     @Nullable
@@ -39,13 +43,34 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
           Specifying Application Context in Fragment => getActivity() */
         listview = (ListView) v.findViewById(R.id.listview);
 
+        ThreadGetEvents getEvents = new ThreadGetEvents();
+        Thread t = new Thread(getEvents);
+        t.start();
+        try {
+            t.join();
+            Pair<ArrayList<? extends Event>,Integer> ret = getEvents.getReturnResult();
+
+            if (ret.second != 0) {
+                Toast.makeText(getContext(),Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+            } else {
+                for (Event e : ret.first) {
+                    if (e instanceof PublicEvent) {
+                        events.add(e);
+                    }
+
+                }
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //System.out.println(Arrays.toString(mockeventlist.toArray()));
 
         listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.nearby));
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {
-                event = MainActivity.user.nearby.get(itemPosition);
+                event = events.get(itemPosition);
                 FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 NearbyMapFragment mapFragment = new NearbyMapFragment();
@@ -68,7 +93,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
           Specifying Application Context in Fragment => getActivity() */
         swipe = v.findViewById(R.id.swiperef);
         swipe.setOnRefreshListener(this);
-
+            updateList();
         return v;
     }
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -88,14 +113,14 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
             case R.id.join:
                  // add user to event as a regular attendee and set thier status as active
 
-                Event toJoin = MainActivity.user.nearby.get((info).position);
+                Event toJoin = events.get((info).position);
                 Boolean isPub;
                 if (toJoin instanceof PublicEvent) {
                     isPub = true;
                 }else {
                     isPub = false;
                 }
-                ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(event.eventID,MainActivity.user.emailAddress,isPub);
+                ThreadJoinEvent threadJoinEvent = new ThreadJoinEvent(toJoin.eventID,MainActivity.user.emailAddress,isPub);
                 Thread thread = new Thread(threadJoinEvent);
                 thread.start();
                 try {
@@ -113,7 +138,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
 
                     MainActivity.user.myevents.add(toJoin);
 
-                    MainActivity.user.nearby.remove((info).position);
+                    events.remove((info).position);
                 }
                 updateList();
 
@@ -129,7 +154,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
     }
 
     public void updateList() {
-        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.nearby));
+        listview.setAdapter(new ListAdapter(this.getContext(),events));
         swipe.setRefreshing(false);
 
 

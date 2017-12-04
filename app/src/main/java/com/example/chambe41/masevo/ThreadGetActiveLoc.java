@@ -30,9 +30,11 @@ public class ThreadGetActiveLoc implements Runnable {
     String SenderEmail;
     Boolean isPub;
     Integer errno;
+    ArrayList<String> names = new ArrayList<>();
+
     int userPriv;
     ArrayList<Location> locations = new ArrayList<>();
-    Pair<ArrayList<Location>,Integer> returnResult;
+    Pair<ArrayList<Location>,ArrayList<String>> returnResult;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
     String TargetEmail;
     public ThreadGetActiveLoc(int eventID, String SenderEmail,Boolean isPub) {
@@ -48,7 +50,6 @@ public class ThreadGetActiveLoc implements Runnable {
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("SenderEmail",SenderEmail);
         contentValues.put("isPub",isPub);
 
 
@@ -106,14 +107,15 @@ public class ThreadGetActiveLoc implements Runnable {
                 if (count == 0)  {
                     errno = Integer.parseInt(trtd[0][0]);
                 } else {
-
                     for (int i = 0; i < trtd.length; i++) {
                         Location loc = new Location(0,0);
                         for (int j = 0; j < trtd[i].length; j++) {
                             if (j == 0) {
                                 loc.latitude = Float.parseFloat(trtd[i][j]);
-                            } else {
+                            } else if (j == 1){
                                 loc.longitude = Float.parseFloat(trtd[i][j]);
+                            } else {
+                                names.add(trtd[i][j]);
                             }
                         }
                         locations.add(loc);
@@ -122,7 +124,7 @@ public class ThreadGetActiveLoc implements Runnable {
                 count++;
             }
 
-            returnResult = new Pair<>(locations,errno);
+            returnResult = new Pair<>(locations,names);
 
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -134,7 +136,7 @@ public class ThreadGetActiveLoc implements Runnable {
 
 
     }
-    public Pair<ArrayList<Location>, Integer> getReturnResult() {
+    public Pair<ArrayList<Location>, ArrayList<String>> getReturnResult() {
         return returnResult;
     }
 }

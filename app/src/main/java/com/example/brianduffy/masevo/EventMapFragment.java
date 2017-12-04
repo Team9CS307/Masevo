@@ -108,19 +108,26 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         mapFragment.getMapAsync(this);
         userList = view.findViewById(R.id.userview);
         //userList.setOnItemClickListener(this);
-         pos = 0;
-        for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
-            if (event.eventID == MainActivity.user.myevents.get(i).eventID) {
-                pos = i;
-                break;
+         Boolean isPub = false;
+        if (event instanceof PublicEvent) {
+            isPub = true;
+        }
+       ThreadGetActiveLoc getActiveLoc = new ThreadGetActiveLoc(event.eventID,MainActivity.user.emailAddress,isPub);
+        Thread t = new Thread(getActiveLoc);
+        t.start();
+        try {
+            t.join();
+            Pair<ArrayList<Location>,ArrayList<String>> ret = getActiveLoc.getReturnResult();
+
+            if (ret == null) {
+                Toast.makeText(getContext(),"unable to connect to server",Toast.LENGTH_SHORT).show();
+            } else {
+                userlisting.addAll(ret.second);
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-
-        Users eventUsers = MainActivity.eventusers.get(pos);
-        for (Map.Entry<String, PermissionActivePair> entry : eventUsers.userPerm.entrySet()) {
-            userlisting.add(entry.getKey());
-        }
         userList.setAdapter(new UserListAdapter(this.getContext(),userlisting));
         swipe = view.findViewById(R.id.swiperef);
         swipe.setOnRefreshListener(this);
@@ -221,7 +228,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
                 return true;
             case R.id.kick:
                 ThreadRemoveUser removeUser = new ThreadRemoveUser(event.eventID,MainActivity.user.emailAddress,
-                        users.get((info).position).emailAddress,isPub);
+                       userlisting.get((info).position),isPub);
                 Thread t3 = new Thread(removeUser);
                 t3.start();
                 try {
@@ -234,8 +241,6 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
                     } else {
                         //TODO do stuff
-                        MainActivity.eventusers.get(pos).
-                                userPerm.remove(users.get((info).position).emailAddress);
                         userlisting.remove((info).position);
 
 
@@ -250,7 +255,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
             case R.id.makeuser:
 
                 ThreadMakeUser makeUser = new ThreadMakeUser(event.eventID,MainActivity.user.emailAddress,
-                        users.get((info).position).emailAddress,isPub);
+                        userlisting.get((info).position),isPub);
                 Thread thread1 = new Thread(makeUser);
                 thread1.start();
                 try {
@@ -269,7 +274,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
                 return true;
             case R.id.makehost:
                 ThreadMakeHost makeHost = new ThreadMakeHost(event.eventID,MainActivity.user.emailAddress,
-                        users.get((info).position).emailAddress,isPub);
+                        userlisting.get((info).position),isPub);
                 Thread thread2 = new Thread(makeHost);
                 thread2.start();
                 try {
@@ -288,7 +293,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
                 return true;
             case R.id.makeowner:
                 ThreadMakeOwner makeOwner = new ThreadMakeOwner(event.eventID,MainActivity.user.emailAddress,
-                        users.get((info).position).emailAddress,isPub);
+                        userlisting.get((info).position),isPub);
                 Thread thread3 = new Thread(makeOwner);
                 thread3.start();
                 try {
@@ -341,13 +346,15 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         thread.start();
         try {
             thread.join();
-            Pair<ArrayList<Location>,Integer> ret = getActiveLoc.getReturnResult();
+            Pair<ArrayList<Location>,ArrayList<String>> ret = getActiveLoc.getReturnResult();
 
-            if (ret.second != 0) {
-                Toast.makeText(getContext(),Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+            if (ret.second == null) {
+                Toast.makeText(getContext(),"Failed to connect to server",Toast.LENGTH_SHORT).show();
             } else {
                 userlocs.clear();
                 userlocs.addAll(ret.first);
+                userlisting.clear();
+                userlisting.addAll(ret.second);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -377,22 +384,6 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
         // on swipe refresh, display the users on map
         displayUsers();
-
-        ThreadGetUserEvents getUserEvents = new ThreadGetUserEvents(MainActivity.user.emailAddress);
-        Thread thread = new Thread(getUserEvents);
-        thread.start();
-        try {
-            thread.join();
-            Pair<ArrayList<Event>,ArrayList<Users>> ret = getUserEvents.getReturnResult();
-            if (ret == null) {
-                Toast.makeText(getContext(),"Unable to connect to server!",Toast.LENGTH_SHORT).show();
-            } else {
-                MainActivity.eventusers = ret.second;
-                MainActivity.user.myevents = ret.first;
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
 
 

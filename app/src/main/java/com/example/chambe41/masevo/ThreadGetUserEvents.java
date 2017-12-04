@@ -163,11 +163,13 @@ public class ThreadGetUserEvents implements Runnable {
                         PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
                                 Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
                                 Float.parseFloat(aTrtd[7]), aTrtd[8]);
+                        p.eventID = Integer.parseInt(aTrtd[0]);
                         events.add(p);
                     } else {
                         PrivateEvent p = new PrivateEvent(aTrtd[1], aTrtd[2], d3, d4,
                                 Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
                                 Float.parseFloat(aTrtd[7]), aTrtd[8]);
+                                p.eventID = Integer.parseInt(aTrtd[0]);
                         events.add(p);
                     }
                     users.add((Users)deserialize(parseHexBinary(aTrtd[8])));
