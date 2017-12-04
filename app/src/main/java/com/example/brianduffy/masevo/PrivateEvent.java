@@ -18,6 +18,23 @@ public class PrivateEvent extends Event {
     public PrivateEvent() {
 
     }
+    public PrivateEvent(String eventName, String eventDesc, Date startTime, Date endTime,
+                        float latitude, float longitude, float radius, String creatorEmail, int eventID) {
+        this.startDate = startTime;
+        this.endDate = endTime;
+        this.location = new Location(latitude, longitude);
+        this.eventDesc = eventDesc;
+        this.eventName = eventName;
+        this.radius = radius;
+        this.eventID = eventID;
+
+        this.hostList = new HashSet<>();
+        this.hostList.add(creatorEmail);
+        this.attendeeList = new HashSet<>();
+        this.attendeeList.add(creatorEmail);
+        this.activeList = new HashSet<>();
+        this.emailToDisplay = new HashMap<>();
+    }
 
     public PrivateEvent(String eventName, String eventDesc, Date startTime, Date endTime,
                         float latitude, float longitude, float radius, String creatorEmail) {
