@@ -32,6 +32,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     ListView listview;
     SwipeRefreshLayout swipe;
     public static Event event;
+    AsyncTask<String, Integer, Pair<ArrayList<Event>, ArrayList<Users>>> asyncTask;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
@@ -41,6 +42,15 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
         View v = inflater.inflate(R.layout.fragment_my_events,container,false);
          listview = v.findViewById(R.id.listview);
 
+        asyncTask = new TaskGetUserEvents().execute(MainActivity.user.emailAddress);
+        try {
+            MainActivity.user.myevents = asyncTask.get().first;
+            MainActivity.eventusers = asyncTask.get().second;
+        } catch (ExecutionException ee) {
+            ee.printStackTrace();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
 
         listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.myevents));
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

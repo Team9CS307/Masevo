@@ -71,7 +71,7 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
         }
         //System.out.println(Arrays.toString(mockeventlist.toArray()));
 
-        listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.nearby));
+        listview.setAdapter(new ListAdapter(this.getContext(), events));
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
             {

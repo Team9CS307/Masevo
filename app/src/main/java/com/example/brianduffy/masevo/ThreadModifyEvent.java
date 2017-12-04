@@ -132,10 +132,10 @@ public class ThreadModifyEvent implements Runnable {
             }
             if (isPub) {
                 returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,startDate,endDate,latitude,
-                        longitude,radius,hostEmail),0);
+                        longitude,radius,hostEmail,eventID),0);
             }else {
                 returnResult =new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,startDate,endDate,latitude,
-                        longitude,radius,hostEmail),0);
+                        longitude,radius,hostEmail,eventID),0);
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();

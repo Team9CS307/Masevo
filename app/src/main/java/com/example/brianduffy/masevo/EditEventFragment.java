@@ -221,7 +221,7 @@ Switch.OnCheckedChangeListener{
                     } else {
 
                         Event temp = new PublicEvent(eventName,eventDesc,jud1,jud2,
-                                latitude,longitude,event.radius,event.hostEmail);
+                                latitude,longitude,event.radius,event.hostEmail,event.eventID);
 
                         //Server call
                         ThreadModifyEvent modifyEvent = new ThreadModifyEvent(event.eventID,temp.eventName,temp.eventDesc,
@@ -289,7 +289,7 @@ Switch.OnCheckedChangeListener{
                         Toast.makeText(getContext(),"Nothing has been changed...",Toast.LENGTH_LONG).show();
                     } else {
                         Event temp = new PrivateEvent(eventName,eventDesc,jud1,jud2,
-                                latitude,longitude,event.radius,event.hostEmail);
+                                latitude,longitude,event.radius,event.hostEmail,event.eventID);
 
                         ThreadModifyEvent modifyEvent = new ThreadModifyEvent(event.eventID,temp.eventName,temp.eventDesc,
                                 temp.startDate,temp.endDate,temp.location.latitude,temp.location.longitude,temp.radius,event.hostEmail,eventType);
@@ -382,7 +382,8 @@ Switch.OnCheckedChangeListener{
                 !start.equals(event.startDate) || !end.equals(event.endDate) ||
                 lat != event.location.latitude ||  lon != event.location.longitude ||
                 type && event instanceof PrivateEvent || !type && event instanceof PublicEvent) {
-                event.modifyEvent(event.eventID,eventname,desc,start,end,lat,lon,event.radius, event.hostEmail);
+
+                //event.modifyEvent(event.eventID,eventname,desc,start,end,lat,lon,event.radius, event.hostEmail);
 
             return true;
         }

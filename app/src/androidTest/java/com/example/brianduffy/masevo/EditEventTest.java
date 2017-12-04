@@ -70,7 +70,7 @@ public class EditEventTest {
     @Test
     public void editEventSuccess() {
 
-        onView(withId(R.id.header)).perform(longClick());
+        onView(withText("event name6")).perform(longClick());
         onView(withText("Edit Event")).perform(click());
         onView(withId(R.id.event_name)).check(matches(withText("event name6")));
         onView(withId(R.id.event_desc)).check(matches(withText("description6")));
