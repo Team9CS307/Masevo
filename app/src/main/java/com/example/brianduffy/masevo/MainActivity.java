@@ -135,24 +135,24 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        ThreadGetUserEvents getUserEvents = new ThreadGetUserEvents(MainActivity.user.emailAddress);
-//        Thread thread = new Thread(getUserEvents);
-//        thread.start();
-//        try {
-//            thread.join();
-//            Pair<ArrayList<Event>,ArrayList<Users>> ret1 =getUserEvents.getReturnResult();
-//            if (ret1.first == null) {
-//                //error
-//                Toast.makeText(this,"Failed to get your events!",Toast.LENGTH_SHORT).show();
-//
-//            } else {
-//                MainActivity.user.myevents.addAll(ret1.first);
-                   // MainActivity.eventusers.addAll(ret1.second);
-//            }
-//
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        ThreadGetUserEvents getUserEvents = new ThreadGetUserEvents(MainActivity.user.emailAddress);
+        Thread thread = new Thread(getUserEvents);
+        thread.start();
+        try {
+            thread.join();
+            Pair<ArrayList<Event>,ArrayList<Users>> ret1 =getUserEvents.getReturnResult();
+            if (ret1.first == null) {
+                //error
+                Toast.makeText(this,"Failed to get your events!",Toast.LENGTH_SHORT).show();
+
+            } else {
+                MainActivity.user.myevents.addAll(ret1.first);
+                    MainActivity.eventusers.addAll(ret1.second);
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
         // show the create event fragment on start up
@@ -238,23 +238,23 @@ public class MainActivity extends AppCompatActivity
     }
     public void onLocationChanged(Location location) {
 
-//        ThreadUpdateLocation updateLocation = new ThreadUpdateLocation(MainActivity.user.emailAddress,
-//                MainActivity.user.myLocation.latitude,MainActivity.user.myLocation.longitude);
-//        Thread t = new Thread(updateLocation);
-//        t.start();
-//        try {
-//            t.join();
-//            Pair<com.example.brianduffy.masevo.Location,Integer> ret = updateLocation.getReturnResult();
-//
-//            if (ret.second !=0) {
-//                Toast.makeText(this,Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
-//            } else {
-//                MainActivity.user.myLocation = new com.example.brianduffy.masevo.Location(
-//                        (float)location.getLatitude(),(float)location.getLongitude());
-//            }
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        ThreadUpdateLocation updateLocation = new ThreadUpdateLocation(MainActivity.user.emailAddress,
+                MainActivity.user.myLocation.latitude,MainActivity.user.myLocation.longitude);
+        Thread t = new Thread(updateLocation);
+        t.start();
+        try {
+            t.join();
+            Pair<Boolean,Integer> ret = updateLocation.getReturnResult();
+
+            if (ret.second !=0) {
+                Toast.makeText(this,Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+            } else {
+                MainActivity.user.myLocation = new com.example.brianduffy.masevo.Location(
+                        (float)location.getLatitude(),(float)location.getLongitude());
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         //************************** DEBUG *****************************
         Toast.makeText(this,"Lat: " + location.getLatitude() +

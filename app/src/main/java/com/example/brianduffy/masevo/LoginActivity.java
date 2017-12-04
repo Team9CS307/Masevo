@@ -14,6 +14,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -42,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements
     static String emailAddress;
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9004;
-
+    ProgressBar progressBar;
     private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
@@ -299,6 +301,8 @@ public class LoginActivity extends AppCompatActivity implements
         mStatusTextView.setText(getString(R.string.signed_in_fmt,emailAddress));
 
         if (signedIn) {
+
+
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
             Intent main = new Intent(this,MainActivity.class);

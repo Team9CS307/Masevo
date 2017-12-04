@@ -15,11 +15,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.chambe41.masevo.ThreadGetEvents;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -95,6 +97,22 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         // Get Location Manager and check for GPS & Network location services
+        ThreadGetEvents getEvents = new ThreadGetEvents();
+        Thread t = new Thread(getEvents);
+        t.start();
+        try {
+            t.join();
+            Pair<ArrayList<? extends Event>,Integer> ret = getEvents.getReturnResult();
+
+            if (ret.second != 0) {
+                Toast.makeText(getContext(),Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
+
+            }  else {
+                testList.addAll(ret.first);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }
@@ -128,18 +146,18 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
         // used to mark events from the nearby arraylist of the given user. This will be defined
         // populated in Oncreate of the MainActivity
         //TODO
-        for (int i = 0; i < MainActivity.user.myevents.size(); i++) {
+        for (int i = 0; i < testList.size(); i++) {
 
             // only show public events that are nearby
-            if (MainActivity.user.myevents.get(i) instanceof PublicEvent) {
+            if (testList.get(i) instanceof PublicEvent) {
 
                 // get the lat and lon
-                LatLng eventloc = new LatLng(MainActivity.user.myevents.get(i).location.latitude,
-                        MainActivity.user.myevents.get(i).location.longitude);
+                LatLng eventloc = new LatLng(testList.get(i).location.latitude,
+                        testList.get(i).location.longitude);
 
                 // mark their location on the google map
                 googleMap.addMarker(new MarkerOptions().position(eventloc)
-                        .title(MainActivity.user.myevents.get(i).eventName));
+                        .title(testList.get(i).eventName));
             }
         }
     }
@@ -190,7 +208,7 @@ public class MapofEventsFragment extends Fragment implements OnMapReadyCallback,
         // inexact. You may not receive updates at all if no location sources are available, or
         // you may receive them slower than requested. You may also receive updates faster than
         // requested if other applications are requesting location at a faster interval.
-        mLocationRequest.setInterval(10000);
+        mLocationRequest.setInterval(20000);
 
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.

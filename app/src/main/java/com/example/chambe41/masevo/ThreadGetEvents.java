@@ -82,6 +82,7 @@ public class ThreadGetEvents implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
+            int count = 0;
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -91,8 +92,14 @@ public class ThreadGetEvents implements Runnable {
                     for (int j = 0; j < tds.size(); j++) {
                         trtd[i][j] = tds.get(j).text();
                     }
-                    errno = Integer.parseInt(trtd[0][0]);
+                    if (count == 0) {
+                        errno = Integer.parseInt(trtd[0][0]);
+                    }
 
+                }
+                if (count == 0) {
+                    count++;
+                    continue;
                 }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");

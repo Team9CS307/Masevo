@@ -97,6 +97,8 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
                             Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
                                     .getErrorMessage(ret.second),Toast.LENGTH_LONG).show();
                         } else {
+
+
                             //TODO implement success
                             FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
                             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

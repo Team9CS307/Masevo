@@ -141,7 +141,10 @@ public class ThreadGetUserEvents implements Runnable {
                         errno = Integer.parseInt(trtd[0][0]);
                     }
                 }
-
+                if (count == 0) {
+                    count++;
+                    continue;
+                }
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
                 for (String[] aTrtd : trtd) {
                     java.util.Date d1, d2;
@@ -167,7 +170,7 @@ public class ThreadGetUserEvents implements Runnable {
                                 Float.parseFloat(aTrtd[7]), aTrtd[8]);
                         events.add(p);
                     }
-                    users.add((Users)deserialize(parseHexBinary(aTrtd[9])));
+                    users.add((Users)deserialize(parseHexBinary(aTrtd[8])));
                 }
                 count++;
             }

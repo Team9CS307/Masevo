@@ -106,12 +106,13 @@ public class ThreadUpdateLocation implements Runnable {
 
                     if (count == 0) {
                         errno = Integer.parseInt(trtd[0][0]);
-                         if (errno!= 0){
+
+                    } else {
+                        if (errno!= 0){
                             returnResult = new Pair<>(false, errno);
                         } else {
-                             returnResult = new Pair<>(true,errno);
-                         }
-
+                            returnResult = new Pair<>(true,errno);
+                        }
                     }
                     count++;
             }
