@@ -1,8 +1,12 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
+import com.example.brianduffy.masevo.Event;
+import com.example.brianduffy.masevo.PrivateEvent;
 import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
@@ -18,40 +22,61 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 12/1/2017.
+ * Created by Brian Duffy on 11/30/2017.
  */
 
-public class ThreadMakeOwner implements Runnable {
-    String SenderEmail;
-    String targetEmail;
+public class ThreadModifyEvent implements Runnable {
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
     int eventID;
+    String eventName;
+    String eventDesc;
+    Date startDate;
+    Date endDate;
+    float latitude;
+    float longitude;
+    float radius;
     Boolean isPub;
-    int priv;
-    private Integer errno;
+    String hostEmail;
+    Integer errno;
+    Pair<Event,Integer> returnResult;
 
-    public ThreadMakeOwner(int eventID,String senderEmail, String targetEmail, Boolean isPub) {
-        SenderEmail = senderEmail;
-        this.targetEmail = targetEmail;
+    public ThreadModifyEvent(int eventID, String eventName, String eventDesc, Date startDate, Date endDate,
+                             float latitude, float longitude, float radius, String hostEmail, Boolean isPub) {
         this.eventID = eventID;
-        this.priv = priv;
+        this.eventName = eventName;
+        this.eventDesc = eventDesc;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.isPub = isPub;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.radius = radius;
+        this.hostEmail = hostEmail;
     }
 
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    private Pair<Boolean, Integer> returnResult;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "makeOwner";
+        String methodName = "modifyEvent";
+        String emailTrim = hostEmail;
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("TargetEmail",targetEmail);
+        contentValues.put("Name",eventName);
+        contentValues.put("Description",eventDesc);
+        contentValues.put("StartTime",Long.toString(startDate.getTime()));
+        contentValues.put("EndTime",Long.toString(endDate.getTime()));
+        contentValues.put("Latitude",Float.toString(latitude));
+        contentValues.put("Longitude",Float.toString(longitude));
+        contentValues.put("Radius",Float.toString(radius));
+        contentValues.put("Host",emailTrim);
         contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
@@ -84,12 +109,11 @@ public class ThreadMakeOwner implements Runnable {
                 String output;
                 while((output = br.readLine()) != null)
                 {
-
-
                     result += output;
                 }
                 System.out.println("Response message: " + result);
             }
+
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
@@ -105,11 +129,13 @@ public class ThreadMakeOwner implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
-                if (errno != 0) {
-                    returnResult = new Pair<>(false,errno);
-                }else {
-                    returnResult = new Pair<>(true,errno);
-                }
+            }
+            if (isPub) {
+                returnResult = new Pair<Event,Integer>(new PublicEvent(eventName,eventDesc,startDate,endDate,latitude,
+                        longitude,radius,hostEmail),0);
+            }else {
+                returnResult =new Pair<Event,Integer>(new PrivateEvent(eventName,eventDesc,startDate,endDate,latitude,
+                        longitude,radius,hostEmail),0);
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -119,9 +145,8 @@ public class ThreadMakeOwner implements Runnable {
             return;
         }
 
-
     }
-    public Pair<Boolean, Integer> getReturnResult() {
+    public Pair<Event, Integer> getReturnResult() {
         return returnResult;
     }
 }

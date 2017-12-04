@@ -1,9 +1,9 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
-
-import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,39 +18,35 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
  * Created by Brian Duffy on 11/30/2017.
  */
 
-public class ThreadAddUser implements Runnable {
+public class ThreadJoinEvent implements Runnable {
     int eventID;
     String SenderEmail;
-    Boolean isPublic;
     Integer errno;
-    int userPriv;
     Pair<Boolean,Integer> returnResult;
+    Boolean isPub;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    String TargetEmail;
-    public ThreadAddUser(int eventID, String SenderEmail, String TargetEmail, Boolean isPublic) {
+
+    public ThreadJoinEvent(int eventID, String SenderEmail, Boolean isPub) {
         this.eventID = eventID;
         this.SenderEmail = SenderEmail;
-        this.isPublic = isPublic;
-        this.TargetEmail = TargetEmail;
-    }
+        this.isPub = isPub;
 
+    }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "addUser";
+        String methodName = "joinEvent";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
-        contentValues.put("ID",Integer.toString(eventID));
+        contentValues.put("ID",eventID);
         contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("TargetEmail",TargetEmail);
-        contentValues.put("isPub",isPublic);
-
+        contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -89,7 +85,6 @@ public class ThreadAddUser implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
-            //TODO do this
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -101,12 +96,12 @@ public class ThreadAddUser implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
-
-                returnResult = null;
+                if (errno != 0) {
+                    returnResult = new Pair<>(false,errno);
+                }else {
+                    returnResult = new Pair<>(true,errno);
+                }
             }
-
-
-
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
@@ -114,12 +109,14 @@ public class ThreadAddUser implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        // TODO will change
-        returnResult = new Pair<>(true,errno);
+
+        //TODO insert a user from the user table to the eventUser tables
+
 
 
     }
     public Pair<Boolean, Integer> getReturnResult() {
+
         return returnResult;
     }
 }

@@ -1,9 +1,11 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
-import com.example.brianduffy.masevo.PublicEvent;
+import com.example.brianduffy.masevo.*;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,33 +27,35 @@ import java.util.Map;
  * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadMakeUser implements Runnable {
-    String SenderEmail;
-    String targetEmail;
+public class ThreadGetActiveLoc implements Runnable {
     int eventID;
+    String SenderEmail;
     Boolean isPub;
-    int priv;
-    private Integer errno;
+    Integer errno;
+    ArrayList<String> names = new ArrayList<>();
 
-    public ThreadMakeUser(int eventID,String senderEmail, String targetEmail, Boolean isPub) {
-        SenderEmail = senderEmail;
-        this.targetEmail = targetEmail;
+    int userPriv;
+    ArrayList<Location> locations = new ArrayList<>();
+    Pair<ArrayList<Location>,ArrayList<String>> returnResult;
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+    String TargetEmail;
+    public ThreadGetActiveLoc(int eventID, String SenderEmail,Boolean isPub) {
         this.eventID = eventID;
+        this.SenderEmail = SenderEmail;
         this.isPub = isPub;
+
     }
 
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    private Pair<Boolean, Integer> returnResult;
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "makeUser";
+        String methodName = "getActiveLoc";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("TargetEmail",targetEmail);
         contentValues.put("isPub",isPub);
+
+
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -91,6 +95,7 @@ public class ThreadMakeUser implements Runnable {
             Elements tables = doc.select("table");
             //This will only run once, fool
             //TODO do this
+            int count = 0;
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -101,13 +106,29 @@ public class ThreadMakeUser implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
-                errno = Integer.parseInt(trtd[0][0]);
-                if (errno != 0) {
-                    returnResult = new Pair<>(false,errno);
-                }else {
-                    returnResult = new Pair<>(true,errno);
+
+                if (count == 0)  {
+                    errno = Integer.parseInt(trtd[0][0]);
+                } else {
+                    for (int i = 0; i < trtd.length; i++) {
+                        Location loc = new Location(0,0);
+                        for (int j = 0; j < trtd[i].length; j++) {
+                            if (j == 0) {
+                                loc.latitude = Float.parseFloat(trtd[i][j]);
+                            } else if (j == 1){
+                                loc.longitude = Float.parseFloat(trtd[i][j]);
+                            } else {
+                                names.add(trtd[i][j]);
+                            }
+                        }
+                        locations.add(loc);
+                    }
                 }
+                count++;
             }
+
+            returnResult = new Pair<>(locations,names);
+
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
@@ -118,7 +139,7 @@ public class ThreadMakeUser implements Runnable {
 
 
     }
-    public Pair<Boolean, Integer> getReturnResult() {
+    public Pair<ArrayList<Location>, ArrayList<String>> getReturnResult() {
         return returnResult;
     }
 }

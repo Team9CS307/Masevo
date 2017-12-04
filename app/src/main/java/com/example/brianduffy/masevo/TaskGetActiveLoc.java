@@ -1,52 +1,47 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 12/1/2017.
+ * Created by Josh on 12/4/2017.
  */
-
-public class ThreadRemoveFromActive implements Runnable {
-    String SenderEmail;
-    String targetEmail;
+/*
+public class TaskGetActiveLoc extends AsyncTask<String, Integer, > {
     int eventID;
+    String SenderEmail;
     Boolean isPub;
-    int priv;
-    private Integer errno;
+    Integer errno;
+    ArrayList<String> names = new ArrayList<>();
 
-    public ThreadRemoveFromActive(int eventID,String senderEmail, Boolean isPub) {
-        SenderEmail = senderEmail;
+    int userPriv;
+    ArrayList<Location> locations = new ArrayList<>();
+    Pair<ArrayList<Location>,ArrayList<String>> returnResult;
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+    String TargetEmail;
+    public ThreadGetActiveLoc(int eventID, String SenderEmail,Boolean isPub) {
         this.eventID = eventID;
+        this.SenderEmail = SenderEmail;
         this.isPub = isPub;
+
     }
 
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    private Pair<Boolean, Integer> returnResult;
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "removeFromActive";
+        String methodName = "getActiveLoc";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
-        contentValues.put("SenderEmail",SenderEmail);
         contentValues.put("isPub",isPub);
+
+
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -86,6 +81,7 @@ public class ThreadRemoveFromActive implements Runnable {
             Elements tables = doc.select("table");
             //This will only run once, fool
             //TODO do this
+            int count = 0;
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -96,14 +92,29 @@ public class ThreadRemoveFromActive implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
-                errno = Integer.parseInt(trtd[0][0]);
-                //TODO bool check
-                if (errno != 0) {
-                    returnResult = new Pair<>(false,errno);
-                }else {
-                    returnResult = new Pair<>(true,errno);
+
+                if (count == 0)  {
+                    errno = Integer.parseInt(trtd[0][0]);
+                } else {
+                    for (int i = 0; i < trtd.length; i++) {
+                        Location loc = new Location(0,0);
+                        for (int j = 0; j < trtd[i].length; j++) {
+                            if (j == 0) {
+                                loc.latitude = Float.parseFloat(trtd[i][j]);
+                            } else if (j == 1){
+                                loc.longitude = Float.parseFloat(trtd[i][j]);
+                            } else {
+                                names.add(trtd[i][j]);
+                            }
+                        }
+                        locations.add(loc);
+                    }
                 }
+                count++;
             }
+
+            returnResult = new Pair<>(locations,names);
+
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
@@ -114,8 +125,7 @@ public class ThreadRemoveFromActive implements Runnable {
 
 
     }
-    public Pair<Boolean, Integer> getReturnResult() {
+    public Pair<ArrayList<Location>, ArrayList<String>> getReturnResult() {
         return returnResult;
     }
-}
-
+}*/

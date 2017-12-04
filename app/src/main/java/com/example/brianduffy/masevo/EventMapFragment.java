@@ -2,19 +2,13 @@ package com.example.brianduffy.masevo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.*;
 import android.os.Bundle;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -23,19 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 
-import com.example.chambe41.masevo.ThreadBanUser;
-import com.example.chambe41.masevo.ThreadCreateEvent;
-import com.example.chambe41.masevo.ThreadGetActiveLoc;
-import com.example.chambe41.masevo.ThreadGetUserEvents;
-import com.example.chambe41.masevo.ThreadMakeHost;
-import com.example.chambe41.masevo.ThreadMakeOwner;
-import com.example.chambe41.masevo.ThreadMakeUser;
-import com.example.chambe41.masevo.ThreadRemoveUser;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
@@ -47,16 +32,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Brian Duffy on 10/26/2017.
@@ -116,8 +96,8 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
         Thread t = new Thread(getActiveLoc);
         t.start();
         try {
-            t.join();
             Pair<ArrayList<Location>,ArrayList<String>> ret = getActiveLoc.getReturnResult();
+            t.join();
 
             if (ret == null) {
                 Toast.makeText(getContext(),"unable to connect to server",Toast.LENGTH_SHORT).show();
@@ -373,8 +353,6 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
                     .radius(2)
                     .strokeColor(Color.GREEN));
         }
-
-
     }
 
     @Override

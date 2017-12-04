@@ -4,22 +4,6 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
-import com.example.chambe41.masevo.ThreadAddToActive;
-import com.example.chambe41.masevo.ThreadAddUser;
-import com.example.chambe41.masevo.ThreadBanUser;
-import com.example.chambe41.masevo.ThreadCreateEvent;
-import com.example.chambe41.masevo.ThreadDeleteEvent;
-import com.example.chambe41.masevo.ThreadGetEvents;
-import com.example.chambe41.masevo.ThreadGetUserEvents;
-import com.example.chambe41.masevo.ThreadJoinEvent;
-import com.example.chambe41.masevo.ThreadLeaveEvent;
-import com.example.chambe41.masevo.ThreadMakeHost;
-import com.example.chambe41.masevo.ThreadMakeOwner;
-import com.example.chambe41.masevo.ThreadMakeUser;
-import com.example.chambe41.masevo.ThreadModifyEvent;
-import com.example.chambe41.masevo.ThreadRemoveFromActive;
-import com.example.chambe41.masevo.ThreadRemoveUser;
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,13 +83,6 @@ public class PrivateEvent extends Event {
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();
-    }
-
-    @Override
-    public Pair<ArrayList<Event>, ArrayList<Users>> getMyEvents(String email) {
-        ThreadGetUserEvents myEvents = new ThreadGetUserEvents(email);
-        new Thread(myEvents).start();
-        return myEvents.getReturnResult();
     }
 
     @Override

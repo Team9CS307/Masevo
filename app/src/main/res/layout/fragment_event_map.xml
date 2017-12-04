@@ -2,6 +2,7 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     app:layout_constraintDimensionRatio="1:1"
@@ -9,10 +10,12 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="368dp"
+        android:layout_height="551dp"
         app:layout_constraintDimensionRatio="1:1"
-        tools:context=".MainActivity">
+        tools:context=".MainActivity"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/framelayout"
@@ -24,11 +27,13 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/eventmap"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
+                android:layout_width="368dp"
                 android:layout_height="0dp"
 
                 android:maxHeight="300dp"
-                tools:context="com.example.brianduffy.masevo.MainActivity" />
+                tools:context="com.example.brianduffy.masevo.MainActivity"
+                tools:layout_editor_absoluteY="25dp"
+                tools:layout_editor_absoluteX="8dp" />
         </android.support.constraint.ConstraintLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -16,9 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.chambe41.masevo.ThreadGetEvents;
-import com.example.chambe41.masevo.ThreadJoinEvent;
-
 import java.util.ArrayList;
 
 

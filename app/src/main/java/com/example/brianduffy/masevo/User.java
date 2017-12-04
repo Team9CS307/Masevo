@@ -2,8 +2,6 @@ package com.example.brianduffy.masevo;
 
 import android.util.Pair;
 
-import com.example.chambe41.masevo.ThreadUpdateLocation;
-
 import java.sql.Date;
 import java.util.ArrayList;
 

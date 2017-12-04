@@ -44,10 +44,12 @@
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
+             AIzaSyDTBz37g6bmL9I6GRSlPxd9I1o9QabNqJs
+             AIzaSyAVRDYc7U8GyI0nLfKVarTct4BpZQ69KeI
         -->
           <meta-data
               android:name="com.google.android.geo.API_KEY"
-              android:value="AIzaSyDTBz37g6bmL9I6GRSlPxd9I1o9QabNqJs" />
+              android:value="AIzaSyACa7eZoSjfg4xcAYHjDhqBNoBpvclrRVI" />
         <!--<meta-data-->
             <!--android:name="com.google.android.geo.API_KEY"-->
             <!--android:value="@string/google_maps_key" />-->
@@ -55,7 +57,6 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <service android:name=".GeofenceTransitionsIntentService" />
     </application>

@@ -1,11 +1,10 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
-import com.example.brianduffy.masevo.Event;
-import com.example.brianduffy.masevo.Location;
-import com.example.brianduffy.masevo.PrivateEvent;
 import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
@@ -21,43 +20,48 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 12/1/2017.
+ * Created by Gabriel on 11/30/2017.
  */
 
-public class ThreadUpdateLocation implements Runnable {
-    float latitude;
-    float longitude;
-    String email;
-    Integer errno;
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+public class ThreadLeaveEvent implements Runnable{
+    int eventID;
+    String senderEmail;
+    Boolean pub;
 
-    Pair<Boolean,Integer> returnResult;
-    public ThreadUpdateLocation(String email, float latitude, float longitude) {
-        this.email = email;
-        this.latitude = latitude;
-        this.longitude = longitude;
 
+    public ThreadLeaveEvent(int eventID, String senderEmail, Boolean pub) {
+        this.eventID = eventID;
+        this.senderEmail = senderEmail;
+        this.pub = pub;
     }
+    Integer errno;
+    //ArrayList<PublicEvent> pubevents = new ArrayList<>();
+    Pair<Boolean, Integer> returnResult;
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-
-        String methodName;
-        methodName = "updateLocation";
-
-
+        String methodName = "leaveEvent";
+        /*if (pub) {
+            methodName = "leavePublicEvent";
+        }
+        else {
+            methodName = "leavePrivateEvent";
+        }*/
         ContentValues contentValues = new ContentValues();
-        contentValues.put("method",methodName);
-       contentValues.put("SenderEmail",email);
-        contentValues.put("Latitude",Float.toString(latitude));
-        contentValues.put("Longitude",Float.toString(longitude));
-
-        //TODO create the actual event
-
+        contentValues.put("method", methodName);
+        contentValues.put("ID", Integer.toString(eventID));
+        contentValues.put("SenderEmail", senderEmail);
+        contentValues.put("isPub", pub);
         String query = "";
-        for (Map.Entry e: contentValues.valueSet()) {
+        for (Map.Entry<String, Object> e : contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
         }
         query = query.substring(0, query.length() - 1);
@@ -65,8 +69,8 @@ public class ThreadUpdateLocation implements Runnable {
         try {
             byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
-            URL url = new URL(server_url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
+            URL url = new URL("http://webapp-171031005244.azurewebsites.net");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setInstanceFollowRedirects(false);
             httpURLConnection.setRequestMethod("POST");
@@ -92,7 +96,6 @@ public class ThreadUpdateLocation implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
-            int count = 0;
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -103,35 +106,44 @@ public class ThreadUpdateLocation implements Runnable {
                         trtd[i][j] = tds.get(j).text();
                     }
                 }
+                errno = Integer.parseInt(trtd[0][0]);
+                if (errno == 0) {
+                    returnResult = new Pair<>(true, errno);
+                }
+                else {
+                    returnResult = new Pair<>(false, errno);
+                }
+               /* SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
+                for (String[] aTrtd : trtd) {
+                    java.util.Date d1, d2;
+                    Date d3, d4;
+                    try {
+                        d1 = sdf.parse(aTrtd[3]);
+                        d2 = sdf.parse(aTrtd[4]);
+                        d3 = new Date(d1.getTime());
+                        d4 = new Date(d2.getTime());
+                    } catch (ParseException pe) {
 
-                    if (count == 0) {
-                        errno = Integer.parseInt(trtd[0][0]);
-                        if (errno!= 0){
-                            returnResult = new Pair<>(false, errno);
-                        } else {
-                            returnResult = new Pair<>(true,errno);
-                        }
+                        returnResult = new Pair<>(false,new Pair<ArrayList<PublicEvent>, Integer>(null,1));
+                        return;
                     }
-                    count++;
+                    PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
+                            Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
+                            Float.parseFloat(aTrtd[7]), aTrtd[8]);
+                    pubevents.add(p);
+                }
+                returnResult = new Pair<>(true,new Pair<>(pubevents,0));*/
             }
-
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
-            return;
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            return;
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
         }
-
-        // maybe change
-
-
-
     }
 
     public Pair<Boolean, Integer> getReturnResult() {
-
         return returnResult;
     }
-
 }

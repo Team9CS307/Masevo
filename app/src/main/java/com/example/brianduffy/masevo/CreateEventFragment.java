@@ -1,48 +1,38 @@
 package com.example.brianduffy.masevo;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.chambe41.masevo.ThreadCreateEvent;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.GoogleApi;
-import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.GoogleMap;
 
 import java.lang.*;
-import java.lang.Error;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.concurrent.locks.Lock;
 
 import static android.app.Activity.RESULT_OK;
 import static android.widget.Toast.makeText;
@@ -53,8 +43,8 @@ import static com.example.brianduffy.masevo.MainActivity.mGoogleApiClient;
  * Created by Brian Duffy on 11/9/2017.
  */
 
-public class CreateEventFragment extends android.support.v4.app.Fragment implements  View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener{
+public class CreateEventFragment extends android.support.v4.app.Fragment implements View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener {
     TextView title_text;
     EditText title;
     TextView desc_text;
@@ -75,6 +65,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
     EditText eventradius;
     TextView eventradiustext;
     ProgressDialog progress;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,8 +74,9 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
           Specifying Application Context in Fragment => getActivity() */
         //returns the view
 
-        return inflater.inflate(R.layout.create_event_layout,container,false);
+        return inflater.inflate(R.layout.create_event_layout, container, false);
     }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //Initilize variables
@@ -104,7 +96,6 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         eventradiustext = getView().findViewById(R.id.radiustext);
 
 
-
         // Set onclick listeners to buttons
         eventSwitch.setOnCheckedChangeListener(this);
         start_time.setOnClickListener(this);
@@ -113,10 +104,10 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         createButton.setOnClickListener(this);
 
 
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_PICKER_REQUEST) { // Response from google Place Picker Activity
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this.getContext(), data); // Get place data
@@ -138,7 +129,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         switch (v.getId()) {
             case R.id.start_date: // startdate button id
                 DialogFragment timestart = new TimePickerFragment();
-                timestart.show(getActivity().getFragmentManager(),"timeSPicker"); // start Timepicker
+                timestart.show(getActivity().getFragmentManager(), "timeSPicker"); // start Timepicker
                 DialogFragment start = new DatePickerFragment();
                 start.show(getActivity().getFragmentManager(), "startPicker"); // start datepicker
 
@@ -148,14 +139,13 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 // then the datepicker is put on top. Once datepicker is done, timepicker moves to view.
 
                 DialogFragment timeend = new TimePickerFragment();
-                timeend.show(getActivity().getFragmentManager(),"timeEPicker"); //start timepicker
+                timeend.show(getActivity().getFragmentManager(), "timeEPicker"); //start timepicker
                 DialogFragment end = new DatePickerFragment();
                 end.show(getActivity().getFragmentManager(), "endPicker"); // start datepicker
                 break;
             case R.id.location_but: // pick location button id
 
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
                 try {
                     startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
 
@@ -175,9 +165,10 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                 float radius = 0;
                 try {
                     radius = Float.parseFloat(eventradius.getText().toString());
-
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
+                    Toast.makeText(getContext(),"Radius is invalid!",Toast.LENGTH_LONG).show();
+                    break;
                 }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
@@ -190,49 +181,42 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     jud2 = new Date(sdf.parse(end_text.getText().toString()).getTime());
                 } catch (ParseException e) {
                     e.printStackTrace();
-                }
-                //TODO comment out when espresso testing
-//                Calendar calendar = Calendar.getInstance();
-//                java.util.Date curr = calendar.getTime();
-//                if (!(curr.before(jud1) && curr.before(jud2) && jud1.before(jud2))) {
-//                    Toast.makeText(getContext(),"Date is invalid!",Toast.LENGTH_LONG).show();
-//                    break;
-//                }
-                int count = 0;
-                if (validateRadius(radius)) count++;
-                if (validateEventName(eventName)) count++;
-                if (validateEventDesc(eventDesc)) count++;
-                if (validateDateText(start_text.getText().toString(),true)) count++;
-                if (validateDateText(end_text.getText().toString(),false)) count++;
-                if (validateLocation(new Location(latitude,longitude))) count++;
-                else Toast.makeText(getContext(),"Please choose a location!",Toast.LENGTH_LONG).show();
-
-                if (count != 6) {
-                    Toast.makeText(getContext(),"Invalid input. Try again.",Toast.LENGTH_LONG).show();
-
+                    Toast.makeText(getContext(),"Date is invalid!",Toast.LENGTH_LONG).show();
                     break;
                 }
+                //TODO comment out when espresso testing
+                Calendar calendar = Calendar.getInstance();
+                java.util.Date curr = calendar.getTime();
+                if (!(curr.before(jud1) && curr.before(jud2) && jud1.before(jud2))) {
+                    Toast.makeText(getContext(),"Dates must be sequential and cannot start " +
+                            "immediately!",Toast.LENGTH_LONG).show();
+                    break;
+                }
+                if (!validateEventName(eventName)) break;
+                if (!validateEventDesc(eventDesc)) break;
+                if (!validateDateText(start_text.getText().toString(), true)) break;
+                if (!validateDateText(end_text.getText().toString(), false)) break;
+                if (!validateLocation(new Location(latitude, longitude))) break;
+                if (!validateRadius(radius)) break;
                 if (eventType) {
-                         // todo change the radius or something
+                    // todo change the radius or something
 
-                    PublicEvent pubEvent = new PublicEvent(eventName,eventDesc,jud1,jud2,
-                            latitude,longitude,radius,MainActivity.user.emailAddress);
+                    PublicEvent pubEvent = new PublicEvent(eventName, eventDesc, jud1, jud2,
+                            latitude, longitude, radius, MainActivity.user.emailAddress);
 
 
                     //Server call
 
-                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName,eventDesc,jud1,
-                            jud2,pubEvent.location,radius,pubEvent.eventID,MainActivity.user.emailAddress,true);
+                    ThreadCreateEvent threadCreateEvent = new ThreadCreateEvent(eventName, eventDesc, jud1,
+                            jud2, pubEvent.location, radius, pubEvent.eventID, MainActivity.user.emailAddress, true);
                     Thread thread = new Thread(threadCreateEvent);
                     thread.start();
                     try {
-
+                        Pair<? extends Event, Integer> ret1 = threadCreateEvent.getReturnResult();
                         thread.join();
-
-                        Pair<? extends Event,Integer> ret1 =threadCreateEvent.getReturnResult();
                         if (ret1.second != 0) {
-                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
-                                    .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), new com.example.brianduffy.masevo.Error()
+                                    .getErrorMessage(ret1.second), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
                             MainActivity.user.myevents.add(pubEvent);
@@ -263,8 +247,18 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                             // Create the geofence.
                             .build());
                     //TODO comment out for espresso testing
+                    if (ActivityCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
                     LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
-                            MainActivity.getGeofencingRequest(),mGeofenceRequestIntent);
+                            MainActivity.getGeofencingRequest(), mGeofenceRequestIntent);
 
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();
@@ -288,7 +282,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                         thread.join();
                         Pair<? extends Event,Integer> ret1 =threadCreateEvent.getReturnResult();
                         if (ret1.second != 0) {
-                            Toast.makeText(getContext(), com.example.brianduffy.masevo.Error
+                            Toast.makeText(getContext(), new com.example.brianduffy.masevo.Error()
                                     .getErrorMessage(ret1.second),Toast.LENGTH_SHORT).show();
                             return;
                         } else {
@@ -312,28 +306,35 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         }
     }
     private boolean validateRadius(float radius) {
-        if (radius < 10.0) {
-            eventradiustext.setText("Radius must be > 10 and positive");
+        if (radius < 1.0) {
+            eventradiustext.setText("Radius must be greater than 1.0 miles");
+            Toast.makeText(getContext(),"Event radius is invalid!",Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
     }
 
     private boolean validateEventName(String eventname) {
-        if(!eventname.matches("[A-Za-z0-9 .'_-]*")) {
+        if(!eventname.matches("[A-Za-z0-9 .!-]*")) {
             title_text.setText(R.string.invalid_eventname);
+            Toast.makeText(getContext(),"Event name is invalid!",Toast.LENGTH_LONG).show();
             return false;
         }
         else if (eventname.length() == 0 || eventname.length() > 24) {
             title_text.setText(R.string.invalid_eventname2);
+            Toast.makeText(getContext(),"Event name is invalid!",Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
     }
     private boolean validateEventDesc(String eventdesc) {
-
-        if (eventdesc.length() > 300) {
+        if(!eventdesc.matches("[A-Za-z0-9 .!-]*")) {
             desc_text.setText(R.string.invalid_eventdesc);
+            Toast.makeText(getContext(),"Event description is invalid!",Toast.LENGTH_LONG).show();
+            return false;
+        } else if (eventdesc.length() > 300) {
+            desc_text.setText(R.string.invalid_eventdesc);
+            Toast.makeText(getContext(),"Event description is invalid!",Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -355,6 +356,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
         //TODO what if location is off?
         if (latLon.latitude == MainActivity.user.myLocation.latitude &&
                 latLon.longitude == MainActivity.user.myLocation.longitude) {
+                Toast.makeText(getContext(), "Please choose a location!", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;

@@ -1,15 +1,11 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
-import com.example.brianduffy.masevo.DatePickerFragment;
-import com.example.brianduffy.masevo.Event;
-import com.example.brianduffy.masevo.Location;
-import com.example.brianduffy.masevo.PrivateEvent;
-import com.example.brianduffy.masevo.PublicEvent;
+import com.example.brianduffy.masevo.*;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

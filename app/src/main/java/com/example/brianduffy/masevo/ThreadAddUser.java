@@ -1,6 +1,8 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
 import com.example.brianduffy.masevo.PublicEvent;
@@ -22,38 +24,38 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 12/1/2017.
+ * Created by Brian Duffy on 11/30/2017.
  */
 
-public class ThreadMakeHost implements Runnable {
-    String SenderEmail;
-    String targetEmail;
+public class ThreadAddUser implements Runnable {
     int eventID;
-    Boolean isPub;
-    int priv;
-    private Integer errno;
-
-    public ThreadMakeHost(int eventID,String senderEmail, String targetEmail, Boolean isPub) {
-        SenderEmail = senderEmail;
-        this.targetEmail = targetEmail;
+    String SenderEmail;
+    Boolean isPublic;
+    Integer errno;
+    int userPriv;
+    Pair<Boolean,Integer> returnResult;
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+    String TargetEmail;
+    public ThreadAddUser(int eventID, String SenderEmail, String TargetEmail, Boolean isPublic) {
         this.eventID = eventID;
-        this.isPub = isPub;
+        this.SenderEmail = SenderEmail;
+        this.isPublic = isPublic;
+        this.TargetEmail = TargetEmail;
     }
 
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    private Pair<Boolean, Integer> returnResult;
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "makeHost";
+        String methodName = "addUser";
         ContentValues contentValues = new ContentValues();
-        contentValues.put("method", methodName);
-        contentValues.put("ID", Integer.toString(eventID));
-        contentValues.put("SenderEmail", SenderEmail);
-        contentValues.put("TargetEmail", targetEmail);
-        contentValues.put("isPub", isPub);
+        contentValues.put("method",methodName);
+        contentValues.put("ID",Integer.toString(eventID));
+        contentValues.put("SenderEmail",SenderEmail);
+        contentValues.put("TargetEmail",TargetEmail);
+        contentValues.put("isPub",isPublic);
+
         String query = "";
-        for (Map.Entry e : contentValues.valueSet()) {
+        for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
         }
         query = query.substring(0, query.length() - 1);
@@ -62,7 +64,7 @@ public class ThreadMakeHost implements Runnable {
             byte[] postData = fQuery.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
             URL url = new URL(server_url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setInstanceFollowRedirects(false);
             httpURLConnection.setRequestMethod("POST");
@@ -81,7 +83,8 @@ public class ThreadMakeHost implements Runnable {
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(httpURLConnection.getInputStream()));
                 String output;
-                while ((output = br.readLine()) != null) {
+                while((output = br.readLine()) != null)
+                {
                     result += output;
                 }
                 System.out.println("Response message: " + result);
@@ -101,12 +104,12 @@ public class ThreadMakeHost implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
-                if (errno != 0) {
-                    returnResult = new Pair<>(false,errno);
-                }else {
-                    returnResult = new Pair<>(true,errno);
-                }
+
+                returnResult = null;
             }
+
+
+
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
             return;
@@ -114,7 +117,9 @@ public class ThreadMakeHost implements Runnable {
             ioe.printStackTrace();
             return;
         }
-        //TODO will change
+        // TODO will change
+        returnResult = new Pair<>(true,errno);
+
 
     }
     public Pair<Boolean, Integer> getReturnResult() {

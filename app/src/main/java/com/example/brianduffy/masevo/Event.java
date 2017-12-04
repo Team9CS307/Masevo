@@ -56,7 +56,7 @@ public abstract class Event implements Serializable{
     abstract public Pair<Boolean,Integer> joinEvent(int eventID,String senderEmail);
     abstract public Pair<Boolean, Integer> leaveEvent(int eventID, String senderEmail);
     abstract public Pair<ArrayList<? extends Event>, Integer> getEvents();
-    abstract public Pair<ArrayList<Event>, ArrayList<Users>> getMyEvents(String email);
+    //abstract public Pair<ArrayList<Event>, ArrayList<Users>> getMyEvents(String email);
     abstract public Pair<Boolean,Integer> addUser (int eventID, String email,String target);
     abstract public Pair<Boolean,Integer> removeUser (int eventID, String email,String target);
     abstract public Pair<Boolean,Integer> banUser (int eventID, String email, String target);

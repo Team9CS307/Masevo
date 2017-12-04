@@ -1,11 +1,9 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
-
-import com.example.brianduffy.masevo.Event;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,25 +21,29 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 11/30/2017.
+ * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadDeleteEvent implements Runnable {
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    int eventID;
-    public Pair<Boolean,Integer> returnResult;
-    Integer errno;
+public class ThreadAddToActive implements Runnable {
     String SenderEmail;
+    String targetEmail;
+    int eventID;
     Boolean isPub;
-    public ThreadDeleteEvent(int eventID, String SenderEmail, Boolean isPub) {
+    private Integer errno;
+
+    public ThreadAddToActive(int eventID,String senderEmail, Boolean isPub) {
+        SenderEmail = senderEmail;
         this.eventID = eventID;
-        this.SenderEmail = SenderEmail;
         this.isPub = isPub;
     }
 
+    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
+    private Pair<Boolean, Integer> returnResult;
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "deleteEvent";
+        String methodName = "addToActive";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
@@ -97,9 +99,10 @@ public class ThreadDeleteEvent implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
+                //TODO bool check
                 if (errno != 0) {
                     returnResult = new Pair<>(false,errno);
-                } else {
+                }else {
                     returnResult = new Pair<>(true,errno);
                 }
             }
@@ -111,9 +114,9 @@ public class ThreadDeleteEvent implements Runnable {
             return;
         }
 
+
     }
     public Pair<Boolean, Integer> getReturnResult() {
-
         return returnResult;
     }
 }

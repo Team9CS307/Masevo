@@ -7,9 +7,12 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.*;
 import android.location.Location;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -24,9 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.chambe41.masevo.ThreadGetUserEvents;
-import com.example.chambe41.masevo.ThreadLeaveEvent;
-import com.example.chambe41.masevo.ThreadUpdateLocation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -55,6 +55,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 //TODO *********************************************************************************************
 /*TODO
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity
     static ArrayList<Integer> geoIDs;
     private ArrayList<Geofence> mTriggeredGeofences;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,24 +137,26 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ThreadGetUserEvents getUserEvents = new ThreadGetUserEvents(MainActivity.user.emailAddress);
-        Thread thread = new Thread(getUserEvents);
-        thread.start();
+        AsyncTask<String, Integer, Pair<ArrayList<Event>, ArrayList<Users>>> asyncTask = new TaskGetUserEvents().execute(MainActivity.user.emailAddress);
         try {
-            thread.join();
-            Pair<ArrayList<Event>,ArrayList<Users>> ret1 =getUserEvents.getReturnResult();
+            MainActivity.user.myevents = asyncTask.get().first;
+            MainActivity.eventusers = asyncTask.get().second;
+        } catch (ExecutionException ee) {
+            ee.printStackTrace();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+        /*Pair<ArrayList<Event>, ArrayList<Users>> ret1 = getUserEvents.getReturnResult();
+        if (ret1 != null) {
             if (ret1.first == null) {
                 //error
-                Toast.makeText(this,"Failed to get your events!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Failed to get your events!", Toast.LENGTH_SHORT).show();
 
             } else {
                 MainActivity.user.myevents.addAll(ret1.first);
-                    MainActivity.eventusers.addAll(ret1.second);
+                MainActivity.eventusers.addAll(ret1.second);
             }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        }*/
 
 
         // show the create event fragment on start up
@@ -217,6 +221,7 @@ public class MainActivity extends AppCompatActivity
 
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
+
     private void stopLocationUpdates() {
 
         // remove location updates. handled by google
@@ -236,35 +241,38 @@ public class MainActivity extends AppCompatActivity
             }
         };
     }
+
     public void onLocationChanged(Location location) {
 
         ThreadUpdateLocation updateLocation = new ThreadUpdateLocation(MainActivity.user.emailAddress,
-                MainActivity.user.myLocation.latitude,MainActivity.user.myLocation.longitude);
+                MainActivity.user.myLocation.latitude, MainActivity.user.myLocation.longitude);
         Thread t = new Thread(updateLocation);
         t.start();
         try {
+            Pair<Boolean, Integer> ret = updateLocation.getReturnResult();
             t.join();
-            Pair<Boolean,Integer> ret = updateLocation.getReturnResult();
+            if (ret != null) {
 
-            if (ret.second !=0) {
-                Toast.makeText(this,Error.getErrorMessage(ret.second),Toast.LENGTH_SHORT).show();
-            } else {
-                MainActivity.user.myLocation = new com.example.brianduffy.masevo.Location(
-                        (float)location.getLatitude(),(float)location.getLongitude());
+                if (ret.second != 0) {
+                    Toast.makeText(this, Error.getErrorMessage(ret.second), Toast.LENGTH_SHORT).show();
+                } else {
+                    MainActivity.user.myLocation = new com.example.brianduffy.masevo.Location(
+                            (float) location.getLatitude(), (float) location.getLongitude());
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         //************************** DEBUG *****************************
-        Toast.makeText(this,"Lat: " + location.getLatitude() +
-                " Lon: " + location.getLongitude(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Lat: " + location.getLatitude() +
+        //        " Lon: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
         // user has moved, get new lat and lon and move camera to that location
-       //TODO server call to update user's location
-
+        //TODO server call to update user's location
 
 
     }
+
     private void buildLocationSettingsRequest() {
 
         // build location settings dialog for permission handleing
@@ -287,7 +295,8 @@ public class MainActivity extends AppCompatActivity
 
                         // start the looper for getting location every time interval defined in
                         // createLocationRequest()
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,mLocationCallback, Looper.myLooper());
+                        //noinspection MissingPermission
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
 
                     }
                 })
@@ -359,6 +368,7 @@ public class MainActivity extends AppCompatActivity
         }
         mGeofenceRequestIntent = getGeofenceTransitionPendingIntent();
 
+        //noinspection MissingPermission
         LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,getGeofencingRequest(),mGeofenceRequestIntent);
 
         //Toast.makeText(this, "geofence has begun!", Toast.LENGTH_SHORT).show();

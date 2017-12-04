@@ -1,32 +1,28 @@
 package com.example.brianduffy.masevo;
 
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.chambe41.masevo.ThreadCreateEvent;
-import com.example.chambe41.masevo.ThreadDeleteEvent;
-import com.example.chambe41.masevo.ThreadGetEvents;
-import com.example.chambe41.masevo.ThreadLeaveEvent;
-import com.example.chambe41.masevo.ThreadModifyEvent;
-
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+
 
 /**
  * Created by Brian on 9/18/2017.
@@ -37,6 +33,7 @@ public class MyEventsFragment extends Fragment implements View.OnClickListener, 
     SwipeRefreshLayout swipe;
     public static Event event;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,6 +84,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
     }
 }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -197,13 +195,21 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMen
 //
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void updateList() {
-
-        //TODO update via server call or something
+        AsyncTask<String, Integer, Pair<ArrayList<Event>, ArrayList<Users>>> asyncTask = new TaskGetUserEvents().execute(MainActivity.user.emailAddress);
+        try {
+            MainActivity.user.myevents = asyncTask.get().first;
+        } catch (ExecutionException ee) {
+            ee.printStackTrace();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
         listview.setAdapter(new ListAdapter(this.getContext(), MainActivity.user.myevents));
         swipe.setRefreshing(false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onRefresh() {
         updateList();

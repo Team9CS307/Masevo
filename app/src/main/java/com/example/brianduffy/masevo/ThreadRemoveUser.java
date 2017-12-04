@@ -1,6 +1,8 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
 import org.jsoup.Jsoup;
@@ -19,31 +21,36 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 11/30/2017.
+ * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadJoinEvent implements Runnable {
+public class ThreadRemoveUser implements Runnable {
     int eventID;
     String SenderEmail;
+    Boolean isPublic;
     Integer errno;
+    int userPriv;
     Pair<Boolean,Integer> returnResult;
-    Boolean isPub;
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-
-    public ThreadJoinEvent(int eventID, String SenderEmail, Boolean isPub) {
+    String TargetEmail;
+    public ThreadRemoveUser(int eventID, String SenderEmail,String TargetEmail, Boolean isPublic) {
         this.eventID = eventID;
         this.SenderEmail = SenderEmail;
-        this.isPub = isPub;
-
+        this.TargetEmail = TargetEmail;
+        this.isPublic = isPublic;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "joinEvent";
+        String methodName = "kickUser";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("isPub",isPub);
+        contentValues.put("TargetEmail",TargetEmail);
+        contentValues.put("isPub",isPublic);
+
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -82,6 +89,7 @@ public class ThreadJoinEvent implements Runnable {
             Document doc = Jsoup.parse(result);
             Elements tables = doc.select("table");
             //This will only run once, fool
+            //TODO do this
             for (Element table : tables) {
                 Elements trs = table.select("tr");
                 String[][] trtd = new String[trs.size()][];
@@ -107,13 +115,11 @@ public class ThreadJoinEvent implements Runnable {
             return;
         }
 
-        //TODO insert a user from the user table to the eventUser tables
-
-
 
     }
     public Pair<Boolean, Integer> getReturnResult() {
-
         return returnResult;
     }
+
 }
+

@@ -1,14 +1,10 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
+import com.example.brianduffy.masevo.*;
 
 import android.content.ContentValues;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
-
-import com.example.brianduffy.masevo.Event;
-import com.example.brianduffy.masevo.PrivateEvent;
-import com.example.brianduffy.masevo.PublicEvent;
-import com.example.brianduffy.masevo.Users;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,11 +12,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,64 +26,25 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 12/1/2017.
+ * Created by Josh on 11/3/2017.
  */
 
-public class ThreadGetUserEvents implements Runnable {
+public class ThreadGetEvents implements Runnable {
     Integer errno;
+    Boolean isPublic;
     String email;
-    public ThreadGetUserEvents(String email) {
 
-        this.email = email;
-    }
-    ArrayList<Event> events = new ArrayList<>();
-    ArrayList<Users> users = new ArrayList<>();
-    Pair<ArrayList<Event>, ArrayList<Users>> returnResult;
-
-    private static int hexToBin( char ch ) {
-        if( '0'<=ch && ch<='9' )    return ch-'0';
-        if( 'A'<=ch && ch<='F' )    return ch-'A'+10;
-        if( 'a'<=ch && ch<='f' )    return ch-'a'+10;
-        return -1;
-    }
-
-    public byte[] parseHexBinary(String s) {
-        final int len = s.length();
-        // "111" is not a valid hex encoding.
-        if( len%2 != 0 )
-            throw new IllegalArgumentException("hexBinary needs to be even-length: "+s);
-
-        byte[] out = new byte[len/2];
-
-        for( int i=0; i<len; i+=2 ) {
-            int h = hexToBin(s.charAt(i  ));
-            int l = hexToBin(s.charAt(i+1));
-            if( h==-1 || l==-1 )
-                throw new IllegalArgumentException("contains illegal character for hexBinary: "+s);
-
-            out[i/2] = (byte)(h*16+l);
-        }
-        return out;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        try(ByteArrayInputStream b = new ByteArrayInputStream(bytes)){
-            try(ObjectInputStream o = new ObjectInputStream(b)){
-                return o.readObject();
-            }
-        }
-    }
+    ArrayList<PublicEvent> pubevents = new ArrayList<>();
+    ArrayList<PrivateEvent> privevents = new ArrayList<>();
+    Pair<ArrayList<? extends Event>, Integer> returnResult;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
         String methodName;
-        methodName = "getUserEvents";
+        methodName = "getEvents";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method", methodName);
-        contentValues.put("SenderEmail",email);
-
 
         String query = "";
         for (Map.Entry<String, Object> e : contentValues.valueSet()) {
@@ -140,11 +95,13 @@ public class ThreadGetUserEvents implements Runnable {
                     if (count == 0) {
                         errno = Integer.parseInt(trtd[0][0]);
                     }
+
                 }
                 if (count == 0) {
                     count++;
                     continue;
                 }
+
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
                 for (String[] aTrtd : trtd) {
                     java.util.Date d1, d2;
@@ -156,25 +113,14 @@ public class ThreadGetUserEvents implements Runnable {
                         d4 = new Date(d2.getTime());
                     } catch (ParseException pe) {
 
-                        returnResult = new Pair<>(null,null);
+                        returnResult = new Pair<>(null,1);
                         return;
                     }
-                    if (count == 1) {
-                        PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
-                                Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
-                                Float.parseFloat(aTrtd[7]), aTrtd[8]);
-                        p.eventID = Integer.parseInt(aTrtd[0]);
-                        events.add(p);
-                    } else {
-                        PrivateEvent p = new PrivateEvent(aTrtd[1], aTrtd[2], d3, d4,
-                                Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
-                                Float.parseFloat(aTrtd[7]), aTrtd[8]);
-                                p.eventID = Integer.parseInt(aTrtd[0]);
-                        events.add(p);
-                    }
-                    users.add((Users)deserialize(parseHexBinary(aTrtd[8])));
+                    PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
+                            Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
+                            Float.parseFloat(aTrtd[7]), aTrtd[8]);
+                    pubevents.add(p);
                 }
-                count++;
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
@@ -182,13 +128,12 @@ public class ThreadGetUserEvents implements Runnable {
             ioe.printStackTrace();
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
         }
-        returnResult = new Pair<ArrayList<Event>, ArrayList<Users>>(events,users);
+        returnResult = new Pair<ArrayList<? extends Event>, Integer>(pubevents,errno);
+
     }
 
-    public Pair<ArrayList<Event>, ArrayList<Users>> getReturnResult() {
+    public Pair<ArrayList<? extends Event>, Integer> getReturnResult() {
         return returnResult;
     }
 }

@@ -1,6 +1,9 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
 import org.jsoup.Jsoup;
@@ -13,41 +16,35 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InterfaceAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * Created by Brian Duffy on 12/1/2017.
+ * Created by Josh on 12/4/2017.
  */
 
-public class ThreadRemoveUser implements Runnable {
-    int eventID;
-    String SenderEmail;
-    Boolean isPublic;
-    Integer errno;
-    int userPriv;
-    Pair<Boolean,Integer> returnResult;
-    private final String server_url = "http://webapp-171031005244.azurewebsites.net";
-    String TargetEmail;
-    public ThreadRemoveUser(int eventID, String SenderEmail,String TargetEmail, Boolean isPublic) {
-        this.eventID = eventID;
-        this.SenderEmail = SenderEmail;
-        this.TargetEmail = TargetEmail;
-        this.isPublic = isPublic;
-    }
-
+public class TaskAddToActive extends AsyncTask<String, Integer, Pair<Boolean, Integer>> {
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void run() {
-        String methodName = "kickUser";
+    protected Pair<Boolean, Integer> doInBackground(String... params) {
+        final String server_url = "http://webapp-171031005244.azurewebsites.net";
+        String methodName = "addToActive";
+        if (params.length != 3) {
+            return new Pair<Boolean, Integer>(false, -1);
+        }
+        String SenderEmail = params[0];
+        int eventID = Integer.parseInt(params[1]);
+        Boolean isPub = Boolean.parseBoolean(params[2]);
+        int errno = -1;
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
-        contentValues.put("TargetEmail",TargetEmail);
-        contentValues.put("isPub",isPublic);
-
+        contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
             query += (e.getKey() + "=" + e.getValue() + "&");
@@ -98,25 +95,17 @@ public class ThreadRemoveUser implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
-                if (errno != 0) {
-                    returnResult = new Pair<>(false,errno);
-                }else {
-                    returnResult = new Pair<>(true,errno);
-                }
+            }
+            if (errno != 0) {
+                return new Pair<>(false,errno);
+            }else {
+                return new Pair<>(true,errno);
             }
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
-            return;
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            return;
         }
-
-
+        return new Pair<>(false, -1);
     }
-    public Pair<Boolean, Integer> getReturnResult() {
-        return returnResult;
-    }
-
 }
-

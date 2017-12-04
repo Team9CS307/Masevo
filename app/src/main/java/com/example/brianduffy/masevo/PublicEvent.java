@@ -1,7 +1,5 @@
 package com.example.brianduffy.masevo;
 
-import com.example.chambe41.masevo.*;
-
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Pair;
@@ -80,12 +78,6 @@ public class PublicEvent extends Event implements Serializable{
         ThreadGetEvents threadGetEvents = new ThreadGetEvents();
         new Thread(threadGetEvents).start();
         return threadGetEvents.getReturnResult();
-    }
-    @Override
-    public Pair<ArrayList<Event>, ArrayList<Users>> getMyEvents(String email) {
-        ThreadGetUserEvents myEvents = new ThreadGetUserEvents(email);
-        new Thread(myEvents).start();
-        return myEvents.getReturnResult();
     }
 
     @Override

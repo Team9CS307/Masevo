@@ -1,7 +1,11 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
+
+import com.example.brianduffy.masevo.PublicEvent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,13 +20,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
  * Created by Brian Duffy on 12/1/2017.
  */
 
-public class ThreadAddToActive implements Runnable {
+public class ThreadMakeOwner implements Runnable {
     String SenderEmail;
     String targetEmail;
     int eventID;
@@ -30,22 +35,26 @@ public class ThreadAddToActive implements Runnable {
     int priv;
     private Integer errno;
 
-    public ThreadAddToActive(int eventID,String senderEmail, Boolean isPub) {
+    public ThreadMakeOwner(int eventID,String senderEmail, String targetEmail, Boolean isPub) {
         SenderEmail = senderEmail;
+        this.targetEmail = targetEmail;
         this.eventID = eventID;
+        this.priv = priv;
         this.isPub = isPub;
     }
 
     private final String server_url = "http://webapp-171031005244.azurewebsites.net";
     private Pair<Boolean, Integer> returnResult;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
-        String methodName = "addToActive";
+        String methodName = "makeOwner";
         ContentValues contentValues = new ContentValues();
         contentValues.put("method",methodName);
         contentValues.put("ID",Integer.toString(eventID));
         contentValues.put("SenderEmail",SenderEmail);
+        contentValues.put("TargetEmail",targetEmail);
         contentValues.put("isPub",isPub);
         String query = "";
         for (Map.Entry e: contentValues.valueSet()) {
@@ -78,6 +87,8 @@ public class ThreadAddToActive implements Runnable {
                 String output;
                 while((output = br.readLine()) != null)
                 {
+
+
                     result += output;
                 }
                 System.out.println("Response message: " + result);
@@ -97,7 +108,6 @@ public class ThreadAddToActive implements Runnable {
                     }
                 }
                 errno = Integer.parseInt(trtd[0][0]);
-                //TODO bool check
                 if (errno != 0) {
                     returnResult = new Pair<>(false,errno);
                 }else {

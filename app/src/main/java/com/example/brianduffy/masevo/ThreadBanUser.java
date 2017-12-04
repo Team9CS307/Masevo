@@ -1,6 +1,8 @@
-package com.example.chambe41.masevo;
+package com.example.brianduffy.masevo;
 
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Pair;
 
 import com.example.brianduffy.masevo.PublicEvent;
@@ -40,6 +42,7 @@ public class ThreadBanUser implements Runnable {
         this.isPublic = isPublic;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
         String methodName = "banUser";
