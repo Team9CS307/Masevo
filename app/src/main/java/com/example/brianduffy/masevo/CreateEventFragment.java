@@ -258,8 +258,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
-                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
-                            MainActivity.getGeofencingRequest(), mGeofenceRequestIntent);
+//                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
+//                            MainActivity.getGeofencingRequest(), mGeofenceRequestIntent);
 
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();

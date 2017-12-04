@@ -43,8 +43,8 @@ public class EditEventTest {
             new ActivityTestRule<MainActivity>(MainActivity.class);
     @Before
     public void createMockEvent() {
-        onView(withId(R.id.event_name)).perform(typeText("event name"));
-        onView(withId(R.id.event_desc)).perform(typeText("description"));
+        onView(withId(R.id.event_name)).perform(typeText("event name5"));
+        onView(withId(R.id.event_desc)).perform(typeText("description5"));
         onView(withId(R.id.start_date)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(setDate(2017,12,12));
@@ -59,8 +59,9 @@ public class EditEventTest {
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
                 .perform(setTime(12,12));
         onView(withText("OK")).perform(click());
-        MainActivity.user.myLocation.longitude = 0.0f;
-        MainActivity.user.myLocation.latitude = 20.0f;
+        onView(withId(R.id.eventradius)).perform(replaceText("100"));
+        MainActivity.user.myLocation.latitude = 40.429691f;
+        MainActivity.user.myLocation.longitude = -86.913393f;
         onView(withId(R.id.create_event)).perform(click());
 //        onView(withId(R.id.header)).check(matches(withText("event name")));
 //        onView(withId(R.id.text)).check(matches(withText("description")));
@@ -71,8 +72,8 @@ public class EditEventTest {
 
         onView(withId(R.id.header)).perform(longClick());
         onView(withText("Edit Event")).perform(click());
-        onView(withId(R.id.event_name)).check(matches(withText("event name")));
-        onView(withId(R.id.event_desc)).check(matches(withText("description")));
+        onView(withId(R.id.event_name)).check(matches(withText("event name6")));
+        onView(withId(R.id.event_desc)).check(matches(withText("description6")));
         onView(withId(R.id.start_time)).check(matches(withText("2017-12-12 12:12")));
         onView(withId(R.id.end_time)).check(matches(withText("2017-12-13 12:12")));
         onView(withId(R.id.event_type_text)).check(matches(withText("Public Event")));
@@ -86,9 +87,12 @@ public class EditEventTest {
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
                 .perform(setTime(11,11));
         onView(withText("OK")).perform(click());
+        onView(withId(R.id.eventradius)).perform(replaceText("100"));
+        MainActivity.user.myLocation.latitude = 40.429691f;
+        MainActivity.user.myLocation.longitude = -86.913393f;
         onView(withId(R.id.create_event)).perform(click());
-        onView(withId(R.id.header)).check(matches(withText("New Event Name")));
-        onView(withId(R.id.text)).check(matches(withText("New Description")));
+        onView(withText("New Event Name")).check(matches(withText("New Event Name")));
+        onView(withText("New Description")).check(matches(withText("New Description")));
 
 
     }
@@ -97,8 +101,8 @@ public class EditEventTest {
 
         onView(withId(R.id.header)).perform(longClick());
         onView(withText("Edit Event")).perform(click());
-        onView(withId(R.id.event_name)).check(matches(withText("event name")));
-        onView(withId(R.id.event_desc)).check(matches(withText("description")));
+        onView(withId(R.id.event_name)).check(matches(withText("event name7")));
+        onView(withId(R.id.event_desc)).check(matches(withText("description7")));
         onView(withId(R.id.start_time)).check(matches(withText("2017-12-12 12:12")));
         onView(withId(R.id.end_time)).check(matches(withText("2017-12-13 12:12")));
         onView(withId(R.id.event_type_text)).check(matches(withText("Public Event")));

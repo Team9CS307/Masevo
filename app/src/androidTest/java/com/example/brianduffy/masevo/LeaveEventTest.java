@@ -23,6 +23,7 @@ import org.hamcrest.Matchers;
 
 
 import static android.support.test.espresso.action.ViewActions.longClick;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.PickerActions.setDate;
@@ -51,8 +52,8 @@ public class LeaveEventTest {
 
     @Test
     public void testLeaveFailure() {
-        onView(withId(R.id.event_name)).perform(typeText("event name"));
-        onView(withId(R.id.event_desc)).perform(typeText("description"));
+        onView(withId(R.id.event_name)).perform(typeText("event name8"));
+        onView(withId(R.id.event_desc)).perform(typeText("description8"));
         onView(withId(R.id.start_date)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(setDate(2017,12,12));
@@ -67,14 +68,15 @@ public class LeaveEventTest {
         onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
                 .perform(setTime(12,12));
         onView(withText("OK")).perform(click());
-        MainActivity.user.myLocation.longitude = 0.0f;
-        MainActivity.user.myLocation.latitude = 20.0f;
+        onView(withId(R.id.eventradius)).perform(replaceText("100"));
+        MainActivity.user.myLocation.latitude = 40.429691f;
+        MainActivity.user.myLocation.longitude = -86.913393f;
         onView(withId(R.id.create_event)).perform(click());
-        onView(withId(R.id.header)).check(matches(withText("event name")));
-        onView(withId(R.id.text)).check(matches(withText("description")));
-        onView(withText("event name")).perform(longClick());
+        onView(withText("event name8")).check(matches(withText("event name8")));
+        onView(withText("description8")).check(matches(withText("description8")));
+        onView(withText("event name8")).perform(longClick());
         onView(withText("Leave")).perform(click());
-        onView(withText("event name")).check(matches(withText("event name")));
+        onView(withText("event name8")).check(matches(withText("event name8")));
 
     }
 }
