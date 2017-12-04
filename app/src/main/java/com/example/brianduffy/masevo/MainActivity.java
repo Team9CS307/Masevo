@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
 
         ThreadUpdateLocation updateLocation = new ThreadUpdateLocation(MainActivity.user.emailAddress,
-                MainActivity.user.myLocation.latitude, MainActivity.user.myLocation.longitude);
+                (float) location.getLatitude(), (float)location.getLongitude());
         Thread t = new Thread(updateLocation);
         t.start();
         try {

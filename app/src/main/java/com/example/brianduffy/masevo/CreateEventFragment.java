@@ -213,6 +213,7 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                     thread.start();
                     try {
                         thread.join();
+
                         Pair<? extends Event, Integer> ret1 = threadCreateEvent.getReturnResult();
 
                         if (ret1.second != 0) {
@@ -258,8 +259,8 @@ public class CreateEventFragment extends android.support.v4.app.Fragment impleme
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
-//                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
-//                            MainActivity.getGeofencingRequest(), mGeofenceRequestIntent);
+                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
+                            MainActivity.getGeofencingRequest(), mGeofenceRequestIntent);
 
 
                     FragmentTransaction ft =  getActivity().getSupportFragmentManager().beginTransaction();

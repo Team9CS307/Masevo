@@ -104,6 +104,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
                 Toast.makeText(getContext(),"unable to connect to server",Toast.LENGTH_SHORT).show();
             } else {
                 userlisting.addAll(ret.second);
+                userlocs.addAll(ret.first);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -116,7 +117,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
 
 
         registerForContextMenu(userList);
-
+        //displayUsers();
 
         return view;
     }
@@ -347,12 +348,28 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback, Sw
                 .radius(event.radius)
                 .strokeColor(Color.BLUE));
         mMap.addMarker(new MarkerOptions().position(eventloc).title(event.eventName));
-
+            int i = 0;
         for (Location loc: userlocs) {
-            mMap.addCircle(new CircleOptions()
-                    .center(new LatLng(loc.latitude,loc.longitude))
-                    .radius(1)
-                    .strokeColor(Color.GREEN));
+            android.location.Location l = new android.location.Location("www");
+            l.setLatitude(loc.latitude);
+            l.setLongitude(loc.longitude);
+            android.location.Location a = new android.location.Location("cancer");
+            a.setLatitude(event.location.latitude);
+            a.setLongitude(event.location.longitude);
+            Boolean isPublic = false;
+            if (event instanceof PublicEvent) {
+                isPub = true;
+            }
+            if (l.distanceTo(a) < event.radius) {
+
+
+                mMap.addCircle(new CircleOptions()
+                        .center(new LatLng(loc.latitude, loc.longitude))
+                        .radius(2)
+                        .fillColor(Color.GREEN)
+                        .strokeColor(Color.GREEN));
+            }
+            i++;
         }
     }
 

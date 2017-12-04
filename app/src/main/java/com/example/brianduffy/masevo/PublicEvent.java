@@ -24,7 +24,17 @@ public class PublicEvent extends Event implements Serializable{
     /**
      * Used for call to server which do not require an event to be present
      */
-    public PublicEvent() {};
+    public PublicEvent(String eventName,String eventDesc, Date startDate, Date endDate,
+                       float latitude, float longitude, float radius, String creatorEmail,int eventID) {
+        this.eventName = eventName;
+        this.eventDesc =eventDesc;
+        this.startDate = startDate;
+        this.radius = radius;
+        this.endDate = endDate;
+        this.location = new Location(latitude,longitude);
+        this.hostEmail = creatorEmail;
+        this.eventID = eventID;
+    };
     public PublicEvent(String eventName, String eventDesc, Date startDate, Date endDate,
                        float latitude, float longitude, float radius, String creatorEmail)
     {

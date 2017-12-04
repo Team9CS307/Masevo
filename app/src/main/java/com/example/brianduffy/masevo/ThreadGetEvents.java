@@ -119,6 +119,7 @@ public class ThreadGetEvents implements Runnable {
                     PublicEvent p = new PublicEvent(aTrtd[1], aTrtd[2], d3, d4,
                             Float.parseFloat(aTrtd[5]), Float.parseFloat(aTrtd[6]),
                             Float.parseFloat(aTrtd[7]), aTrtd[8]);
+                    p.eventID = Integer.parseInt(aTrtd[0]);
                     pubevents.add(p);
                 }
             }

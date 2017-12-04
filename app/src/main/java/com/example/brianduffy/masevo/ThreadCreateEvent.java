@@ -136,11 +136,14 @@ public class ThreadCreateEvent implements Runnable {
                     errno = Integer.parseInt(trtd[0][0]);
                     if (errno != 0) {
                         if (pub) {
+
+
                             returnResult = new Pair<>(new PublicEvent(eventName,eventDesc,startDate
-                                    ,endDate,location.latitude,location.longitude,radius,hostEmail), errno);
+                                    ,endDate,location.latitude,location.longitude,radius,hostEmail,eventID), errno);
                         } else {
                             returnResult = new Pair<>(new PrivateEvent(eventName,eventDesc,startDate
-                                    ,endDate,location.latitude,location.longitude,radius,hostEmail), errno);
+                                    ,endDate,location.latitude,location.longitude,radius,hostEmail,eventID), errno);
+
                         }
                     } else {
                         returnResult = new Pair<>(null,errno);

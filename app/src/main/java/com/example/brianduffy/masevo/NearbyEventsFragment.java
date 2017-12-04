@@ -1,7 +1,9 @@
 package com.example.brianduffy.masevo;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,7 +18,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
+
+import static com.example.brianduffy.masevo.MainActivity.mGeofenceRequestIntent;
+import static com.example.brianduffy.masevo.MainActivity.mGoogleApiClient;
 
 
 /**
@@ -134,6 +142,40 @@ public class NearbyEventsFragment extends Fragment implements View.OnClickListen
                     //TODO implement success
 
                     MainActivity.user.myevents.add(toJoin);
+                    MainActivity.mGeofenceList.add(new Geofence.Builder()
+                            // Set the request ID of the geofence. This is a string to identify this
+                            // geofence.
+                            .setRequestId(toJoin.eventName)
+
+                            // Set the circular region of this geofence.
+                            .setCircularRegion(
+                                    toJoin.location.latitude,
+                                    toJoin.location.longitude,
+                                    toJoin.radius
+                            )
+                            // Set the expiration duration of the geofence. This geofence gets automatically
+                            // removed after this period of time.
+                            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+
+                            // Set the transition types of interest. Alerts are only generated for these
+                            // transition. We track entry and exit transitions in this sample.
+                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                    Geofence.GEOFENCE_TRANSITION_EXIT)
+                            // Create the geofence.
+                            .build());
+                    //TODO comment out for espresso testing
+                    if (ActivityCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return false;
+                    }
+                    LocationServices.GeofencingApi.addGeofences(mGoogleApiClient,
+                            MainActivity.getGeofencingRequest(), mGeofenceRequestIntent);
 
                     events.remove((info).position);
                 }
